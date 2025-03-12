@@ -1,0 +1,6 @@
+{
+  "email": "Email",
+  "password": "Password",
+  "field_is_required": "This field is required!",
+  "login": "Log in"
+}
