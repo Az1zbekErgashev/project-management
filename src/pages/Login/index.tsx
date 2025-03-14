@@ -43,46 +43,51 @@ export function LoginPage() {
   const onFinish = (value: any) => {
     appendData(value);
   };
+
   return (
     <StyledLoginPage>
-      <Image preview={false} src={loginImage} className="login-image" />
-      <Form form={form} layout="vertical" onFinish={onFinish}>
-        <div className="title">
-          <h1>{t('login')}</h1>
-        </div>
-        <div className="flex">
-          <div>
-            <Input
-              label={t('email')}
-              placeholder="exaple@gmail.com"
-              type="email"
-              name="email"
-              rules={[
-                {
-                  type: 'email',
-                  message: t('emailIsNotValid'),
-                },
-                {
-                  required: true,
-                  message: t('field_is_required'),
-                },
-              ]}
-              maxLength={50}
-            />
+      <div className="image-container">
+        <Image preview={false} style={{width: "100%", height:"100vh"}} src={loginImage} className="login-image" />
+      </div>
+      <div className="form-container">
+        <Form form={form} layout="vertical" onFinish={onFinish}>
+          <div className="title">
+            <h1>{t('login')}</h1>
           </div>
-          <div>
-            <Input
-              label={t('password')}
-              name="password"
-              type="password"
-              rules={[{ required: true, message: t('field_is_required') }]}
-            />
+          <div className="flex">
+            <div>
+              <Input
+                label={t('email')}
+                placeholder="example@gmail.com"
+                type="email"
+                name="email"
+                rules={[
+                  {
+                    type: 'email',
+                    message: t('emailIsNotValid'),
+                  },
+                  {
+                    required: true,
+                    message: t('field_is_required'),
+                  },
+                ]}
+                maxLength={50}
+              />
+            </div>
+            <div>
+              <Input
+                label={t('password')}
+                name="password"
+                type="password"
+                rules={[{ required: true, message: t('field_is_required') }]}
+              />
+            </div>
           </div>
-        </div>
-        <div className="button">
-          <Button label={t('login')} type="primary" htmlType="submit" loading={isLoading} />
-        </div>
-      </Form>
+          <div className="button">
+            <Button label={t('login')} type="primary" htmlType="submit" loading={isLoading} />
+          </div>
+        </Form>
+      </div>
     </StyledLoginPage>
   );
 }
