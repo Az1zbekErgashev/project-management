@@ -26,6 +26,7 @@ export function UserInformation() {
     },
     onSuccess() {
       Notification({ text: t('user_created_success'), type: 'success' });
+      navigate(-1);
     },
   });
 
@@ -263,8 +264,8 @@ export function UserInformation() {
         </div>
         <div className="flex">
           <Select name="teamLeaderId" label={t('teams')}>
-            {teams?.data?.map((item: { id: number; fullName: string }, index: number) => (
-              <SelectOption value={item.id} key={index}>
+            {teams?.data?.map((item: { userId: number; fullName: string }, index: number) => (
+              <SelectOption value={item.userId} key={index}>
                 {item.fullName}
               </SelectOption>
             ))}

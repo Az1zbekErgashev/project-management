@@ -7,7 +7,7 @@ interface adminNavigate {
 export const ADMIN_NAVIGATE: adminNavigate[] = [
   { key: 'mycompany', path: '/admin/my-company' },
   { key: 'users', path: '/admin/users' },
-  { key: 'partners', path: '/admin/partners' },
+  { key: 'requests', path: '/admin/requests' },
 ];
 
 interface IRoleInterface {
@@ -16,11 +16,8 @@ interface IRoleInterface {
 }
 
 export const ROLE: IRoleInterface[] = [
-  { id: 0, text: 'team_lead' },
-  { id: 1, text: 'developer' },
-  { id: 2, text: 'qaengineer' },
-  { id: 3, text: 'viewer' },
-  { id: 4, text: 'super_admin' },
+  { id: 0, text: 'employeer' },
+  { id: 1, text: 'super_admin' },
 ];
 
 export const defaultImageUrl = DefaultImage;

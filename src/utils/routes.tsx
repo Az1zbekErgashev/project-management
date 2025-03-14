@@ -1,5 +1,5 @@
 import DefaultLayout from 'layouts/DefaultLayout';
-import { AdminUsers, HomePage, LoginPage, UserInformation } from 'pages';
+import { AdminUsers, HomePage, LoginPage, UserInformation, Request } from 'pages';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProtectedUserRoute from 'routes/ProtectedUserRoutes';
 
@@ -24,6 +24,7 @@ export const router = createBrowserRouter([
       { path: '/admin/users', element: <AdminUsers /> },
       { path: '/admin/user-information', element: <UserInformation /> },
       { path: '/admin/user-information/:id', element: <UserInformation /> },
+      { path: '/admin/requests', element: <Request /> },
     ],
   },
 ]);

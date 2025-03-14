@@ -27,8 +27,8 @@ export default function UsersFilter({ company, teams, handleFilterChange }: prop
           <SelectOption value={null}>{t('all')}</SelectOption>
         </Select>
         <Select name="TeamLeaderId" label={t('teams')}>
-          {teams?.data?.map((item: { id: number; fullName: string }, index: number) => (
-            <SelectOption value={item.id} key={index}>
+          {teams?.data?.map((item: { userId: number; fullName: string }, index: number) => (
+            <SelectOption value={item.userId} key={index}>
               {item.fullName}
             </SelectOption>
           ))}
