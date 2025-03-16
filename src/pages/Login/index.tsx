@@ -24,7 +24,7 @@ export function LoginPage() {
     onSuccess(response) {
       set(response.data.token, 86400);
       setUser(response.data);
-      if (response.data.role === 1) navigate('/admin/users', { replace: true });
+      if (response.data.role === 1) navigate('/users', { replace: true });
     },
     onError() {
       form.setFields([
@@ -47,7 +47,7 @@ export function LoginPage() {
   return (
     <StyledLoginPage>
       <div className="image-container">
-        <Image preview={false} style={{width: "100%", height:"100vh"}} src={loginImage} className="login-image" />
+        <Image preview={false} style={{ width: '100%', height: '100vh' }} src={loginImage} className="login-image" />
       </div>
       <div className="form-container">
         <Form form={form} layout="vertical" onFinish={onFinish}>

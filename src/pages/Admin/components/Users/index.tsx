@@ -11,6 +11,8 @@ import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { TFunction } from 'i18next';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { Drawer, Form } from 'antd';
+import { UserInformation } from './components/UserInformation';
 
 interface initalQuery {
   PageIndex: number;
@@ -43,7 +45,12 @@ export function AdminUsers() {
   const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [userId, setUserId] = useState<number | null>(null);
-  const navigate = useNavigate();
+  const [open, setOpen] = useState<{ open: boolean; type: 'VIEW' | 'ADD' | 'EDIT'; user: any }>({
+    open: false,
+    type: 'ADD',
+    user: null,
+  });
+  const [form] = Form.useForm();
 
   const handleDelete = (id: number, type: 'DELETE' | 'RECOVER') => {
     setConiformModal(
@@ -80,11 +87,19 @@ export function AdminUsers() {
     if (userId) {
       deleteUser();
       setUserId(null);
+      onClose();
       setConiformModal(null);
     }
   }, [userId]);
 
   const column: ColumnsType<any> = [
+    {
+      title: t('id'),
+      dataIndex: 'id',
+      key: 'id',
+      width: 50,
+      render: (_, record, index) => <div>{(users?.data?.pageIndex - 1) * users?.data?.itemsPerPage + index + 1}</div>,
+    },
     {
       title: t('last_update'),
       dataIndex: 'updatedAt',
@@ -103,18 +118,30 @@ export function AdminUsers() {
       title: t('email'),
       dataIndex: 'email',
       key: 'email',
+      width: 250,
       render: (item, record) => (
-        <NavLink to={`/admin/user-information/${record.id}`} className="email-row">
+        <button onClick={() => showDrawer('VIEW', record)} className="email-row">
           {item}
-        </NavLink>
+        </button>
       ),
     },
-    { title: t('company_name'), dataIndex: 'companyName', key: 'companyName' },
+    {
+      title: t('dateOfBirth'),
+      dataIndex: 'dateOfBirth',
+      key: 'dateOfBirth',
+      render: (value, record) => value && dayjs(value).format('DD.MM.YYYY'),
+    },
     { title: t('role'), dataIndex: 'role', key: 'role' },
     { title: t('name'), dataIndex: 'name', key: 'name' },
     { title: t('surname'), dataIndex: 'surname', key: 'surname' },
     { title: t('phone_number'), dataIndex: 'phoneNumber', key: 'phoneNumber' },
     { title: t('country'), dataIndex: ['country', 'name'], key: 'country' },
+    {
+      title: t('status'),
+      dataIndex: 'status',
+      key: 'status',
+      render: (item, record) => (record.isDeleted === 0 ? t('active') : t('deleted')),
+    },
   ];
 
   const handlePaginationChange = (page: number, pageSize: number) => {
@@ -142,31 +169,27 @@ export function AdminUsers() {
     },
   });
 
-  const { data: company } = useQueryApiClient({
-    request: {
-      url: '/api/user/all-companys',
-      method: 'GET',
-    },
-  });
-
-  const { data: teams } = useQueryApiClient({
-    request: {
-      url: '/api/user/team-leaders',
-      method: 'GET',
-    },
-  });
-
   useEffect(() => {
     getUsers();
   }, [queryParams]);
+
+  const showDrawer = (type: 'ADD' | 'VIEW', record: any) => {
+    if (type === 'ADD') setOpen({ open: true, type: type, user: null });
+    else setOpen({ open: true, type: type, user: record });
+  };
+
+  const onClose = () => {
+    form.resetFields();
+    setOpen({ open: false, type: 'VIEW', user: null });
+  };
 
   return (
     <StyledAdminUsers>
       <div className="header-line">
         <h1 className="global-title">{t('manage_users')}</h1>
-        <Button label={t('add_user')} type="primary" onClick={() => navigate('/admin/user-information')} />
+        <Button label={t('add_user')} type="primary" onClick={() => showDrawer('ADD', null)} />
       </div>
-      <UsersFilter company={company} teams={teams} handleFilterChange={handleFilterChange} />
+      <UsersFilter handleFilterChange={handleFilterChange} />
       <Table columns={column} dataSource={users?.data?.items ?? []} />
       <Pagination
         total={users?.data?.totalItems}
@@ -176,6 +199,16 @@ export function AdminUsers() {
         current={users?.data?.PageIndex}
       />
       {coniformModal && <ConfirmModal {...coniformModal} />}
+      <Drawer width={600} title={t('user-action')} onClose={onClose} open={open.open}>
+        <UserInformation
+          getUsers={getUsers}
+          handleDelete={handleDelete}
+          form={form}
+          onClose={onClose}
+          open={open}
+          setOpen={setOpen}
+        />
+      </Drawer>
     </StyledAdminUsers>
   );
 }

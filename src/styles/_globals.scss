@@ -1,17 +1,19 @@
 * {
   &::-webkit-scrollbar {
-    width: 8px;
+    width: 2px;
+    height: 5px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background: var(--dark-green);
+    background: var(--base-color);
     box-shadow: 0px 0px 35px 0px rgba(0, 0, 0, 0.05);
+    height: 5px;
   }
 
   &::-webkit-scrollbar-track {
     background: rgba(217, 217, 217, 0.15);
-    width: 8px;
-    backdrop-filter: blur(80px);
+    width: 2px;
+    backdrop-filter: blur(20px);
   }
 }
 html {
@@ -221,6 +223,7 @@ thead {
     font-weight: 400 !important;
     line-height: 20px;
     text-align: start;
+    background: red !important;
   }
 }
 tbody {
@@ -256,5 +259,9 @@ tbody {
 }
 
 .ant-btn-primary {
-  background: var(--accent-color);
+  background: var(--base-color);
+}
+
+.ant-picker-content {
+  border: none !important;
 }

@@ -1,7 +1,7 @@
 import { Form, Image } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Notification, Select, SelectOption, Upload } from 'ui';
+import { Button, Checkbox, DatePicker, Input, Notification, Select, SelectOption, Upload } from 'ui';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { StyledActionForm } from './style';
 import { ROLE } from 'utils/consts';
@@ -10,15 +10,32 @@ import { UploadOutlined } from '@ant-design/icons';
 import { defaultImageUrl } from 'utils/consts';
 import { routes } from 'config/config';
 import SvgSelector from 'assets/icons/SvgSelector';
+import { FormInstance } from 'antd/lib';
+import dayjs from 'dayjs';
 
-export function UserInformation() {
+interface props {
+  open: { open: boolean; type: 'VIEW' | 'ADD' | 'EDIT'; user: any };
+  setOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean;
+      type: 'VIEW' | 'ADD' | 'EDIT';
+      user: any;
+    }>
+  >;
+  onClose: () => void;
+  form: FormInstance;
+  handleDelete: (id: number, type: 'DELETE' | 'RECOVER') => void;
+  getUsers: () => void;
+}
+
+export function UserInformation({ open, setOpen, onClose, form, handleDelete, getUsers }: props) {
   const [image, setImage] = useState<{ img: File | null; path: string | null; type: 'ADD' | 'DELETE' }>();
   const { t } = useTranslation();
-  const [form] = Form.useForm();
-  const navigate = useNavigate();
-  const params = useParams();
+  const [passwordStatus, setPasswordStatus] = useState(false);
 
-  const { appendData } = useQueryApiClient({
+  const [disable, setDisable] = useState<boolean>(false);
+
+  const { appendData: createuser } = useQueryApiClient({
     request: {
       url: '/api/user/create-new-user',
       method: 'POST',
@@ -26,26 +43,21 @@ export function UserInformation() {
     },
     onSuccess() {
       Notification({ text: t('user_created_success'), type: 'success' });
-      navigate(-1);
+      getUsers();
+      onClose();
     },
   });
 
-  const onFinish = (value: any) => {
-    value.image = image?.img;
-    appendData(value);
-  };
-
-  const { data: company } = useQueryApiClient({
+  const { appendData: updateuser } = useQueryApiClient({
     request: {
-      url: '/api/user/all-companys',
-      method: 'GET',
+      url: '/api/user/update',
+      method: 'PATCH',
+      multipart: true,
     },
-  });
-
-  const { data: teams } = useQueryApiClient({
-    request: {
-      url: '/api/user/team-leaders',
-      method: 'GET',
+    onSuccess() {
+      Notification({ text: t('user_updated_success'), type: 'success' });
+      getUsers();
+      onClose();
     },
   });
 
@@ -53,19 +65,6 @@ export function UserInformation() {
     request: {
       url: '/api/country',
       method: 'GET',
-    },
-  });
-
-  const { refetch: getUser } = useQueryApiClient({
-    request: {
-      url: `/api/user/${params.id}`,
-      method: 'GET',
-      disableOnMount: true,
-    },
-    onSuccess(respose) {
-      if (respose.data) {
-        form.setFieldsValue({ ...respose.data, countryId: respose.data?.country?.id });
-      }
     },
   });
 
@@ -188,41 +187,97 @@ export function UserInformation() {
   };
 
   useEffect(() => {
-    if (params.id !== null) {
-      getUser();
+    if (open.type == 'VIEW') {
+      setDisable(true);
+      form.setFieldsValue({
+        ...open.user,
+        countryId: open?.user?.country?.id,
+        dateOfBirth: open?.user?.dateOfBirth && dayjs(open.user.dateOfBirth),
+        role: open?.user?.roleId,
+      });
+      setImage({ img: null, path: open?.user?.image?.path, type: 'ADD' });
+    } else {
+      setDisable(false);
     }
-  }, [params]);
+  }, [open?.open]);
+
+  const handleDeleteUser = () => {
+    if (open.user.isDeleted === 0) {
+      handleDelete(open?.user?.id, 'DELETE');
+    } else {
+      handleDelete(open?.user?.id, 'RECOVER');
+    }
+  };
+
+  const handleUpdate = () => {
+    setOpen((prev: { open: boolean; type: 'VIEW' | 'ADD' | 'EDIT'; user: any }) => ({
+      ...prev,
+      type: 'EDIT',
+      open: prev.open,
+      user: prev.user,
+    }));
+    setDisable(false);
+  };
+
+  const handleSubmit = () => {
+    form
+      .validateFields()
+      .then((res) => {
+        if (open.type === 'ADD') {
+          res.image = image?.img;
+          res.DateOfBirth = res.dateOfBirth !== null ? dayjs(res.dateOfBirth) : null;
+          createuser(res);
+        } else {
+          res.UpdateImage = image?.img === null ? false : true;
+          res.image = image?.img === null ? false : image?.img;
+          res.UserId = open?.user?.id;
+          res.DateOfBirth = res.dateOfBirth !== null ? dayjs(res.dateOfBirth) : null;
+          updateuser(res);
+        }
+      })
+      .catch(() => {
+        return;
+      });
+  };
 
   return (
     <StyledActionForm>
-      <Form layout="vertical" onFinish={onFinish} form={form}>
+      <Form layout="vertical" form={form}>
         <div className="upload_wrapper">
-          <div className="image-side">
-            <Image
-              rel="preload"
-              loading="lazy"
-              src={
-                image?.img ? URL.createObjectURL(image.img) : image?.path ? routes.api.baseUrl + '/' + image.path : ''
-              }
-              fallback={defaultImageUrl}
-              preview={false}
-            />
-            {(image?.img || image?.path) && (
-              <button onClick={handleClearImage} className="delete-profile">
-                <SvgSelector key="trash" id="trash" />
-              </button>
-            )}
-          </div>
-          <div>
-            <div className="image-title">{t('profile_image')}</div>
-            <div className="upload_settings">{t('upload_image_required_settings')}</div>
-            <div className="upload">
-              <Upload onChange={handleImageChange}>
-                {image?.img || image?.path ? t('edit_image') : t('upload_image')}&nbsp;
-                <UploadOutlined />
-              </Upload>
+          <div className="form-wrapper">
+            <div className="image-side">
+              <Image
+                rel="preload"
+                loading="lazy"
+                src={
+                  image?.img ? URL.createObjectURL(image.img) : image?.path ? routes.api.baseUrl + '/' + image.path : ''
+                }
+                fallback={defaultImageUrl}
+                preview={false}
+              />
+              {(image?.img || image?.path) && !disable && (
+                <button onClick={handleClearImage} className="delete-profile">
+                  <SvgSelector key="trash" id="trash" />
+                </button>
+              )}
+            </div>
+            <div>
+              <div className="image-title">{t('profile_image')}</div>
+              <div className="upload_settings">{t('upload_image_required_settings')}</div>
+              <div className="upload">
+                <Upload disabled={disable} onChange={handleImageChange}>
+                  {image?.img || image?.path ? t('edit_image') : t('upload_image')}&nbsp;
+                  <UploadOutlined />
+                </Upload>
+              </div>
             </div>
           </div>
+
+          {open.type == 'VIEW' && (
+            <div>
+              <Button icon={<SvgSelector id="edit" />} onClick={handleUpdate} />
+            </div>
+          )}
         </div>
         <div className="flex">
           <Input
@@ -237,24 +292,55 @@ export function UserInformation() {
             placeholder="exaple@gmail.com"
             name="email"
             type="email"
+            disabled={disable}
           />
 
-          <Input name="name" rules={[{ required: true, message: t('field_is_required') }]} label={t('name')} />
-          <Input name="surname" rules={[{ required: true, message: t('field_is_required') }]} label={t('surname')} />
+          <Input
+            name="name"
+            disabled={disable}
+            rules={[{ required: true, message: t('field_is_required') }]}
+            label={t('name')}
+          />
         </div>
         <div className="flex">
           <Input
-            name="password"
+            name="surname"
+            disabled={disable}
             rules={[{ required: true, message: t('field_is_required') }]}
-            label={t('password')}
-            type="password"
+            label={t('surname')}
           />
+          <div className="password-item">
+            <Input
+              name="password"
+              rules={[{ required: open.type == 'EDIT' ? passwordStatus : true, message: t('field_is_required') }]}
+              label={t('password')}
+              type="password"
+              disabled={open.type == 'VIEW' || open.type == 'EDIT' ? !passwordStatus : false}
+            />
+            {open.type == 'EDIT' && (
+              <div>
+                <Checkbox
+                  label={t('update_password')}
+                  checked={passwordStatus}
+                  onChange={() => setPasswordStatus(!passwordStatus)}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+        <div className="flex">
           <Input
             name="phoneNumber"
             rules={[{ required: true, message: t('field_is_required') }]}
             label={t('phone_number')}
+            disabled={disable}
           />
-          <Select name="role" rules={[{ required: true, message: t('field_is_required') }]} label={t('role')}>
+          <Select
+            disabled={disable}
+            name="role"
+            rules={[{ required: true, message: t('field_is_required') }]}
+            label={t('role')}
+          >
             {ROLE.map((item, index) => (
               <SelectOption value={item.id} key={index}>
                 {t(item.text)}
@@ -263,25 +349,12 @@ export function UserInformation() {
           </Select>
         </div>
         <div className="flex">
-          <Select name="teamLeaderId" label={t('teams')}>
-            {teams?.data?.map((item: { userId: number; fullName: string }, index: number) => (
-              <SelectOption value={item.userId} key={index}>
-                {item.fullName}
-              </SelectOption>
-            ))}
-          </Select>
-          <Select name="companyId" rules={[{ required: true, message: t('field_is_required') }]} label={t('company')}>
-            {company?.data?.map((item: { companyId: number; companyName: string }, index: number) => (
-              <SelectOption value={item.companyId} key={index}>
-                {item.companyName}
-              </SelectOption>
-            ))}
-          </Select>
           <Select
             loading={isCountryLoading}
             name="countryId"
             rules={[{ required: true, message: t('field_is_required') }]}
             label={t('country')}
+            disabled={disable}
           >
             {country?.data?.map((item: { id: number; name: string }, index: number) => (
               <SelectOption value={item.id} key={index}>
@@ -289,11 +362,32 @@ export function UserInformation() {
               </SelectOption>
             ))}
           </Select>
+          <DatePicker disabled={disable} name="dateOfBirth" label={t('dateOfBirth')} />
         </div>
 
         <div className="action-button">
-          <Button label={t('cancel')} onClick={() => navigate(-1)} type="default" className="cancel-button" />
-          <Button label={t('create_user')} type="primary" htmlType="submit" />
+          {open.type !== 'VIEW' ? (
+            <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
+          ) : (
+            <>
+              <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
+              <Button
+                danger
+                label={open?.user?.isDeleted === 0 ? t('delete') : t('recover')}
+                onClick={handleDeleteUser}
+                className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+                type="primary"
+              />
+            </>
+          )}
+          {open.type !== 'VIEW' && (
+            <Button
+              label={open.type === 'ADD' ? t('create_user') : t('save_changes')}
+              type="primary"
+              htmlType="button"
+              onClick={handleSubmit}
+            />
+          )}
         </div>
       </Form>
     </StyledActionForm>

@@ -17,9 +17,16 @@ export interface RequestModel {
   notes?: string; // Примечания (причина итогового результата)
   requestStatus?: RequestStatusModel | null;
   isDeleted: number;
+  date: string | null;
 }
 
 export interface RequestStatusModel {
   title: string;
   id: number;
+}
+
+export interface RequestItems {
+  items: RequestModel[];
+  pageIndex: number;
+  itemsPerPage: number;
 }

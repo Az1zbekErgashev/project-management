@@ -1,6 +1,9 @@
 export interface User {
-    Id: number,
-    Role: number,
-    TeamId: number,
-    Email: string
+  Id: number;
+  Role: number;
+  Email: string;
+  Image: { path: string } | null;
+  Name: string;
+  Surname: string;
+  PhoneNumber: string;
 }

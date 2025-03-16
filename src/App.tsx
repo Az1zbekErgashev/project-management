@@ -27,7 +27,7 @@ function App() {
 
   const getProfile = async () => {
     try {
-      const res = await axios.get(`${routes.api.baseUrl}/api/user/user-profile`, {
+      const res = await axios.get(`${routes.api.baseUrl}/api/user/profile`, {
         headers: {
           Authorization: getToken,
         },

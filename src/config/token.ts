@@ -1,13 +1,13 @@
 export const token = {
   // SeedToken
   borderRadius: 4,
-  colorBase: '#3A70B3',
+  colorBase: '#3a70b3',
   colorBgBase: '#fff',
   colorError: '#ff4d4f',
   colorInfo: '#1677ff',
   colorLink: '#1677ff',
-  colorPrimary: '#009483',
-  colorSuccess: '#009483',
+  colorPrimary: '#3a70b3',
+  colorSuccess: '#3a70b3',
   colorTextBase: '#B5B4B6',
   colorWarning: '#faad14',
   controlHeight: 40,
@@ -68,25 +68,25 @@ export const token = {
   colorFillQuaternary: 'rgba(0, 0, 0, 0.02)',
   colorFillSecondary: 'rgba(0, 0, 0, 0.06)',
   colorFillTertiary: 'rgba(0, 0, 0, 0.04)',
-  colorInfoActive: '#009483', //active
+  colorInfoActive: '#87a7d0', //active
   colorInfoBg: '#e6f4ff',
   colorInfoBgHover: '#bae0ff',
   colorInfoBorder: '#91caff',
   colorInfoBorderHover: '#69b1ff',
   colorInfoHover: '#69b1ff',
   colorInfoText: '#1677ff',
-  colorInfoTextActive: '#009483', //active
+  colorInfoTextActive: '#87a7d0', //active
   colorInfoTextHover: '#4096ff',
-  colorLinkActive: '#009483', //active
+  colorLinkActive: '#87a7d0', //active
   colorLinkHover: '#69b1ff',
-  colorPrimaryActive: '#009483', //active
+  colorPrimaryActive: '#87a7d0', //active
   colorPrimaryBg: '#e6f4ff',
   colorPrimaryBgHover: '#bae0ff',
   colorPrimaryBorder: '#91caff',
   colorPrimaryBorderHover: '#69b1ff',
-  colorPrimaryHover: '#009483',
+  colorPrimaryHover: '#87a7d0',
   colorPrimaryText: '#1677ff',
-  colorPrimaryTextActive: '#009483', //active
+  colorPrimaryTextActive: '#87a7d0', //active
   colorPrimaryTextHover: '#4096ff',
   colorSuccessActive: '#389e0d',
   colorSuccessBg: '#f6ffed',

@@ -6,12 +6,10 @@ import { useTranslation } from 'react-i18next';
 import { ROLE } from 'utils/consts';
 
 interface props {
-  teams: any;
-  company: any;
   handleFilterChange: (changedValue: any) => void;
 }
 
-export default function UsersFilter({ company, teams, handleFilterChange }: props) {
+export default function UsersFilter({ handleFilterChange }: props) {
   const [form] = Form.useForm();
   const { t } = useTranslation();
   return (
@@ -22,22 +20,6 @@ export default function UsersFilter({ company, teams, handleFilterChange }: prop
           {ROLE.map((item, index) => (
             <SelectOption value={item.id} key={index}>
               {t(item.text)}
-            </SelectOption>
-          ))}
-          <SelectOption value={null}>{t('all')}</SelectOption>
-        </Select>
-        <Select name="TeamLeaderId" label={t('teams')}>
-          {teams?.data?.map((item: { userId: number; fullName: string }, index: number) => (
-            <SelectOption value={item.userId} key={index}>
-              {item.fullName}
-            </SelectOption>
-          ))}
-          <SelectOption value={null}>{t('all')}</SelectOption>
-        </Select>
-        <Select name="CompanyId" label={t('company')}>
-          {company?.data?.map((item: { companyId: number; companyName: string }, index: number) => (
-            <SelectOption value={item.companyId} key={index}>
-              {item.companyName}
             </SelectOption>
           ))}
           <SelectOption value={null}>{t('all')}</SelectOption>

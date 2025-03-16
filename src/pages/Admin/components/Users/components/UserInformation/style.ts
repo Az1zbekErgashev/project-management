@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 export const StyledActionForm = styled.div`
-  height: calc(100vh - 20px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -9,7 +8,7 @@ export const StyledActionForm = styled.div`
     .ant-form-item {
       padding: 8px 16px;
       border-radius: 18px;
-      border: 1px solid var(--accent-color);
+      border: 1px solid var(--base-color);
       height: 33px !important;
       max-width: 150px;
       justify-content: center;
@@ -18,7 +17,7 @@ export const StyledActionForm = styled.div`
       margin-top: 20px !important;
     }
     .ant-upload {
-      color: var(--accent-color);
+      color: var(--base-color);
       font-size: 0.777777rem;
       cursor: pointer;
     }
@@ -26,9 +25,13 @@ export const StyledActionForm = styled.div`
 
   .upload_wrapper {
     display: flex;
-    align-items: center;
-    gap: 16px;
-    color: var(--gray-text);
+    justify-content: space-between;
+    .form-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      color: var(--gray-text);
+    }
 
     .image-side {
       max-width: 140px;
@@ -91,5 +94,9 @@ export const StyledActionForm = styled.div`
     display: flex;
     align-items: center;
     gap: 16px;
+  }
+
+  .password-item {
+    width: 100%;
   }
 `;

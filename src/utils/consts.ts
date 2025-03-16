@@ -2,12 +2,14 @@ import DefaultImage from 'assets/images/DefaultImage.webp';
 interface adminNavigate {
   key: string;
   path: string;
+  icon: string;
 }
 
 export const ADMIN_NAVIGATE: adminNavigate[] = [
-  { key: 'mycompany', path: '/admin/my-company' },
-  { key: 'users', path: '/admin/users' },
-  { key: 'requests', path: '/admin/requests' },
+  { key: 'dashboard', path: '/my-company', icon: 'dashboard' },
+  { key: 'users', path: '/users', icon: 'people' },
+  { key: 'requests', path: '/requests', icon: 'card-list' },
+  { key: 'logs', path: '/logs', icon: 'logs' },
 ];
 
 interface IRoleInterface {
@@ -17,7 +19,7 @@ interface IRoleInterface {
 
 export const ROLE: IRoleInterface[] = [
   { id: 0, text: 'employeer' },
-  { id: 1, text: 'super_admin' },
+  { id: 1, text: 'admin' },
 ];
 
 export const defaultImageUrl = DefaultImage;
