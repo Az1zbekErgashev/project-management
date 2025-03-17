@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import SvgSelector from 'assets/icons/SvgSelector';
 import { Avatar } from 'antd';
+// import { UserOutlined } from '@ant-design/icons';
 import { UserOutlined } from '@ant-design/icons';
 import { useUser } from 'hooks/useUserState';
 import { routes } from 'config/config';

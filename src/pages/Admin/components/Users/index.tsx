@@ -120,10 +120,16 @@ export function AdminUsers() {
       key: 'email',
       width: 250,
       render: (item, record) => (
-        <button onClick={() => showDrawer('VIEW', record)} className="email-row">
+        <button 
+        style={{cursor: "pointer", 
+          backgroundColor: "#B0EBB4", 
+          padding: "4px",
+          borderRadius: "5px"
+        }}
+        onClick={() => showDrawer('VIEW', record)} className="email-row">
           {item}
         </button>
-      ),
+      )
     },
     {
       title: t('dateOfBirth'),
