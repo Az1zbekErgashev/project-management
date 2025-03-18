@@ -10,6 +10,7 @@ export const ADMIN_NAVIGATE: adminNavigate[] = [
   { key: 'users', path: '/users', icon: 'people' },
   { key: 'requests', path: '/requests', icon: 'card-list' },
   { key: 'logs', path: '/logs', icon: 'logs' },
+  { key: 'translations', path: '/translations', icon: 'translations' },
 ];
 
 interface IRoleInterface {
