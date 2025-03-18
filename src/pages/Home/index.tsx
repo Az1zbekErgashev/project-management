@@ -1,79 +1,83 @@
-import React, { useEffect, useState } from "react";
-import { Layout, Card, Statistic, Row, Col, Table, Typography } from "antd";
-import axios from "axios";
+import React from 'react';
+import { Bar } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  ChartOptions,
+  ChartData,
+} from 'chart.js';
 
-const { Title } = Typography;
-const { Content } = Layout;
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
-const HomePage: React.FC = () => {
-  const [stats, setStats] = useState({ users: 0, requests: 0, logs: 0 });
-  const [logs, setLogs] = useState([]);
-  const [categories, setCategories] = useState([]);
+const data: ChartData<'bar'> = {
+  labels: ['January', 'February', 'March', 'April', 'May'],
+  datasets: [
+    {
+      label: 'Sales',
+      data: [50, 80, 40, 90, 70],
+      backgroundColor: 'rgba(75, 192, 192, 0.6)',
+    },
+  ],
+};
 
-  useEffect(() => {
-    // Fetch statistics
-    axios.get("/api/user/filter").then((res) => setStats((prev) => ({ ...prev, users: res.data.total })));
-    axios.get("/api/request/filter-values").then((res) => setStats((prev) => ({ ...prev, requests: res.data.total })));
-    axios.get("/api/logs/filter").then((res) => setStats((prev) => ({ ...prev, logs: res.data.total })));
+const options: ChartOptions<'bar'> = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: true,
+      position: 'top',
+    },
+    title: {
+      display: true,
+      text: 'Monthly Sales Data',
+    },
+  },
+  scales: {
+    x: {
+      type: 'category',
+      title: {
+        display: true,
+        text: 'Months',
+      },
+    },
+    y: {
+      beginAtZero: true,
+      title: {
+        display: true,
+        text: 'Sales',
+      },
+    },
+  },
+};
 
-    axios.get("/api/logs/filter").then((res) => setLogs(res.data.logs));
-
-    axios.get("/api/request/category").then((res) => {
-      if (Array.isArray(res.data.categories)) {
-        setCategories(res.data.categories.map((c: { categoryName: any; requestCount: any; }, i: any) => ({ key: i, name: c.categoryName, count: c.requestCount })));
-      }
-    });
-  }, []);
-
-  const logColumns = [
-    { title: "User Email", dataIndex: "userEmail", key: "userEmail" },
-    { title: "Action", dataIndex: "action", key: "action" },
-    { title: "Date", dataIndex: "date", key: "date" },
-  ];
-
-  const categoryColumns = [
-    { title: "Category Name", dataIndex: "name", key: "name" },
-    { title: "Total Requests", dataIndex: "count", key: "count" },
-  ];
-
+// HomePage Component
+export function HomePage() {
   return (
-    <Layout style={{ padding: "20px" }}>
-      <Content>
-        <Title level={2}>CRM Dashboard</Title>
+    <div className="container">
+      <header>
+        <h1>Welcome to My Dashboard</h1>
+        <nav>
+          <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+          </ul>
+        </nav>
+      </header>
+      
+      <main>
+        <h2>Sales Overview</h2>
+        <Bar data={data} options={options} />
+      </main>
 
-        <Row gutter={16}>
-          <Col span={8}>
-            <Card>
-              <Statistic title="Total Users" value={stats.users} />
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card>
-              <Statistic title="Total Requests" value={stats.requests} />
-            </Card>
-          </Col>
-          <Col span={8}>
-            <Card>
-              <Statistic title="Total Logs" value={stats.logs} />
-            </Card>
-          </Col>
-        </Row>
-
-        <Row gutter={16} style={{ marginTop: 20 }}>
-          <Col span={12}>
-            <Card title="Request Categories">
-              <Table dataSource={categories} columns={categoryColumns} pagination={false} />
-            </Card>
-          </Col>
-          <Col span={12}>
-            <Card title="Recent Logs">
-              <Table dataSource={logs} columns={logColumns} pagination={{ pageSize: 5 }} />
-            </Card>
-          </Col>
-        </Row>
-      </Content>
-    </Layout>
+      <footer>
+        <p>&copy; 2025 My Company</p>
+      </footer>
+    </div>
   );
 };
 
-export default HomePage;

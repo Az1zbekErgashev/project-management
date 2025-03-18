@@ -1,7 +1,7 @@
 import DefaultLayout from 'layouts/DefaultLayout';
 import { AdminUsers, LoginPage, Request } from 'pages';
 import { Logs } from 'pages/Admin/components/Logs';
-import HomePage from 'pages/Home';
+import { HomePage } from 'pages/Home';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProtectedUserRoute from 'routes/ProtectedUserRoutes';
 
