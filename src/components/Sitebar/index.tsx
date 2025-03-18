@@ -51,7 +51,6 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
               </NavLink>
             ))}
           </ul>
-
           <ul className="nav-list secondary-nav">
             <li className="nav-item">
               <NavLink to="/profile" className="nav-link profile-link">

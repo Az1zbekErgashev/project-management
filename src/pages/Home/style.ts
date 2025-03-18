@@ -16,7 +16,7 @@ export const StyledHomePage = styled.div`
     .top-chart {
       width: 100%;
       height: 50%;
-      background-color: lightblue;
+      background-color: white;
       border-radius: 8px;
       margin: 5px;
     }
