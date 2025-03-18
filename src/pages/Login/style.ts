@@ -28,7 +28,6 @@ export const StyledLoginPage = styled.div`
     align-items: center;
     background: var(--white);
     padding: 20px;
-    animation: slideIn 0.8s ease-in-out; 
 
     form {
       width: 100%;
@@ -37,11 +36,6 @@ export const StyledLoginPage = styled.div`
       padding: 40px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       background: var(--white);
-      transition: transform 0.3s ease-in-out;
-
-      &:hover {
-        transform: translateY(-5px); 
-      }
 
       .flex {
         display: flex;
