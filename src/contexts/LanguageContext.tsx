@@ -25,11 +25,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({ children }) 
   });
   useEffect(() => {
     localStorage.setItem('language', language);
-    i18n.changeLanguage(language);
-    i18n.services.backendConnector.backend.options.loadPath = `${routes.api.baseUrl}/api/multilingualtext?language=${language}`;
-
-    // Перезагрузка переводов
-    i18n.reloadResources();
   }, [language]);
 
   const changeLanguage = (newLanguage: string) => {

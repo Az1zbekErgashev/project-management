@@ -12,12 +12,15 @@ import { router } from 'utils/routes';
 import Cookies from 'js-cookie';
 import { useUser } from 'hooks/useUserState';
 import useJwt from 'utils/useJwt';
+import i18n from 'utils/i18n';
+import { useLanguage } from 'contexts/LanguageContext';
 
 function App() {
   const jwt = !!Cookies.get('jwt');
   const { setUser } = useUser();
   const { getHeader } = useJwt();
   const getToken = getHeader();
+  const { language } = useLanguage();
 
   useEffect(() => {
     if (jwt) {
@@ -39,6 +42,28 @@ function App() {
       return;
     }
   };
+
+  console.log('📌 Проверка store:', i18n.store.data);
+
+  const getLanguages = async () => {
+    try {
+      const res = await axios.get(`${routes.api.baseUrl}/api/multilingualtext?language=${language}`);
+      if (res.data) {
+        if (res?.data?.data) {
+          i18n.addResourceBundle(language, 'translation', res?.data?.data, true, true);
+          await i18n.changeLanguage(language);
+        } else {
+          console.error('Invalid translation data format:', res.data);
+        }
+      }
+    } catch (e) {
+      return;
+    }
+  };
+
+  useEffect(() => {
+    getLanguages();
+  }, [language]);
 
   return (
     <ConfigProvider
