@@ -1,9 +1,7 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import { routes } from 'config/config';
 import HttpApi from 'i18next-http-backend';
-import en from 'translation/en.json';
-import kr from 'translation/kr.json';
+import { routes } from 'config/config';
 
 i18n
   .use(HttpApi)
@@ -12,9 +10,13 @@ i18n
     fallbackLng: 'en',
     debug: false,
     interpolation: { escapeValue: false },
-    resources: {
-      en: { translation: en },
-      kr: { translation: kr },
+    backend: {
+      loadPath: `${routes.api.baseUrl}/api/multilingualtext?language=0`,
+      parse: (data: any) => {
+        const jsonData = JSON?.parse(data);
+        return jsonData?.data || {};
+      },
+      crossDomain: true,
     },
     detection: {
       order: ['querystring', 'cookie', 'localStorage', 'navigator', 'htmlTag'],

@@ -216,4 +216,8 @@ export const StyledSitebar = styled.div`
   .profile-link {
     padding: 12px 13px 12px 12px !important;
   }
+  .ant-dropdown-trigger {
+    display: flex;
+    align-items: center;
+  }
 `;
