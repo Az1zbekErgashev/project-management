@@ -132,8 +132,6 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
         Authorization: getToken,
         'Content-Type': multipart ? 'multipart/form-data' : 'application/json',
         'X-FRONTEND-ROUTE': window.location.pathname,
-        ['LangCode']: 'en',
-        'X-Timezone-Offset': timeZone,
       },
     };
 
