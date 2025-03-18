@@ -55,7 +55,7 @@ export const StyledLoginPage = styled.div`
         button {
           margin-top: 20px;;
           width: 100%;
-          background-color: var(--green);
+          background-color: var(navy);
           color: var(--white);
           border: none;
           font-size: 16px;
@@ -65,8 +65,8 @@ export const StyledLoginPage = styled.div`
 
           &:hover {
             background-color: var(--primary-dark-color);
-            color: green;
-            border: 2px, solid, green;
+            color: navy;
+            border: 2px, solid, navy;
           }
         }
       }
@@ -76,7 +76,7 @@ export const StyledLoginPage = styled.div`
         font-size: 2rem;
         font-weight: 700;
         margin-bottom: 20px;
-        color: var(--text-color);
+        color: var(navy);
       }
     }
   }

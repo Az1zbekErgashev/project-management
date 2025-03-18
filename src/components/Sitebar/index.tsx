@@ -6,6 +6,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import SvgSelector from 'assets/icons/SvgSelector';
 import { Avatar } from 'antd';
+// import { UserOutlined } from '@ant-design/icons';
 import { UserOutlined } from '@ant-design/icons';
 import { useUser } from 'hooks/useUserState';
 import { routes } from 'config/config';
@@ -46,7 +47,6 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
                     </span>
                     <span className="nav-label">{t(item.key)}</span>
                   </p>
-                  <span className="nav-tooltip"> {t(item.key)}</span>
                 </li>
               </NavLink>
             ))}
@@ -62,9 +62,6 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
                   {user?.name}&nbsp;{user?.surname}
                 </span>
               </NavLink>
-              <span className="nav-tooltip">
-                {user?.name}&nbsp;{user?.surname}
-              </span>
             </li>
             <li className="nav-item">
               <button onClick={handleLogout} className="nav-link">
@@ -73,7 +70,6 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
                 </span>
                 <span className="nav-label">{t('logout')}</span>
               </button>
-              <span className="nav-tooltip">{t('logout')}</span>
             </li>
           </ul>
         </nav>
