@@ -11,7 +11,7 @@ export function TranslationsFilter({ handleFilterChange }: props) {
   return (
     <Form onValuesChange={handleFilterChange} layout="vertical">
       <div className="filter-items">
-        <Input name="Key" label={t('text')} />
+        <Input name="Key" label={t('email_name_surname')} />
         <Select name="IsDeleted" label={t('status')}>
           <SelectOption value={true}>{t('active')}</SelectOption>
           <SelectOption value={false}>{t('deleted')}</SelectOption>

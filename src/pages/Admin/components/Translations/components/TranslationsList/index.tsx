@@ -7,8 +7,23 @@ import Tooltip from 'antd/lib/tooltip';
 interface props {
   translations: any;
   handleDelete: (type: 'DELETE' | 'RECOVER', key: string) => void;
+  isUpdateTranslation: boolean;
+  isCreateTranslation: boolean;
+  setOpen: React.Dispatch<
+    React.SetStateAction<{
+      open: boolean;
+      type: 'ADD' | 'EDIT';
+      translation: any;
+    }>
+  >;
 }
-export function TranslationsList({ translations, handleDelete }: props) {
+export function TranslationsList({
+  translations,
+  handleDelete,
+  isCreateTranslation,
+  isUpdateTranslation,
+  setOpen,
+}: props) {
   const { t } = useTranslation();
   const column = [
     { title: t('key'), dataIndex: 'key', key: 'key' },
@@ -56,12 +71,17 @@ export function TranslationsList({ translations, handleDelete }: props) {
             title={<span style={{ color: 'var(--white)' }}>{t('edit_translation_tooltip')}</span>}
             trigger={'hover'}
           >
-            <Button icon={<SvgSelector id="edit" />} />
+            <Button
+              icon={<SvgSelector id="edit" />}
+              onClick={() => setOpen({ type: 'EDIT', open: true, translation: record })}
+            />
           </Tooltip>
         </div>
       ),
       width: 150,
     },
   ];
-  return <Table dataSource={translations || []} columns={column} />;
+  return (
+    <Table loading={isUpdateTranslation || isCreateTranslation} dataSource={translations || []} columns={column} />
+  );
 }

@@ -8,6 +8,8 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import { smoothScroll } from 'utils/globalFunctions';
 import Pagination from 'ui/Pagination/Pagination';
 import { TFunction } from 'i18next';
+import { Form } from 'antd';
+import { TranslationActionForm } from './components/TranslationsActionForm';
 
 interface initalQuery {
   PageIndex: number;
@@ -37,6 +39,11 @@ export function Translations() {
   const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
   const [key, setKey] = useState<string | null>(null);
   const [coniformModal, setConiformModal] = useState<any>(null);
+  const [open, setOpen] = useState<{ open: boolean; type: 'ADD' | 'EDIT'; translation: any }>({
+    open: false,
+    type: 'ADD',
+    translation: null,
+  });
   const { refetch: getTranslations, data: translations } = useQueryApiClient({
     request: {
       url: '/api/multilingualtext/all/translations',
@@ -44,6 +51,7 @@ export function Translations() {
       data: queryParams,
     },
   });
+  const [form] = Form.useForm();
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     smoothScroll('top', 0);
@@ -100,14 +108,66 @@ export function Translations() {
     }
   }, [key]);
 
+  const handleClose = () => {
+    setOpen({ open: false, type: 'ADD', translation: null });
+    form.resetFields();
+  };
+
+  const { appendData: createTranslation, isLoading: isCreateTranslation } = useQueryApiClient({
+    request: {
+      url: `/api/multilingualtext/create`,
+      method: 'POST',
+    },
+    onSuccess() {
+      Notification({ type: 'success', text: t('translation_created') });
+      getTranslations();
+      handleClose();
+    },
+  });
+
+  const { appendData: updateTranslation, isLoading: isUpdateTranslation } = useQueryApiClient({
+    request: {
+      url: `/api/multilingualtext/update`,
+      method: 'PUT',
+    },
+    onSuccess() {
+      Notification({ type: 'success', text: t('translation_updated') });
+      getTranslations();
+      handleClose();
+    },
+  });
+
+  const handleSubmitTranslation = () => {
+    form
+      .validateFields()
+      .then((res) => {
+        res.supportLanguage = 0;
+        if (open.type === 'ADD') createTranslation(res);
+        else if (open.type === 'EDIT') updateTranslation(res);
+      })
+      .catch(() => {
+        return;
+      });
+  };
+
   return (
     <StyledTranslation>
       <div className="header-line">
         <h1 className="global-title">{t('translations')}</h1>
-        <Button label={t('add_translations')} type="primary" />
+        <Button
+          label={t('add_translations')}
+          type="primary"
+          onClick={() => setOpen({ type: 'ADD', open: true, translation: null })}
+        />
       </div>
       <TranslationsFilter handleFilterChange={handleFilterChange} />
-      <TranslationsList handleDelete={handleDelete} translations={translations?.data?.items} />
+      <TranslationsList
+        isCreateTranslation={isCreateTranslation}
+        isUpdateTranslation={isUpdateTranslation}
+        handleDelete={handleDelete}
+        translations={translations?.data?.items}
+        setOpen={setOpen}
+      />
       {translations?.data?.totalPages > 1 && (
         <Pagination
           total={translations?.data?.totalItems}
@@ -117,6 +177,12 @@ export function Translations() {
           current={translations?.data?.PageIndex}
         />
       )}
+      <TranslationActionForm
+        handleSubmitTranslation={handleSubmitTranslation}
+        form={form}
+        open={open}
+        handleClose={handleClose}
+      />
       {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledTranslation>
   );

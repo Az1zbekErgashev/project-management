@@ -176,11 +176,6 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
       }
 
       setIsError(true);
-      // TODO: remove comment later
-      // if (e?.response?.status === 401) {
-      //   navigate('/login', { replace: true });
-      // }
-
       let actualError: ErrorProps;
       if (e.response && e.response.data instanceof Blob) {
         // If response data is a Blob, read it as text
@@ -200,6 +195,7 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
           actualError = e;
         }
       }
+
       onError && onError(actualError); //Call onSuccess if set
       handleError(actualError); //hook for global handling of errors
     } finally {
