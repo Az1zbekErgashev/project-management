@@ -11,12 +11,12 @@ import { routes } from 'config/config';
 import SvgSelector from 'assets/icons/SvgSelector';
 import { FormInstance } from 'antd/lib';
 import dayjs from 'dayjs';
+import { useUser } from 'hooks/useUserState';
 
 interface props {
-  open: { open: boolean; type: 'VIEW' | 'ADD' | 'EDIT'; user: any };
+  open: { type: 'VIEW' | 'ADD' | 'EDIT'; user: any };
   setOpen: React.Dispatch<
     React.SetStateAction<{
-      open: boolean;
       type: 'VIEW' | 'ADD' | 'EDIT';
       user: any;
     }>
@@ -30,6 +30,7 @@ interface props {
 export function UserInformation({ open, setOpen, onClose, form, handleDelete, getUsers }: props) {
   const [image, setImage] = useState<{ img: File | null; path: string | null; type: 'ADD' | 'DELETE' }>();
   const { t } = useTranslation();
+  const { user } = useUser();
   const [passwordStatus, setPasswordStatus] = useState(false);
 
   const [disable, setDisable] = useState<boolean>(false);
@@ -198,7 +199,7 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
     } else {
       setDisable(false);
     }
-  }, [open?.open]);
+  }, [open]);
 
   const handleDeleteUser = () => {
     if (open.user.isDeleted === 0) {
@@ -209,10 +210,9 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
   };
 
   const handleUpdate = () => {
-    setOpen((prev: { open: boolean; type: 'VIEW' | 'ADD' | 'EDIT'; user: any }) => ({
+    setOpen((prev: { type: 'VIEW' | 'ADD' | 'EDIT'; user: any }) => ({
       ...prev,
       type: 'EDIT',
-      open: prev.open,
       user: prev.user,
     }));
     setDisable(false);
@@ -370,13 +370,15 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
           ) : (
             <>
               <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
-              <Button
-                danger
-                label={open?.user?.isDeleted === 0 ? t('delete') : t('recover')}
-                onClick={handleDeleteUser}
-                className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
-                type="primary"
-              />
+              {user.id != open?.user?.id && (
+                <Button
+                  danger
+                  label={open?.user?.isDeleted === 0 ? t('delete') : t('recover')}
+                  onClick={handleDeleteUser}
+                  className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+                  type="primary"
+                />
+              )}
             </>
           )}
           {open.type !== 'VIEW' && (
