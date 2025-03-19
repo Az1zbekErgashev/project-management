@@ -111,88 +111,25 @@ export const StyledSitebar = styled.div`
   .sidebar-nav .nav-item {
     position: relative;
   }
-  .sidebar-nav .nav-tooltip {
-    position: absolute;
-    top: -10px;
-    opacity: 0;
-    color: #151a2d;
-    display: none;
-    pointer-events: none;
-    padding: 6px 12px;
-    border-radius: 8px;
-    white-space: nowrap;
-    background: #fff;
-    left: calc(100% + 25px);
-    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
-    transition: 0s;
-  }
-  .sidebar.collapsed .sidebar-nav .nav-tooltip {
-    display: block;
-  }
-  .sidebar-nav .nav-item:hover .nav-tooltip {
-    opacity: 1;
-    pointer-events: auto;
-    transform: translateY(50%);
-    transition: all 0.4s ease;
-  }
+
   .sidebar-nav .secondary-nav {
     position: absolute;
     bottom: 30px;
     width: 100%;
   }
-  /* Responsive media query code for small screens */
-  @media (max-width: 1024px) {
-    .sidebar {
-      height: 56px;
-      margin: 13px;
-      overflow-y: hidden;
-      scrollbar-width: none;
-      width: calc(100% - 26px);
-      max-height: calc(100vh - 26px);
-    }
-    .sidebar.menu-active {
-      overflow-y: auto;
-    }
-    .sidebar .sidebar-header {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      border-radius: 16px;
-      background: #151a2d;
-      padding: 8px 10px;
-    }
-    .sidebar-header .header-logo img {
-      width: 40px;
-      height: 40px;
-    }
-    .sidebar-header .sidebar-toggler,
-    .sidebar-nav .nav-item:hover .nav-tooltip {
-      display: none;
-    }
 
-    .sidebar-header .menu-toggler {
-      display: flex;
-      height: 30px;
-      width: 30px;
-    }
-    .sidebar-header .menu-toggler span {
-      font-size: 1.3rem;
-    }
-    .sidebar .sidebar-nav .nav-list {
-      padding: 0 10px;
-    }
-    .sidebar-nav .nav-link {
-      gap: 10px;
-      padding: 10px;
-      font-size: 0.94rem;
-    }
-    .sidebar-nav .nav-link .nav-icon {
-      font-size: 1.37rem;
-    }
-    .sidebar-nav .secondary-nav {
-      position: relative;
-      bottom: 0;
-      margin: 40px 0 30px;
+  .nav-list {
+    .active {
+      .nav-link {
+        color: #151a2d;
+        background: #fff;
+
+        .nav-icon-dashboard {
+          path {
+            stroke: #151a2d;
+          }
+        }
+      }
     }
   }
 
@@ -219,5 +156,16 @@ export const StyledSitebar = styled.div`
   .ant-dropdown-trigger {
     display: flex;
     align-items: center;
+  }
+  .language-list {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .nav-label {
+      div {
+        display: flex;
+      }
+    }
   }
 `;
