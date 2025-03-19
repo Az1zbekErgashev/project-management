@@ -43,8 +43,6 @@ function App() {
     }
   };
 
-  console.log('📌 Проверка store:', i18n.store.data);
-
   const getLanguages = async () => {
     try {
       const res = await axios.get(`${routes.api.baseUrl}/api/multilingualtext?language=${language}`);
