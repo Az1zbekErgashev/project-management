@@ -67,14 +67,16 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
             ))}
             <li className="nav-item translation">
               <div className="nav-link profile-link">
-                <span className="material-symbols-rounded">
-                  <SvgSelector id="translate" />
-                </span>
-                <span className="nav-label">
-                  <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
-                    <div>{language === '0' ? <SvgSelector id="korea" /> : <SvgSelector id="english" />}</div>
-                  </Dropdown>
-                </span>
+                <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+                  <div className="language-list">
+                    <span className="material-symbols-rounded">
+                      <SvgSelector id="translate" />
+                    </span>
+                    <span className="nav-label">
+                      <div>{language === '0' ? <SvgSelector id="korea" /> : <SvgSelector id="english" />}</div>
+                    </span>
+                  </div>
+                </Dropdown>
               </div>
             </li>
           </ul>

@@ -72,7 +72,7 @@ export function AdminUsers() {
     },
     onSuccess(response) {
       if (response.data === 'user_deleted') {
-        Notification({ type: 'delete', text: t('user_deleted') });
+        Notification({ type: 'error', text: t('user_deleted') });
       } else {
         Notification({ type: 'info', text: t('user_recovered') });
       }
@@ -147,7 +147,7 @@ export function AdminUsers() {
   ];
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    smoothScroll('top', 95);
+    smoothScroll('top', 0);
     setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
   };
 

@@ -29,7 +29,7 @@ export function Logs() {
   });
 
   const handlePaginationChange = (page: number, pageSize: number) => {
-    smoothScroll('top', 95);
+    smoothScroll('top', 0);
     setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
   };
 
