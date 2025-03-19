@@ -3,14 +3,12 @@ import { StyledAdminUsers } from './style';
 import { Button, ConfirmModal, Notification, Table } from 'ui';
 import { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import SvgSelector from 'assets/icons/SvgSelector';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
 import UsersFilter from './components/UsersFilter';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { TFunction } from 'i18next';
-import { NavLink, useNavigate } from 'react-router-dom';
 import { Drawer, Form } from 'antd';
 import { UserInformation } from './components/UserInformation';
 
@@ -120,16 +118,14 @@ export function AdminUsers() {
       key: 'email',
       width: 250,
       render: (item, record) => (
-        <button 
-        style={{cursor: "pointer", 
-          backgroundColor: "#B0EBB4", 
-          padding: "4px",
-          borderRadius: "5px"
-        }}
-        onClick={() => showDrawer('VIEW', record)} className="email-row">
+        <button
+          style={{ cursor: 'pointer', backgroundColor: '#B0EBB4', padding: '4px', borderRadius: '5px' }}
+          onClick={() => showDrawer('VIEW', record)}
+          className="email-row"
+        >
           {item}
         </button>
-      )
+      ),
     },
     {
       title: t('dateOfBirth'),
@@ -197,13 +193,16 @@ export function AdminUsers() {
       </div>
       <UsersFilter handleFilterChange={handleFilterChange} />
       <Table columns={column} dataSource={users?.data?.items ?? []} />
-      <Pagination
-        total={users?.data?.totalItems}
-        pageSize={users?.data?.itemsPerPage}
-        onChange={handlePaginationChange}
-        hideOnSinglePage={true}
-        current={users?.data?.PageIndex}
-      />
+      {users?.data?.totalPages > 1 && (
+        <Pagination
+          total={users?.data?.totalItems}
+          pageSize={users?.data?.itemsPerPage}
+          onChange={handlePaginationChange}
+          hideOnSinglePage={true}
+          current={users?.data?.PageIndex}
+        />
+      )}
+
       {coniformModal && <ConfirmModal {...coniformModal} />}
       <Drawer width={600} title={t('user-action')} onClose={onClose} open={open.open}>
         <UserInformation

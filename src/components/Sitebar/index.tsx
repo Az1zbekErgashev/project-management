@@ -5,11 +5,11 @@ import { ADMIN_NAVIGATE } from 'utils/consts';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import SvgSelector from 'assets/icons/SvgSelector';
-import { Avatar } from 'antd';
-// import { UserOutlined } from '@ant-design/icons';
+import { Avatar, Dropdown, Menu } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import { useUser } from 'hooks/useUserState';
 import { routes } from 'config/config';
+import { useLanguage } from 'contexts/LanguageContext';
 
 interface props {
   isCollapsed: boolean;
@@ -19,10 +19,25 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
   const { user } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const { changeLanguage, language } = useLanguage();
   const handleLogout = () => {
     Cookies.remove('jwt');
     navigate('/login');
+  };
+
+  const menu = (
+    <Menu style={{ marginTop: '5px' }}>
+      <Menu.Item key="0" onClick={() => handleLanguageChange('0')}>
+        <SvgSelector id="korea" />
+      </Menu.Item>
+      <Menu.Item key="1" onClick={() => handleLanguageChange('1')}>
+        <SvgSelector id="english" />
+      </Menu.Item>
+    </Menu>
+  );
+
+  const handleLanguageChange = (lang: string) => {
+    changeLanguage(lang);
   };
 
   return (
@@ -50,6 +65,18 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
                 </li>
               </NavLink>
             ))}
+            <li className="nav-item translation">
+              <div className="nav-link profile-link">
+                <span className="material-symbols-rounded">
+                  <SvgSelector id="translate" />
+                </span>
+                <span className="nav-label">
+                  <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
+                    <div>{language === '0' ? <SvgSelector id="korea" /> : <SvgSelector id="english" />}</div>
+                  </Dropdown>
+                </span>
+              </div>
+            </li>
           </ul>
           <ul className="nav-list secondary-nav">
             <li className="nav-item">
