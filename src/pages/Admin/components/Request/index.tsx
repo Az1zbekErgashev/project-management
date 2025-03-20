@@ -9,6 +9,7 @@ import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
 import { Drawer, Form } from 'antd';
+import { InputSelection } from './components/InputSelection';
 
 interface queryParamsType {
   PageSize: number;
@@ -62,10 +63,12 @@ export function Request() {
       const a = document.createElement('a');
       a.href = url;
       a.download = `${queryparams.RequestTitle == undefined ? 'All' : queryparams.RequestTitle}.xlsx`;
-      document.body.appendChild(a);
+      document?.body?.appendChild(a);
       a.click();
 
-      document.body.removeChild(a);
+      if (document.body.contains(a)) {
+        document.body.removeChild(a);
+      }
       window.URL.revokeObjectURL(url);
     } catch (error) {
     } finally {
@@ -115,7 +118,11 @@ export function Request() {
         </div>
       )}
 
-      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus}></Drawer>
+      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus}>
+        <Form form={form} layout="vertical">
+          <InputSelection form={form} onClose={onClose} />
+        </Form>
+      </Drawer>
     </StyledRequests>
   );
 }
