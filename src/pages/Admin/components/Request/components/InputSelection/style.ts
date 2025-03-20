@@ -24,4 +24,21 @@ export const StyledInputSelection = styled.div`
     gap: 12px;
     margin-top: 30px !important;
   }
+
+  .category {
+    width: 100%;
+    margin-top: 20px !important;
+    .category_input {
+      margin-top: 20px !important;
+      display: flex;
+      gap: 10px;
+      .ant-form-item {
+        width: 100%;
+      }
+
+      button {
+        margin-top: 30px !important;
+      }
+    }
+  }
 `;

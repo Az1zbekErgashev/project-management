@@ -1,7 +1,7 @@
 import { Form } from 'antd';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Notification } from 'ui';
+import { Button, Input, Notification, Select, SelectOption } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
@@ -25,7 +25,8 @@ interface initalQuery {
 export function InputSelection({ form, onClose }: Props) {
   const { t } = useTranslation();
   const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
-
+  const [newCategory, setNewCategory] = useState<any>('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [disable, setDisable] = useState<boolean>(false);
 
   const { appendData: createData, isLoading } = useQueryApiClient({
@@ -70,6 +71,37 @@ export function InputSelection({ form, onClose }: Props) {
     }
   };
 
+  const { data: categoryData, refetch } = useQueryApiClient({
+    request: {
+      url: '/api/request/category',
+      method: 'GET',
+    },
+  });
+
+  const handleCategoryChange = (value: string | null) => {
+    setSelectedCategory(value);
+    if (value === 'new') {
+      setNewCategory('');
+    }
+  };
+
+  const { appendData } = useQueryApiClient({
+    request: {
+      url: '/api/request/create',
+      method: 'POST',
+    },
+    onSuccess() {
+      refetch();
+      setSelectedCategory(null);
+      setNewCategory('');
+    },
+  });
+
+  const handleNewCategorySubmit = () => {
+    var value = form.getFieldsValue();
+    appendData({ title: value.newRequestStatus });
+  };
+
   return (
     <StyledInputSelection>
       <div className="form-div">
@@ -93,7 +125,36 @@ export function InputSelection({ form, onClose }: Props) {
           <Input name="notes" disabled={disable} label={t('notes')} />
         </div>
       </div>
-      <div className='action-btns'>
+      <div className="category">
+        <Select
+          rules={[{ required: true, message: t('field_is_required') }]}
+          label={t('category')}
+          name="requestStatusId"
+          value={selectedCategory ?? ''}
+          onChange={handleCategoryChange}
+        >
+          {categoryData?.data?.map((item: any) => (
+            <SelectOption value={item.id} key={item.id}>
+              {item.title}
+            </SelectOption>
+          ))}
+          <SelectOption value="new">{t('new_category')}</SelectOption>
+        </Select>
+
+        {selectedCategory === 'new' && (
+          <div className="category_input">
+            <Input
+              rules={[{ required: true, message: t('field_is_required') }]}
+              label={t('new_category')}
+              name="newRequestStatus"
+              onChange={(e) => console.log(form.getFieldsValue())}
+              placeholder={t('enter_category_name')}
+            />
+            <Button onClick={handleNewCategorySubmit} label={t('add')} type="primary" />
+          </div>
+        )}
+      </div>
+      <div className="action-btns">
         <Button label={t('cancel')} />
         <Button label={t('submit')} type="primary" onClick={handleSubmit} loading={isLoading} />
       </div>
