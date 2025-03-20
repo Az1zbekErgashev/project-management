@@ -2,10 +2,8 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Select, SelectOption, Tabs } from 'ui';
+import { Tabs } from 'ui';
 import { RequestItems, RequestModel } from './type';
-import dayjs from 'dayjs';
-import useQueryApiClient from 'utils/useQueryApiClient';
 
 interface props {
   isRequestsLoading: boolean;
@@ -191,6 +189,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
           onChange={handleFilter}
           pagination={false}
           showSorterTooltip={false}
+          scroll={{ x: 'max-content' }}
         />
       ),
     },
@@ -205,6 +204,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
           onChange={handleFilter}
           pagination={false}
           showSorterTooltip={false}
+          scroll={{ x: 'max-content' }}
         />
       ),
     },
@@ -219,14 +219,32 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
           onChange={handleFilter}
           pagination={false}
           showSorterTooltip={false}
+          scroll={{ x: 'max-content' }}
         />
       ),
     },
   ];
 
   const handleTabChange = (key: string) => {
-    if (key === 'Null') setQueryParams((res: any) => ({ ...res, PageIndex: 1, PageSize: 10, RequestStatusId: null }));
-    else setQueryParams((res: any) => ({ ...res, PageIndex: 1, PageSize: 10, RequestStatusId: parseInt(key) }));
+    const selectedTab = items.find((item) => item.key === key);
+    const label = selectedTab ? selectedTab.label : '';
+
+    if (key === 'Null')
+      setQueryParams((res: any) => ({
+        ...res,
+        PageIndex: 1,
+        PageSize: 10,
+        RequestStatusId: null,
+        RequestTitle: undefined,
+      }));
+    else
+      setQueryParams((res: any) => ({
+        ...res,
+        PageIndex: 1,
+        PageSize: 10,
+        RequestStatusId: parseInt(key),
+        RequestTitle: label,
+      }));
   };
 
   return (

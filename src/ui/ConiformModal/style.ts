@@ -27,4 +27,10 @@ export const StyledConiformModal = styled.div`
     justify-content: center;
     gap: 20px;
   }
+
+  .download-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: end;
+  }
 `;
