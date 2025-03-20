@@ -17,7 +17,7 @@ message.config({
 function useHandleError() {
   const { t } = useTranslation();
   const handleError = (data: ErrorProps) => {
-    if (data.global && data.error) {
+    if (data.error) {
       Notification({ type: 'error', text: t(data.error) });
     }
     smoothScroll('top', 0);

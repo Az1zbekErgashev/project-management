@@ -5,7 +5,6 @@ import { Button, Checkbox, DatePicker, Input, Notification, Select, SelectOption
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { StyledActionForm } from './style';
 import { ROLE } from 'utils/consts';
-import { useNavigate, useParams } from 'react-router-dom';
 import { UploadOutlined } from '@ant-design/icons';
 import { defaultImageUrl } from 'utils/consts';
 import { routes } from 'config/config';

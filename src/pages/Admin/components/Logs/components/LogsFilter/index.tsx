@@ -32,12 +32,12 @@ export function LogsFilter({ handleFilterChange }: props) {
         <Select label={t('action')} name="action">
           {actions?.map((item, index) => (
             <SelectOption value={item.id} key={index}>
-              {item.text}
+              {t(item.text)}
             </SelectOption>
           ))}
         </Select>
-        <DatePicker label={t('start_date')} name="startDate" />
-        <DatePicker label={t('start_date')} name="endDate" />
+        <DatePicker label={t('start_date')} name="startDate" placeholder={t('select_date')} />
+        <DatePicker label={t('end_date')} name="endDate" placeholder={t('select_date')} />
       </Form>
     </StyledLogsFilter>
   );

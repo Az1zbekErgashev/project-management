@@ -22,10 +22,11 @@ export const StyledUpload = styled.div`
   }
 
   .upload-box {
+    margin-top: 30px;
     background-color: #f4f4f4;
     border: 2px dashed #ccc;
     height: 150px;
-    width: 150px;
+    width: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,6 +34,8 @@ export const StyledUpload = styled.div`
   }
 
   .close-btn {
+    margin-top: 150px;
     width: 100%;
+    border-radius: 10px;
   }
 `;

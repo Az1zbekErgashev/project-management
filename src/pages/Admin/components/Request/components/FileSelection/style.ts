@@ -17,6 +17,7 @@ export const StyledSelection = styled.div`
 
     .choose-option {
         padding: 10px;
+        font-size: 24px;
     }
 
     .selection-buttons {
@@ -31,6 +32,10 @@ export const StyledSelection = styled.div`
         height: 30;
         border-radius: 10px;
         margin-top: 20px;
+    }
+
+    .upload-btn .ant-btn-icon {
+        padding-left: 10px;
     }
 
     .close-btn {

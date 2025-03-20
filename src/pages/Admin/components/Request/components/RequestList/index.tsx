@@ -165,8 +165,8 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
       ),
     },
     {
-      label: t('for_test'),
-      key: '2',
+      label: t('for_wisestone'),
+      key: '4',
       children: (
         <Table
           columns={columns}
@@ -195,8 +195,8 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
       ),
     },
     {
-      label: t('for_wisestone'),
-      key: '4',
+      label: t('for_test'),
+      key: '2',
       children: (
         <Table
           columns={columns}

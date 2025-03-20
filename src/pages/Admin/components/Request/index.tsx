@@ -21,6 +21,7 @@ export function Request() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
   const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isDownloadOpen, setDownloadOpen] = useState(false);
 
   const {
     data: requests,
@@ -49,7 +50,10 @@ export function Request() {
       <div>
       <div className="header-line">
         <h1 className="global-title">{t('manage_requests')}</h1>
-        <Button label={t('upload')} type="primary" onClick={() => setIsModalVisible(true)} />
+        <div className='upload-download'>
+        <Button className={"down-upload"} label={t('download')} type="primary" onClick={() => setDownloadOpen(true)} />
+        <Button className={"down-upload"} label={t('upload')} type="primary" onClick={() => setIsModalVisible(true)} />
+        </div>
       </div>
 
       <RequestList
