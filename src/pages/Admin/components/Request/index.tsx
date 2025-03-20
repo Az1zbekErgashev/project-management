@@ -23,6 +23,14 @@ export function Request() {
   const [isModalVisible, setIsModalVisible] = useState(false); 
   const [isDownloadOpen, setDownloadOpen] = useState(false);
 
+  const handleDelete = () => {
+    console.log('delete');
+  };
+
+  const handleUpdate = () => {
+    console.log('update');
+  }
+
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -51,8 +59,8 @@ export function Request() {
       <div className="header-line">
         <h1 className="global-title">{t('manage_requests')}</h1>
         <div className='upload-download'>
-        <Button className={"down-upload"} label={t('download')} type="primary" onClick={() => setDownloadOpen(true)} />
-        <Button className={"down-upload"} label={t('upload')} type="primary" onClick={() => setIsModalVisible(true)} />
+        <Button className={"down-upload"} label={t('download')} type="primary" onClick={handleDelete} />
+        <Button className={"down-upload"} label={t('upload')} type="primary" onClick={handleUpdate} />
         </div>
       </div>
 

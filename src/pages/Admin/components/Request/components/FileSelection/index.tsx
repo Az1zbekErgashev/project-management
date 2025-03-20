@@ -21,7 +21,6 @@ const Selection: React.FC<SelectionModalProps> = ({ onClose }) => {
   const [isClosed, setIsClosed] = useState(false);
   const [form] = Form.useForm();
 
-
   return (
     <StyledSelection>
       <div className="upload-container">

@@ -119,7 +119,7 @@ export function AdminUsers() {
       width: 250,
       render: (item, record) => (
         <button
-          style={{ cursor: 'pointer', backgroundColor: '#B0EBB4', padding: '4px', borderRadius: '5px' }}
+          style={{ cursor: 'pointer', backgroundColor: '#B0EBB4',  padding: '4px', borderRadius: '5px' }}
           onClick={() => showDrawer('VIEW', record)}
           className="email-row"
         >
