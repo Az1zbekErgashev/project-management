@@ -12,12 +12,6 @@ export const StyledRequests = styled.div`
     display: flex;
     gap: 10px;
   }
-
-  .down-upload {
-    margin-right: 10px;
-    border-radius: 10px;
-  }
-
   .spinnig-wrrap {
     position: absolute;
     top: 0;

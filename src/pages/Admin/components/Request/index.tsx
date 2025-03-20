@@ -8,6 +8,7 @@ import { Button, Spinner } from 'ui';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
+import { Drawer, Form } from 'antd';
 
 interface queryParamsType {
   PageSize: number;
@@ -22,6 +23,9 @@ export function Request() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
   const [isFileLoading, setIsFileLoading] = useState(false);
+  const [drawerStatus, setDrawerStatus] = useState<boolean>(false);
+  const [form] = Form.useForm();
+
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -68,6 +72,12 @@ export function Request() {
       setIsFileLoading(false);
     }
   };
+
+  const onClose = async () => {
+    setDrawerStatus(false);
+    form.resetFields();
+  };
+
   return (
     <StyledRequests>
       {!isFileLoading ? (
@@ -76,7 +86,12 @@ export function Request() {
             <h1 className="global-title">{t('manage_requests')}</h1>
             <div className="upload-download">
               <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
-              <Button className={'down-upload'} label={t('add_new_request')} type="primary" />
+              <Button
+                className={'down-upload'}
+                label={t('add_new_request')}
+                type="primary"
+                onClick={() => setDrawerStatus(true)}
+              />
             </div>
           </div>
 
@@ -99,6 +114,8 @@ export function Request() {
           <Spinner spinning={true} />
         </div>
       )}
+
+      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus}></Drawer>
     </StyledRequests>
   );
 }
