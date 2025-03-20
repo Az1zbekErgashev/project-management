@@ -9,15 +9,10 @@ export const StyledLoginPage = styled.div`
     height: 100%; 
     overflow: hidden;
     position: relative;
-    /* background-color: green; */
 
     img {
       width: 100%;
       max-height: 100%;
-      transition: transform 0.8s ease-in-out;
-      &:hover {
-        transform: scale(1.1);
-      }
     }
   }
 
@@ -75,7 +70,6 @@ export const StyledLoginPage = styled.div`
     }
   }
 
-  /* Animation keyframes */
   @keyframes slideIn {
     from {
       opacity: 0;

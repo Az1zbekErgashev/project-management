@@ -4,6 +4,10 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
+import { Modal, Button } from 'ui';
+import UploadModal from './components/Upload/upload';
+import Selection from './components/FileSelection';
+import { StyledRequests } from './style';
 
 interface queryParamsType {
   PageSize: number;
@@ -16,6 +20,9 @@ interface queryParamsType {
 export function Request() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isDownloadOpen, setDownloadOpen] = useState(false);
+
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -37,16 +44,24 @@ export function Request() {
   useEffect(() => {
     postRequest(queryparams);
   }, [queryparams]);
+
   return (
-    <div>
+    <StyledRequests>
+      <div>
       <div className="header-line">
         <h1 className="global-title">{t('manage_requests')}</h1>
+        <div className='upload-download'>
+        <Button className={"down-upload"} label={t('download')} type="primary" onClick={() => setDownloadOpen(true)} />
+        <Button className={"down-upload"} label={t('upload')} type="primary" onClick={() => setIsModalVisible(true)} />
+        </div>
       </div>
+
       <RequestList
         setQueryParams={setQueryParams}
         requests={requests?.data || []}
         isRequestsLoading={isRequestsLoading}
       />
+
       <Pagination
         total={requests?.data?.totalItems}
         pageSize={requests?.data?.itemsPerPage}
@@ -54,6 +69,16 @@ export function Request() {
         hideOnSinglePage={true}
         current={requests?.data?.PageIndex}
       />
+
+      <Modal
+        open={isModalVisible} 
+        onCancel={() => setIsModalVisible(false)}
+        footer={null}
+        width={600}
+      >
+        <Selection onClose={() => setIsModalVisible(false)} />
+      </Modal>
     </div>
+    </StyledRequests>
   );
 }
