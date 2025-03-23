@@ -4,7 +4,7 @@ import { Form } from 'antd';
 import { ProfileActionForm } from './components/ProfileActionForm';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
-import { Button } from 'ui';
+import { Button, ScrollUpButton } from 'ui';
 import { useTranslation } from 'react-i18next';
 
 export function Profile() {

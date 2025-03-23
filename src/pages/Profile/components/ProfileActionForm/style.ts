@@ -11,11 +11,12 @@ export const StyledProfileActionForm = styled.div`
       border-radius: 18px;
       border: 1px solid var(--base-color);
       height: 33px !important;
-      max-width: 150px;
+      max-width: 200px;
       justify-content: center;
       display: flex;
       align-items: center;
       margin-top: 20px !important;
+      color: white;
     }
     .ant-upload {
       color: var(--base-color);
@@ -32,21 +33,24 @@ export const StyledProfileActionForm = styled.div`
   .upload_wrapper {
     display: flex;
     justify-content: space-between;
+    padding: 20px;
     .form-wrapper {
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 30px;
       color: var(--gray-text);
     }
 
     .image-side {
       width: 300px;
       height: 300px;
+      border-radius: 50%;
       position: relative;
     }
 
     .ant-image-img {
       width: 300px;
+      border-radius: 50%;
     }
 
     .upload_settings {
@@ -85,7 +89,8 @@ export const StyledProfileActionForm = styled.div`
 
   .flex {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    padding: 20px;
     gap: 20px;
 
     .ant-form-item {
@@ -101,5 +106,11 @@ export const StyledProfileActionForm = styled.div`
 
   .password-item {
     width: 100%;
+  }
+
+  .right-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
   }
 `;

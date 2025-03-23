@@ -196,6 +196,12 @@ export function ProfileActionForm({
       </div>
       <div className="right-layout">
         <div className="flex">
+        <Input
+            name="name"
+            disabled={disable}
+            rules={[{ required: true, message: t('field_is_required') }]}
+            label={t('name')}
+          />
           <Input
             rules={[
               { required: true, message: t('field_is_required') },
@@ -211,12 +217,6 @@ export function ProfileActionForm({
             disabled={disable}
           />
 
-          <Input
-            name="name"
-            disabled={disable}
-            rules={[{ required: true, message: t('field_is_required') }]}
-            label={t('name')}
-          />
         </div>
         <div className="flex">
           <Input
