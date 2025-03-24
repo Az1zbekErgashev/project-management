@@ -60,6 +60,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       filters: generateFilters('date'),
       filterSearch: true,
       fixed: 'left',
+      render: (_, record) => (record.date ? dayjs(record.date).format('DD.MM.YYYY') : null),
     },
     {
       title: t('inquiry_type'),
