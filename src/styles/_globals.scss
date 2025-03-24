@@ -264,3 +264,13 @@ tbody {
 .ant-picker-content {
   border: none !important;
 }
+
+.select {
+  .ant-form-item-control-input {
+    margin-top: 2px !important;
+  }
+
+  .ant-select-selector {
+    height: 50px !important;
+  }
+}

@@ -24,7 +24,7 @@ export function LoginPage() {
     onSuccess(response) {
       set(response.data.token, 86400);
       setUser(response.data);
-      if (response.data.role === 1) navigate('/users', { replace: true });
+      if (response.data.role === 'Employees') navigate('/users', { replace: true });
     },
     onError() {
       form.setFields([

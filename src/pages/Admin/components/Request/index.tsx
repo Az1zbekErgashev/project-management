@@ -4,12 +4,14 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
-import { Button, Spinner } from 'ui';
+import { Button, ConfirmModal, Spinner, Notification } from 'ui';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
 import { Drawer, Form } from 'antd';
 import { InputSelection } from './components/InputSelection';
+import { RequestModel } from './components/RequestList/type';
+import { TFunction } from 'i18next';
 
 interface queryParamsType {
   PageSize: number;
@@ -20,17 +22,41 @@ interface queryParamsType {
   RequestTitle?: string;
 }
 
+const createModalConfig = (
+  t: TFunction,
+  isDelete: 'DELETE' | 'RECOVER',
+  onConfirm: () => void,
+  onCancel: () => void
+) => ({
+  isDelete,
+  cancelText: t('cancel'),
+  confirmText: t(isDelete === 'DELETE' ? 'delete_request' : 'recover_request'),
+  title: t(isDelete === 'DELETE' ? 'delete_request_title' : 'recover_request_title'),
+  content: t(isDelete === 'DELETE' ? 'delete_request_description' : 'recover_request_description'),
+  open: true,
+  onConfirm,
+  onCancel,
+});
+
 export function Request() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
   const [isFileLoading, setIsFileLoading] = useState(false);
-  const [drawerStatus, setDrawerStatus] = useState<boolean>(false);
+  const [coniformModal, setConiformModal] = useState<any>(null);
+  const [requestId, setRequestId] = useState<{ type: 'DELETE' | 'RECOVER'; id: number } | null>(null);
+  const [drawerStatus, setDrawerStatus] = useState<{
+    status: boolean;
+    type: 'VIEW' | 'EDIT' | 'ADD';
+    request?: RequestModel;
+    sequence?: number;
+  }>({ status: false, type: 'ADD' });
   const [form] = Form.useForm();
 
   const {
     data: requests,
     isLoading: isRequestsLoading,
     appendData: postRequest,
+    refetch: getRequests,
   } = useQueryApiClient({
     request: {
       url: '/api/request/requets',
@@ -77,9 +103,52 @@ export function Request() {
   };
 
   const onClose = async () => {
-    setDrawerStatus(false);
+    setDrawerStatus({ status: false, type: 'ADD' });
     form.resetFields();
   };
+
+  const { data: categories } = useQueryApiClient({
+    request: {
+      url: '/api/request/category',
+      method: 'GET',
+    },
+  });
+
+  const { refetch: requestDelete } = useQueryApiClient({
+    request: {
+      url: `${
+        requestId?.type == 'RECOVER' ? '/api/request/recover-request' : '/api/request/delete-request'
+      }?id=${requestId?.id}`,
+      method: requestId?.type == 'RECOVER' ? 'PUT' : 'DELETE',
+    },
+    onSuccess() {
+      Notification({ text: t('requestDeleted'), type: 'success' });
+      getRequests();
+      onClose();
+      setConiformModal(null);
+    },
+  });
+
+  const handleDelete = (id: number, type: 'DELETE' | 'RECOVER') => {
+    setConiformModal(
+      createModalConfig(
+        t,
+        type,
+        () => {
+          setRequestId({ type: type, id: id });
+        },
+        () => {
+          setConiformModal(null);
+        }
+      )
+    );
+  };
+
+  useEffect(() => {
+    if (requestId?.id) {
+      requestDelete();
+    }
+  }, [requestId]);
 
   return (
     <StyledRequests>
@@ -93,7 +162,7 @@ export function Request() {
                 className={'down-upload'}
                 label={t('add_new_request')}
                 type="primary"
-                onClick={() => setDrawerStatus(true)}
+                onClick={() => setDrawerStatus({ status: true, type: 'ADD' })}
               />
             </div>
           </div>
@@ -101,7 +170,9 @@ export function Request() {
           <RequestList
             setQueryParams={setQueryParams}
             requests={requests?.data || []}
+            categories={categories?.data || []}
             isRequestsLoading={isRequestsLoading}
+            setDrawerStatus={setDrawerStatus}
           />
 
           <Pagination
@@ -118,11 +189,20 @@ export function Request() {
         </div>
       )}
 
-      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus}>
+      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus.status}>
         <Form form={form} layout="vertical">
-          <InputSelection form={form} onClose={onClose} />
+          <InputSelection
+            setDrawerStatus={setDrawerStatus}
+            handleDelete={handleDelete}
+            drawerStatus={drawerStatus}
+            getRequests={getRequests}
+            form={form}
+            onClose={onClose}
+          />
         </Form>
       </Drawer>
+
+      {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequests>
   );
 }

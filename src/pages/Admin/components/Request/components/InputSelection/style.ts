@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 
 export const StyledInputSelection = styled.div`
+  .title {
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+      font-weight: 700;
+    }
+  }
   .form-div {
     display: flex;
     justify-content: space-around;
@@ -23,5 +31,32 @@ export const StyledInputSelection = styled.div`
     align-items: center;
     gap: 12px;
     margin-top: 30px !important;
+  }
+
+  .category {
+    width: 100%;
+    margin-top: 20px !important;
+    .category_input {
+      margin-top: 20px !important;
+      display: flex;
+      gap: 10px;
+      .ant-form-item {
+        width: 100%;
+      }
+
+      button {
+        margin-top: 30px !important;
+      }
+    }
+  }
+
+  .date-picker {
+    height: 77px;
+    display: flex;
+    align-items: center;
+
+    .ant-form-item {
+      width: 100%;
+    }
   }
 `;

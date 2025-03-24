@@ -1,17 +1,28 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import { Tabs } from 'ui';
 import { RequestItems, RequestModel } from './type';
+import dayjs from 'dayjs';
+import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
 
 interface props {
   isRequestsLoading: boolean;
   requests: RequestItems;
   setQueryParams: any;
+  categories: { id: number; title: string }[];
+  setDrawerStatus: React.Dispatch<
+    React.SetStateAction<{
+      status: boolean;
+      type: 'VIEW' | 'EDIT' | 'ADD';
+      request?: RequestModel;
+      sequence?: number;
+    }>
+  >;
 }
 
-export function RequestList({ isRequestsLoading, requests, setQueryParams }: props) {
+export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: props) {
   const { t } = useTranslation();
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
@@ -49,6 +60,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
       filters: generateFilters('date'),
       filterSearch: true,
       fixed: 'left',
+      render: (_, record) => (record.date ? dayjs(record.date).format('DD.MM.YYYY') : null),
     },
     {
       title: t('inquiry_type'),
@@ -144,6 +156,40 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
       filters: generateFilters('notes'),
       filterSearch: true,
     },
+    {
+      title: t('status'),
+      dataIndex: 'status',
+      key: 'status',
+      filters: generateFilters('status'),
+      filterSearch: true,
+      render: (_, record) =>
+        PROJECT_STATUS?.map((item, index) => {
+          if (item.text.toLowerCase() === record?.status?.toLowerCase())
+            return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
+          return null;
+        }),
+    },
+    {
+      title: t('priority'),
+      dataIndex: 'priority',
+      key: 'priority',
+      filters: generateFilters('priority'),
+      filterSearch: true,
+      render: (_, record) =>
+        PRIORITY?.map((item, index) => {
+          if (item.text.toLowerCase() === record?.priority?.toLowerCase())
+            return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
+          return null;
+        }),
+    },
+    {
+      title: t('deadline'),
+      dataIndex: 'deadline',
+      key: 'deadline',
+      filters: generateFilters('deadline'),
+      filterSearch: true,
+      render: (_, record) => (record.deadline ? dayjs(record.deadline).diff(dayjs(record.createdAt), 'day') : null),
+    },
   ];
 
   const items = [
@@ -159,12 +205,22 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
           scroll={{ x: 'max-content' }}
           pagination={false}
           showSorterTooltip={false}
+          onRow={(record, row) => ({
+            onClick: () => {
+              setDrawerStatus({
+                request: record,
+                status: true,
+                type: 'VIEW',
+                sequence: row != undefined ? row + 1 : 0,
+              });
+            },
+          })}
         />
       ),
     },
-    {
-      label: t('for_wisestone'),
-      key: '4',
+    ...(categories?.map((category) => ({
+      label: t(category.title),
+      key: category.id.toString(),
       children: (
         <Table
           columns={columns}
@@ -174,55 +230,14 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: pro
           scroll={{ x: 'max-content' }}
           pagination={false}
           showSorterTooltip={false}
-          tableLayout="fixed"
+          onRow={(record) => ({
+            onClick: () => {
+              setDrawerStatus({ request: record, status: true, type: 'VIEW' });
+            },
+          })}
         />
       ),
-    },
-    {
-      label: t('for_ict'),
-      key: '1',
-      children: (
-        <Table
-          columns={columns}
-          loading={isRequestsLoading}
-          dataSource={requests?.items || []}
-          onChange={handleFilter}
-          pagination={false}
-          showSorterTooltip={false}
-          scroll={{ x: 'max-content' }}
-        />
-      ),
-    },
-    {
-      label: t('for_test'),
-      key: '2',
-      children: (
-        <Table
-          columns={columns}
-          loading={isRequestsLoading}
-          dataSource={requests?.items || []}
-          onChange={handleFilter}
-          pagination={false}
-          showSorterTooltip={false}
-          scroll={{ x: 'max-content' }}
-        />
-      ),
-    },
-    {
-      label: t('for_marketing'),
-      key: '3',
-      children: (
-        <Table
-          columns={columns}
-          loading={isRequestsLoading}
-          dataSource={requests?.items || []}
-          onChange={handleFilter}
-          pagination={false}
-          showSorterTooltip={false}
-          scroll={{ x: 'max-content' }}
-        />
-      ),
-    },
+    })) || []),
   ];
 
   const handleTabChange = (key: string) => {
