@@ -1,6 +1,14 @@
 import styled from 'styled-components';
 
 export const StyledInputSelection = styled.div`
+  .title {
+    display: flex;
+    justify-content: space-between;
+
+    h1 {
+      font-weight: 700;
+    }
+  }
   .form-div {
     display: flex;
     justify-content: space-around;

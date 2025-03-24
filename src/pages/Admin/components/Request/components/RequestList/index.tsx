@@ -17,6 +17,7 @@ interface props {
       status: boolean;
       type: 'VIEW' | 'EDIT' | 'ADD';
       request?: RequestModel;
+      sequence?: number;
     }>
   >;
 }
@@ -203,9 +204,14 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
           scroll={{ x: 'max-content' }}
           pagination={false}
           showSorterTooltip={false}
-          onRow={(record) => ({
+          onRow={(record, row) => ({
             onClick: () => {
-              setDrawerStatus({ request: record, status: true, type: 'VIEW' });
+              setDrawerStatus({
+                request: record,
+                status: true,
+                type: 'VIEW',
+                sequence: row != undefined ? row + 1 : 0,
+              });
             },
           })}
         />

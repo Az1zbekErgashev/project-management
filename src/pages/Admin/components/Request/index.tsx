@@ -48,6 +48,7 @@ export function Request() {
     status: boolean;
     type: 'VIEW' | 'EDIT' | 'ADD';
     request?: RequestModel;
+    sequence?: number;
   }>({ status: false, type: 'ADD' });
   const [form] = Form.useForm();
 
@@ -123,7 +124,7 @@ export function Request() {
     onSuccess() {
       Notification({ text: t('requestDeleted'), type: 'success' });
       getRequests();
-      setDrawerStatus({ status: false, type: 'ADD' });
+      onClose();
       setConiformModal(null);
     },
   });
@@ -191,6 +192,7 @@ export function Request() {
       <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus.status}>
         <Form form={form} layout="vertical">
           <InputSelection
+            setDrawerStatus={setDrawerStatus}
             handleDelete={handleDelete}
             drawerStatus={drawerStatus}
             getRequests={getRequests}

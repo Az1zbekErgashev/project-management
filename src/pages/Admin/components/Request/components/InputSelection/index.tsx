@@ -8,6 +8,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 import dayjs from 'dayjs';
+import SvgSelector from 'assets/icons/SvgSelector';
 
 interface Props {
   form: FormInstance;
@@ -17,24 +18,40 @@ interface Props {
     status: boolean;
     type: 'VIEW' | 'EDIT' | 'ADD';
     request?: RequestModel;
+    sequence?: number;
   };
   handleDelete: (id: number, type: 'DELETE' | 'RECOVER') => void;
+  setDrawerStatus: React.Dispatch<
+    React.SetStateAction<{
+      status: boolean;
+      type: 'VIEW' | 'EDIT' | 'ADD';
+      request?: RequestModel;
+      sequence?: number;
+    }>
+  >;
 }
 
-export function InputSelection({ form, onClose, getRequests, drawerStatus, handleDelete }: Props) {
+export function InputSelection({ form, onClose, getRequests, drawerStatus, handleDelete, setDrawerStatus }: Props) {
   const { t } = useTranslation();
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [disable, setDisable] = useState<boolean>(false);
 
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
-      url: '/api/request/create-request',
-      method: 'POST',
+      url:
+        drawerStatus.type == 'EDIT'
+          ? `api/request/update-request?id=${drawerStatus.request?.id}`
+          : '/api/request/create-request',
+      method: drawerStatus.type == 'EDIT' ? 'PUT' : 'POST',
       multipart: false,
     },
     onSuccess() {
       getRequests();
-      Notification({ text: t('input_created_success'), type: 'success' });
+      if (drawerStatus.type == 'EDIT') {
+        Notification({ text: t('request_created_success'), type: 'success' });
+      } else {
+        Notification({ text: t('request_updated_success'), type: 'success' });
+      }
       onClose();
       form.resetFields();
     },
@@ -43,18 +60,17 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     },
   });
 
-  console.log(drawerStatus);
-
   const handleSubmit = async () => {
-    try {
-      console.log('working handle submit');
-      // const values = await form.validateFields();
-      const values = form.getFieldsValue();
-      console.log('values', values);
-      createData({ ...values });
-    } catch (error) {
-      console.error('Validation Failed:', error);
-    }
+    form
+      .validateFields()
+      .then((res) => {
+        res.date = res.date !== null ? dayjs(res.date) : null;
+        res.deadline = res.deadline !== null ? dayjs(res.deadline) : null;
+        createData(res);
+      })
+      .catch(() => {
+        return;
+      });
   };
 
   const { data: categoryData, refetch } = useQueryApiClient({
@@ -108,8 +124,21 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     }
   };
 
+  const handleUpdate = () => {
+    setDrawerStatus((prev) => ({
+      ...prev,
+      type: 'EDIT',
+      user: prev.request,
+    }));
+    setDisable(false);
+  };
+
   return (
     <StyledInputSelection>
+      <div className="title">
+        <h1>{t('request_id').replace('id', drawerStatus.sequence?.toString() || '0')}</h1>
+        <Button icon={<SvgSelector id="edit" />} onClick={handleUpdate} />
+      </div>
       <div className="form-div">
         <div className="form-content">
           <div className="date-picker">
