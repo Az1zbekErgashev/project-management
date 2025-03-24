@@ -25,8 +25,7 @@ export const StyledProfileActionForm = styled.div`
     }
   }
 
-  .right-layout,
-  .left-layout {
+  .right-layout .left-layout {
     width: 100%;
   }
 
@@ -73,14 +72,14 @@ export const StyledProfileActionForm = styled.div`
     top: 5px;
     border: 1px solid white;
     border-radius: 100%;
-    background: white;
+    background: #F8C4B4;
     display: flex;
     align-items: center;
-    padding: 2px;
+    padding: 10px;
 
     svg {
-      width: 15px;
-      height: 15px;
+      width: 20px;
+      height: 20px;
       path {
         fill: var(--ant-reqired-label-color);
       }

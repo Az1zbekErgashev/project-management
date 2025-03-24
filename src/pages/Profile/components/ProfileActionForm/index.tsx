@@ -199,19 +199,19 @@ export function ProfileActionForm({
         <Input
             name="name"
             disabled={disable}
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('name')}
           />
           <Input
             rules={[
-              { required: true, message: t('field_is_required') },
+              { required: false, message: t('field_is_required') },
               {
                 type: 'email',
                 message: t('emailIsNotValid'),
               },
             ]}
             label={t('email')}
-            placeholder="exaple@gmail.com"
+            placeholder="example@gmail.com"
             name="email"
             type="email"
             disabled={disable}
@@ -222,13 +222,13 @@ export function ProfileActionForm({
           <Input
             name="surname"
             disabled={disable}
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('surname')}
           />
           <div className="password-item">
             <Input
               name="password"
-              rules={[{ required: actionForm.type == 'EDIT' ? passwordStatus : true, message: t('field_is_required') }]}
+              rules={[{ required: actionForm.type == 'EDIT' ? passwordStatus : false, message: t('field_is_required') }]}
               label={t('password')}
               type="password"
               disabled={!passwordStatus}
@@ -245,14 +245,14 @@ export function ProfileActionForm({
         <div className="flex">
           <Input
             name="phoneNumber"
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('phone_number')}
             disabled={disable}
           />
           <Select
             loading={isCountryLoading}
             name="countryId"
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('country')}
             disabled={disable}
           >
