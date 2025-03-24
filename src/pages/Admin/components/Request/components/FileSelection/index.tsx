@@ -3,11 +3,9 @@ import { useTranslation } from 'react-i18next';
 import { Button, Modal } from 'ui';
 import { Drawer, Form } from 'antd';
 import UploadModal from '../Upload/upload';
-import { StyledSelection } from './style';
-import form from 'antd/es/form';
 import { UploadOutlined } from '@ant-design/icons';
 import { InputSelection } from '../InputSelection';
-import { on } from 'events';
+import { StyledSelection } from './style';
 
 
 interface SelectionModalProps {

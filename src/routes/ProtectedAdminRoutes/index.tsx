@@ -20,7 +20,7 @@ const ProtectedAdminRoute = ({ children }: ProtectedAdminRouteProps) => {
       return <Navigate to="/login" />;
     }
   } else {
-    return <Navigate to="/login" />;
+    return <Navigate to="/" />;
   }
 
   if (

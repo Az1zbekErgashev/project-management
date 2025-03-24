@@ -4,10 +4,12 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
-import { Modal, Button } from 'ui';
-import UploadModal from './components/Upload/upload';
-import Selection from './components/FileSelection';
+import { Button, Spinner } from 'ui';
 import { StyledRequests } from './style';
+import axios from 'axios';
+import { routes } from 'config/config';
+import { Drawer, Form } from 'antd';
+import { InputSelection } from './components/InputSelection';
 
 interface queryParamsType {
   PageSize: number;
@@ -15,13 +17,15 @@ interface queryParamsType {
   RequestStatusId?: number;
   Date?: string[];
   ClientCompany?: string[];
+  RequestTitle?: string;
 }
 
 export function Request() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [isDownloadOpen, setDownloadOpen] = useState(false);
+  const [isFileLoading, setIsFileLoading] = useState(false);
+  const [drawerStatus, setDrawerStatus] = useState<boolean>(false);
+  const [form] = Form.useForm();
 
   const handleDelete = () => {
     console.log('delete');
@@ -53,40 +57,89 @@ export function Request() {
     postRequest(queryparams);
   }, [queryparams]);
 
+  const handleDownload = async () => {
+    setIsFileLoading(true);
+
+    try {
+      const response = await axios.get(`${routes.api.baseUrl}/api/request/export-excel`, {
+        params: { requestCategoryId: queryparams.RequestStatusId },
+        responseType: 'blob',
+      });
+
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${queryparams.RequestTitle == undefined ? 'All' : queryparams.RequestTitle}.xlsx`;
+      document?.body?.appendChild(a);
+      a.click();
+
+      if (document.body.contains(a)) {
+        document.body.removeChild(a);
+      }
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+    } finally {
+      setIsFileLoading(false);
+    }
+  };
+
+  const onClose = async () => {
+    setDrawerStatus(false);
+    form.resetFields();
+  };
+
   return (
     <StyledRequests>
+<<<<<<< HEAD
       <div>
       <div className="header-line">
         <h1 className="global-title">{t('manage_requests')}</h1>
         <div className='upload-download'>
         <Button className={"down-upload"} label={t('download')} type="primary" onClick={handleDelete} />
         <Button className={"down-upload"} label={t('upload')} type="primary" onClick={handleUpdate} />
+=======
+      {!isFileLoading ? (
+        <React.Fragment>
+          <div className="header-line">
+            <h1 className="global-title">{t('manage_requests')}</h1>
+            <div className="upload-download">
+              <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
+              <Button
+                className={'down-upload'}
+                label={t('add_new_request')}
+                type="primary"
+                onClick={() => setDrawerStatus(true)}
+              />
+            </div>
+          </div>
+
+          <RequestList
+            setQueryParams={setQueryParams}
+            requests={requests?.data || []}
+            isRequestsLoading={isRequestsLoading}
+          />
+
+          <Pagination
+            total={requests?.data?.totalItems}
+            pageSize={requests?.data?.itemsPerPage}
+            onChange={handlePaginationChange}
+            hideOnSinglePage={true}
+            current={requests?.data?.PageIndex}
+          />
+        </React.Fragment>
+      ) : (
+        <div className="spinnig-wrrap">
+          <Spinner spinning={true} />
+>>>>>>> profile
         </div>
-      </div>
+      )}
 
-      <RequestList
-        setQueryParams={setQueryParams}
-        requests={requests?.data || []}
-        isRequestsLoading={isRequestsLoading}
-      />
-
-      <Pagination
-        total={requests?.data?.totalItems}
-        pageSize={requests?.data?.itemsPerPage}
-        onChange={handlePaginationChange}
-        hideOnSinglePage={true}
-        current={requests?.data?.PageIndex}
-      />
-
-      <Modal
-        open={isModalVisible} 
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
-        width={600}
-      >
-        <Selection onClose={() => setIsModalVisible(false)} />
-      </Modal>
-    </div>
+      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus}>
+        <Form form={form} layout="vertical">
+          <InputSelection form={form} onClose={onClose} />
+        </Form>
+      </Drawer>
     </StyledRequests>
   );
 }

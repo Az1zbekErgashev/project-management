@@ -43,11 +43,11 @@ export function AdminUsers() {
   const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [userId, setUserId] = useState<number | null>(null);
-  const [open, setOpen] = useState<{ open: boolean; type: 'VIEW' | 'ADD' | 'EDIT'; user: any }>({
-    open: false,
+  const [open, setOpen] = useState<{ type: 'VIEW' | 'ADD' | 'EDIT'; user: any }>({
     type: 'ADD',
     user: null,
   });
+  const [drawerStatus, setDrawerStatus] = useState<boolean>(false);
   const [form] = Form.useForm();
 
   const handleDelete = (id: number, type: 'DELETE' | 'RECOVER') => {
@@ -176,13 +176,18 @@ export function AdminUsers() {
   }, [queryParams]);
 
   const showDrawer = (type: 'ADD' | 'VIEW', record: any) => {
-    if (type === 'ADD') setOpen({ open: true, type: type, user: null });
-    else setOpen({ open: true, type: type, user: record });
+    if (type === 'ADD') {
+      setDrawerStatus(true);
+      setOpen({ type: type, user: null });
+    } else {
+      setDrawerStatus(true);
+      setOpen({ type: type, user: record });
+    }
   };
 
-  const onClose = () => {
+  const onClose = async () => {
+    setDrawerStatus(false);
     form.resetFields();
-    setOpen({ open: false, type: 'VIEW', user: null });
   };
 
   return (
@@ -204,7 +209,7 @@ export function AdminUsers() {
       )}
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
-      <Drawer width={600} title={t('user-action')} onClose={onClose} open={open.open}>
+      <Drawer width={600} title={t('user-action')} onClose={onClose} open={drawerStatus}>
         <UserInformation
           getUsers={getUsers}
           handleDelete={handleDelete}

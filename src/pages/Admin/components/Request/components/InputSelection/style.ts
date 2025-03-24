@@ -1,24 +1,27 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const StyledInputSelection = styled.div`
-    .form-div {
-        display: flex;
-        justify-content: space-around
-    }
+  .form-div {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+  }
 
-    .input-div {
-        width: 100%;
-    }
+  .input-div {
+    width: 100%;
+  }
 
-    .form-content {
-        width: 400px;
-    }
+  .form-content {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+  }
 
-    .submit-button {
-        background-color: lightblue;
-        margin-top: 20px;
-        margin-left: 37px;
-        border-radius: 10px;
-
-    }
+  .action-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 30px !important;
+  }
 `;

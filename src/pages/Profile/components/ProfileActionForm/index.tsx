@@ -1,65 +1,40 @@
-import { Form, Image } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import { StyledProfileActionForm } from './style';
+import { Input, Select, Upload, Notification, Checkbox, DatePicker, SelectOption } from 'ui';
+import { Image } from 'antd';
 import { useTranslation } from 'react-i18next';
-import { Button, Checkbox, DatePicker, Input, Notification, Select, SelectOption, Upload } from 'ui';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import { StyledActionForm } from './style';
-import { ROLE } from 'utils/consts';
-import { UploadOutlined } from '@ant-design/icons';
 import { defaultImageUrl } from 'utils/consts';
-import { routes } from 'config/config';
 import SvgSelector from 'assets/icons/SvgSelector';
-import { FormInstance } from 'antd/lib';
-import dayjs from 'dayjs';
-import { useUser } from 'hooks/useUserState';
+import { routes } from 'config/config';
+import { UploadOutlined } from '@ant-design/icons';
 
 interface props {
-  open: { type: 'VIEW' | 'ADD' | 'EDIT'; user: any };
-  setOpen: React.Dispatch<
+  actionForm: { type: 'VIEW' | 'EDIT' };
+  setActionForm: React.Dispatch<
     React.SetStateAction<{
-      type: 'VIEW' | 'ADD' | 'EDIT';
-      user: any;
+      type: 'VIEW' | 'EDIT';
     }>
   >;
-  onClose: () => void;
-  form: FormInstance;
-  handleDelete: (id: number, type: 'DELETE' | 'RECOVER') => void;
-  getUsers: () => void;
+  image: { img: File | null; path: string | null; type: 'ADD' | 'DELETE' } | undefined;
+  setImage: React.Dispatch<
+    React.SetStateAction<{ img: File | null; path: string | null; type: 'ADD' | 'DELETE' } | undefined>
+  >;
+  passwordStatus: boolean;
+  setPasswordStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function UserInformation({ open, setOpen, onClose, form, handleDelete, getUsers }: props) {
-  const [image, setImage] = useState<{ img: File | null; path: string | null; type: 'ADD' | 'DELETE' }>();
+export function ProfileActionForm({
+  actionForm,
+  setActionForm,
+  image,
+  passwordStatus,
+  setImage,
+  setPasswordStatus,
+}: props) {
   const { t } = useTranslation();
-  const { user } = useUser();
-  const [passwordStatus, setPasswordStatus] = useState(false);
 
   const [disable, setDisable] = useState<boolean>(false);
-
-  const { appendData: createuser } = useQueryApiClient({
-    request: {
-      url: '/api/user/create-new-user',
-      method: 'POST',
-      multipart: true,
-    },
-    onSuccess() {
-      Notification({ text: t('user_created_success'), type: 'success' });
-      getUsers();
-      onClose();
-    },
-  });
-
-  const { appendData: updateuser } = useQueryApiClient({
-    request: {
-      url: '/api/user/update',
-      method: 'PATCH',
-      multipart: true,
-    },
-    onSuccess() {
-      Notification({ text: t('user_updated_success'), type: 'success' });
-      getUsers();
-      onClose();
-    },
-  });
 
   const { data: country, isLoading: isCountryLoading } = useQueryApiClient({
     request: {
@@ -156,7 +131,7 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
           canvas.toBlob((blob) => {
             if (blob) {
               const newFile = new File([blob], file.name, { type: 'image/png' });
-              setImage({ img: newFile, path: null, type: 'ADD' });
+              setImage && setImage({ img: newFile, path: null, type: 'ADD' });
             } else {
               Notification({ type: 'error', text: t('CreateCvNotificationAvatarUploadError') });
             }
@@ -183,65 +158,11 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
   };
 
   const handleClearImage = () => {
-    setImage({ img: null, path: null, type: 'DELETE' });
+    setImage && setImage({ img: null, path: null, type: 'DELETE' });
   };
-
-  useEffect(() => {
-    if (open.type == 'VIEW') {
-      setDisable(true);
-      form.setFieldsValue({
-        ...open.user,
-        countryId: open?.user?.country?.id,
-        dateOfBirth: open?.user?.dateOfBirth && dayjs(open.user.dateOfBirth),
-        role: open?.user?.roleId,
-      });
-      setImage({ img: null, path: open?.user?.image?.path, type: 'ADD' });
-    } else {
-      setDisable(false);
-    }
-  }, [open]);
-
-  const handleDeleteUser = () => {
-    if (open.user.isDeleted === 0) {
-      handleDelete(open?.user?.id, 'DELETE');
-    } else {
-      handleDelete(open?.user?.id, 'RECOVER');
-    }
-  };
-
-  const handleUpdate = () => {
-    setOpen((prev: { type: 'VIEW' | 'ADD' | 'EDIT'; user: any }) => ({
-      ...prev,
-      type: 'EDIT',
-      user: prev.user,
-    }));
-    setDisable(false);
-  };
-
-  const handleSubmit = () => {
-    form
-      .validateFields()
-      .then((res) => {
-        if (open.type === 'ADD') {
-          res.image = image?.img;
-          res.DateOfBirth = res.dateOfBirth !== null ? dayjs(res.dateOfBirth) : null;
-          createuser(res);
-        } else {
-          res.UpdateImage = image?.img === null ? false : true;
-          res.image = image?.img === null ? false : image?.img;
-          res.UserId = open?.user?.id;
-          res.DateOfBirth = res.dateOfBirth !== null ? dayjs(res.dateOfBirth) : null;
-          updateuser(res);
-        }
-      })
-      .catch(() => {
-        return;
-      });
-  };
-
   return (
-    <StyledActionForm>
-      <Form layout="vertical" form={form}>
+    <StyledProfileActionForm>
+      <div className="left-layout">
         <div className="upload_wrapper">
           <div className="form-wrapper">
             <div className="image-side">
@@ -271,87 +192,67 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
               </div>
             </div>
           </div>
-
-          {open.type == 'VIEW' && (
-            <div>
-              <Button icon={<SvgSelector id="edit" />} onClick={handleUpdate} />
-            </div>
-          )}
         </div>
+      </div>
+      <div className="right-layout">
         <div className="flex">
+        <Input
+            name="name"
+            disabled={disable}
+            rules={[{ required: false, message: t('field_is_required') }]}
+            label={t('name')}
+          />
           <Input
             rules={[
-              { required: true, message: t('field_is_required') },
+              { required: false, message: t('field_is_required') },
               {
                 type: 'email',
                 message: t('emailIsNotValid'),
               },
             ]}
             label={t('email')}
-            placeholder="exaple@gmail.com"
+            placeholder="example@gmail.com"
             name="email"
             type="email"
             disabled={disable}
           />
 
-          <Input
-            name="name"
-            disabled={disable}
-            rules={[{ required: true, message: t('field_is_required') }]}
-            label={t('name')}
-          />
         </div>
         <div className="flex">
           <Input
             name="surname"
             disabled={disable}
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('surname')}
           />
           <div className="password-item">
             <Input
               name="password"
-              rules={[{ required: open.type == 'EDIT' ? passwordStatus : true, message: t('field_is_required') }]}
+              rules={[{ required: actionForm.type == 'EDIT' ? passwordStatus : false, message: t('field_is_required') }]}
               label={t('password')}
               type="password"
-              disabled={open.type == 'VIEW' || open.type == 'EDIT' ? !passwordStatus : false}
+              disabled={!passwordStatus}
             />
-            {open.type == 'EDIT' && (
-              <div>
-                <Checkbox
-                  label={t('update_password')}
-                  checked={passwordStatus}
-                  onChange={() => setPasswordStatus(!passwordStatus)}
-                />
-              </div>
-            )}
+            <div>
+              <Checkbox
+                label={t('update_password')}
+                checked={passwordStatus}
+                onChange={() => setPasswordStatus(!passwordStatus)}
+              />
+            </div>
           </div>
         </div>
         <div className="flex">
           <Input
             name="phoneNumber"
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('phone_number')}
             disabled={disable}
           />
           <Select
-            disabled={disable}
-            name="role"
-            rules={[{ required: true, message: t('field_is_required') }]}
-            label={t('role')}
-          >
-            {ROLE.map((item, index) => (
-              <SelectOption value={item.id} key={index}>
-                {t(item.text)}
-              </SelectOption>
-            ))}
-          </Select>
-        </div>
-        <div className="flex">
-          <Select
             loading={isCountryLoading}
             name="countryId"
-            rules={[{ required: true, message: t('field_is_required') }]}
+            rules={[{ required: false, message: t('field_is_required') }]}
             label={t('country')}
             disabled={disable}
           >
@@ -363,34 +264,7 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
           </Select>
           <DatePicker disabled={disable} name="dateOfBirth" label={t('dateOfBirth')} />
         </div>
-
-        <div className="action-button">
-          {open.type !== 'VIEW' ? (
-            <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
-          ) : (
-            <>
-              <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
-              {user.id != open?.user?.id && (
-                <Button
-                  danger
-                  label={open?.user?.isDeleted === 0 ? t('delete') : t('recover')}
-                  onClick={handleDeleteUser}
-                  className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
-                  type="primary"
-                />
-              )}
-            </>
-          )}
-          {open.type !== 'VIEW' && (
-            <Button
-              label={open.type === 'ADD' ? t('create_user') : t('save_changes')}
-              type="primary"
-              htmlType="button"
-              onClick={handleSubmit}
-            />
-          )}
-        </div>
-      </Form>
-    </StyledActionForm>
+      </div>
+    </StyledProfileActionForm>
   );
 }
