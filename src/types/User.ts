@@ -1,6 +1,6 @@
 export interface User {
   Id: number;
-  Role: number;
+  Role: string;
   Email: string;
   Image: { path: string } | null;
   Name: string;

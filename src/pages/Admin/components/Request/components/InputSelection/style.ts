@@ -41,4 +41,14 @@ export const StyledInputSelection = styled.div`
       }
     }
   }
+
+  .date-picker {
+    height: 77px;
+    display: flex;
+    align-items: center;
+
+    .ant-form-item {
+      width: 100%;
+    }
+  }
 `;

@@ -4,7 +4,7 @@ import { User } from 'types/User';
 interface UserContextType {
   user: any;
   setUser: (user: User) => void;
-  roleAccess: number | undefined;
+  roleAccess: string | undefined;
 }
 
 const UserContext = createContext<UserContextType | undefined>(undefined);

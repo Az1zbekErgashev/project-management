@@ -128,13 +128,12 @@ export const Select = ({
         name={name}
         noStyle={noStyle}
         rules={rules}
-        className={formItemClassName}
+        className={`${className} select`}
         initialValue={initialValue}
       >
         <StyledSelect
           disabled={disabled}
           placeholder={placeholder}
-          className={className}
           getPopupContainer={(triggerNode: HTMLElement) => triggerNode}
           onChange={handleChange}
           defaultValue={defaultValue}
