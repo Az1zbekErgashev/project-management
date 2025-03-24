@@ -27,14 +27,6 @@ export function Request() {
   const [drawerStatus, setDrawerStatus] = useState<boolean>(false);
   const [form] = Form.useForm();
 
-  const handleDelete = () => {
-    console.log('delete');
-  };
-
-  const handleUpdate = () => {
-    console.log('update');
-  }
-
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -91,14 +83,6 @@ export function Request() {
 
   return (
     <StyledRequests>
-<<<<<<< HEAD
-      <div>
-      <div className="header-line">
-        <h1 className="global-title">{t('manage_requests')}</h1>
-        <div className='upload-download'>
-        <Button className={"down-upload"} label={t('download')} type="primary" onClick={handleDelete} />
-        <Button className={"down-upload"} label={t('upload')} type="primary" onClick={handleUpdate} />
-=======
       {!isFileLoading ? (
         <React.Fragment>
           <div className="header-line">
@@ -131,7 +115,6 @@ export function Request() {
       ) : (
         <div className="spinnig-wrrap">
           <Spinner spinning={true} />
->>>>>>> profile
         </div>
       )}
 
