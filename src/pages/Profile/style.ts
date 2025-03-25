@@ -20,7 +20,7 @@ export const StyledProfile = styled.div`
     flex-direction: column;
     justify-content: space-between;
     gap: 40px;
-
+    
     .actions {
       display: flex;
       justify-content: flex-end; 
@@ -34,7 +34,6 @@ export const StyledProfile = styled.div`
   .ant-picker,
   .ant-select-selector {
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
-
     &:hover {
       border-color: #1890ff; 
     }

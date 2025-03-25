@@ -2,7 +2,8 @@ import styled from 'styled-components';
 
 export const StyledProfileActionForm = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 40px;
   width: 100%;
 
   .upload {
