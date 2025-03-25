@@ -58,6 +58,7 @@ export function Profile() {
         if (image?.img) values.image = image.img;
 
         values.UserId = user.id;
+        values.UpdateImage = true;
         if (Object.keys(values).length > 0) {
           appendData(values);
         }
