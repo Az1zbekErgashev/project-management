@@ -141,9 +141,7 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
       </div>
       <div className="form-div">
         <div className="form-content">
-          <div className="date-picker">
-            <DatePicker disabled={disable} name="date" label={t('date_created')} />
-          </div>
+          <Input disabled={disable} name="date" label={t('date_created')} />
           <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
 
           <Input name="companyName" disabled={disable} label={t('company_name')} />

@@ -2,12 +2,22 @@ interface adminNavigate {
   key: string;
   path: string;
   icon: string;
+  children?: { key: string; path: string }[];
 }
 
 export const ADMIN_NAVIGATE: adminNavigate[] = [
   { key: 'dashboard', path: '/', icon: 'dashboard' },
   { key: 'users', path: '/users', icon: 'people' },
-  { key: 'requests', path: '/requests', icon: 'card-list' },
+  {
+    key: 'requests',
+    path: '/requests',
+    icon: 'card-list',
+    children: [
+      { key: 'all_requests', path: '/requests' },
+      { key: 'deleted_requests', path: '/deleted-requests' },
+     // { key: 'pending_requests', path: '/pending-requests' },
+    ],
+  },
   { key: 'logs', path: '/logs', icon: 'logs' },
   { key: 'translations', path: '/translations', icon: 'translations' },
 ];

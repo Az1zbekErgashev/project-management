@@ -12,6 +12,8 @@ import { Drawer, Form } from 'antd';
 import { InputSelection } from './components/InputSelection';
 import { RequestModel } from './components/RequestList/type';
 import { TFunction } from 'i18next';
+import { RequestFilter } from './components/RequestFilter';
+import dayjs from 'dayjs';
 
 interface queryParamsType {
   PageSize: number;
@@ -69,6 +71,13 @@ export function Request() {
   const handlePaginationChange = (page: number, pageSize: number) => {
     smoothScroll('top', 0);
     setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
+  };
+
+  const handleFilterChange = (changedValue: any) => {
+    setQueryParams((res) => ({
+      ...res,
+      ...changedValue,
+    }));
   };
 
   useEffect(() => {
@@ -167,6 +176,7 @@ export function Request() {
             </div>
           </div>
 
+          <RequestFilter handleFilterChange={handleFilterChange} />
           <RequestList
             setQueryParams={setQueryParams}
             requests={requests?.data || []}

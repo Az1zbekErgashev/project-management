@@ -3,6 +3,14 @@ import styled from 'styled-components';
 export const StyledRequestList = styled.div`
   padding-top: 50px;
 
+  &.deleted-requests {
+    padding-top: 0px;
+    
+    .deleted-request-tab {
+      padding-top: 50px !important;
+    }
+  }
+
   .admin-tabs {
     border: none !important;
     .ant-tabs-tab {

@@ -168,4 +168,49 @@ export const StyledSitebar = styled.div`
       }
     }
   }
+
+  .submenu {
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5px;
+    max-height: 0;
+    overflow: hidden;
+    transition:
+      max-height 0.3s ease-out,
+      opacity 0.3s ease-out;
+    opacity: 0;
+    a {
+      padding-left: 30px;
+
+      &.active {
+        .nav-sub-item {
+          background: var(--white);
+          color: var(--black);
+        }
+      }
+    }
+  }
+  .nav-sub-item {
+    padding: 5px 0;
+    cursor: pointer;
+    color: var(--white);
+
+    padding: 12px;
+    transition: 0.4s;
+    border-radius: 8px;
+
+    &:hover {
+      background: var(--white);
+      color: var(--black);
+    }
+  }
+
+  .submenu.open {
+    max-height: 200px;
+    opacity: 1;
+  }
 `;
