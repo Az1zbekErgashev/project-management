@@ -30,6 +30,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="Date" mode="multiple" label={t('date')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'Date')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -39,6 +40,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="InquiryType" mode="multiple" label={t('inquiry_type')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'InquiryType')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -48,6 +50,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="CompanyName" mode="multiple" label={t('company_name')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'CompanyName')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -57,6 +60,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="Department" mode="multiple" label={t('departament')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'Department')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -66,6 +70,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="ResponsiblePerson" mode="multiple" label={t('responsible_person')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'ResponsiblePerson')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -75,6 +80,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="InquiryField" mode="multiple" label={t('inquiry_field')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'InquiryField')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -84,6 +90,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="ClientCompany" mode="multiple" label={t('client_company')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'ClientCompany')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -93,6 +100,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="ProjectDetails" mode="multiple" label={t('project_details')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'ProjectDetails')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -102,6 +110,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="Client" mode="multiple" label={t('client')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'Client')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -111,6 +120,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="ContactNumber" mode="multiple" label={t('contact_number')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'ContactNumber')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -120,6 +130,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="Email" mode="multiple" label={t('email')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'Email')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -129,6 +140,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="ProcessingStatus" mode="multiple" label={t('processing_status')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'ProcessingStatus')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -138,6 +150,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="FinalResult" mode="multiple" label={t('final_result')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'FinalResult')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
@@ -147,6 +160,7 @@ export function RequestFilter({ handleFilterChange }: props) {
         <Select name="Notes" mode="multiple" label={t('Notes')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'Notes')
+            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
             .map((item: any) => (
               <SelectOption key={item.value} value={item.text}>
                 {item.text}
