@@ -162,7 +162,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
                 {t(item.text)}
               </SelectOption>
             ))}
-            <SelectOption value="new">{t('new_category')}</SelectOption>
           </Select>
         </div>
         <div className="form-content">
