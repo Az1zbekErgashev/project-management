@@ -64,7 +64,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     form
       .validateFields()
       .then((res) => {
-        res.date = res.date !== null ? dayjs(res.date) : null;
         res.deadline = res.deadline !== null ? dayjs(res.deadline) : null;
         createData(res);
       })
@@ -108,7 +107,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
       form.setFieldsValue({
         ...drawerStatus.request,
         deadline: drawerStatus.request?.deadline && dayjs(drawerStatus.request?.deadline),
-        date: drawerStatus.request?.date && dayjs(drawerStatus.request?.date),
         requestStatusId: drawerStatus?.request?.requestStatus?.id,
       });
     } else {

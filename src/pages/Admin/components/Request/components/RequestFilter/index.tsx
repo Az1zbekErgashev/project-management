@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyledRequestFilter } from './style';
 import { Form } from 'antd';
 import { DatePicker, Input, Select, SelectOption } from 'ui';
@@ -17,6 +17,10 @@ export function RequestFilter({ handleFilterChange }: props) {
     request: {
       url: '/api/request/filter-values',
       method: 'GET',
+      data: {
+        isDeleted: window.location.pathname.includes('deleted-request') ? 1 : 0,
+        status: window.location.pathname.includes('pending-request') ? 0 : null,
+      },
     },
   });
 
