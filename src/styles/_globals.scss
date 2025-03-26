@@ -82,37 +82,7 @@ a {
   flex-wrap: nowrap !important;
   overflow-x: scroll;
   overflow-y: hidden;
-  height: 45px !important;
-}
-.ant-select-selection-overflow::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
-  cursor: pointer;
-}
-.ant-select-selection-overflow::-webkit-scrollbar-thumb {
-  background-color: var(--base-color);
-  border-radius: 6px;
-  cursor: pointer;
-}
-.ant-select-selection-overflow::-webkit-scrollbar-track {
-  background: none;
-}
-.ant-select-selection-item {
-  font-family: var(--default-font) !important;
-  color: var(--blue-700) !important;
-  font-weight: 400 !important;
-  font-size: 1rem !important;
-}
-.ant-select-selection-placeholder {
-  font-family: var(--default-font) !important;
-  color: var(--blue-700) !important;
-  font-weight: 400 !important;
-}
-.ant-select-selection-item {
-  font-family: var(--default-font) !important;
-  font-size: 1rem !important;
-  font-style: normal;
-  font-weight: 400;
+  height: 40px !important;
 }
 
 .ant-form-item-explain-error {
@@ -273,4 +243,39 @@ tbody {
   .ant-select-selector {
     height: 50px !important;
   }
+}
+
+.ant-select-selection-overflow::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+  cursor: pointer;
+}
+.ant-select-selection-overflow::-webkit-scrollbar-thumb {
+  background-color: var(--base-color);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.ant-select-selection-overflow::-webkit-scrollbar-track {
+  background: none;
+}
+
+.ant-select-selection-overflow-item {
+  padding: 0 5px;
+}
+.ant-select-selection-item {
+  font-family: var(--default-font) !important;
+  color: var(--blue-700) !important;
+  font-weight: 400 !important;
+  font-size: 1rem !important;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+
+  height: 35px !important;
+  border-radius: 15px;
+}
+.ant-select-selection-placeholder {
+  font-family: var(--default-font) !important;
+  color: var(--blue-700) !important;
+  font-weight: 400 !important;
 }

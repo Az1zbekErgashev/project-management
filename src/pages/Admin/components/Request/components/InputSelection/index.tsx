@@ -64,7 +64,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     form
       .validateFields()
       .then((res) => {
-        res.date = res.date !== null ? dayjs(res.date) : null;
         res.deadline = res.deadline !== null ? dayjs(res.deadline) : null;
         createData(res);
       })
@@ -108,7 +107,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
       form.setFieldsValue({
         ...drawerStatus.request,
         deadline: drawerStatus.request?.deadline && dayjs(drawerStatus.request?.deadline),
-        date: drawerStatus.request?.date && dayjs(drawerStatus.request?.date),
         requestStatusId: drawerStatus?.request?.requestStatus?.id,
       });
     } else {
@@ -141,9 +139,7 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
       </div>
       <div className="form-div">
         <div className="form-content">
-          <div className="date-picker">
-            <DatePicker disabled={disable} name="date" label={t('date_created')} />
-          </div>
+          <Input disabled={disable} name="date" label={t('date_created')} />
           <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
 
           <Input name="companyName" disabled={disable} label={t('company_name')} />

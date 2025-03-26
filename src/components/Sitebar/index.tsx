@@ -10,6 +10,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { useUser } from 'hooks/useUserState';
 import { routes } from 'config/config';
 import { useLanguage } from 'contexts/LanguageContext';
+import { motion } from 'framer-motion';
 
 interface props {
   isCollapsed: boolean;
@@ -19,6 +20,7 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
   const { user } = useUser();
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [showRequests, setShowRequests] = useState(false);
   const { changeLanguage, language } = useLanguage();
   const handleLogout = () => {
     Cookies.remove('jwt');
@@ -40,6 +42,10 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
     changeLanguage(lang);
   };
 
+  useEffect(() => {
+    if (window.location.pathname.includes('requests')) setShowRequests(true);
+  }, []);
+
   return (
     <StyledSitebar>
       <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -53,18 +59,37 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
         </header>
         <nav className="sidebar-nav">
           <ul className="nav-list primary-nav">
-            {ADMIN_NAVIGATE.map((item, index) => (
-              <NavLink to={item.path} key={index}>
-                <li className="nav-item" key={index}>
-                  <p className="nav-link">
+            {ADMIN_NAVIGATE.map((item, index) =>
+              item.key === 'requests' ? (
+                <div key={index} className="nav-item dropdown">
+                  <p className="nav-link" onClick={() => setShowRequests(!showRequests)}>
                     <span className="nav-icon material-symbols-rounded">
                       <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
                     </span>
                     <span className="nav-label">{t(item.key)}</span>
                   </p>
-                </li>
-              </NavLink>
-            ))}
+                  <ul className={`submenu ${showRequests ? 'open' : ''}`}>
+                    {item?.children?.map((subItem, subIndex) => (
+                      <NavLink to={subItem.path} key={subIndex}>
+                        <li className="nav-sub-item">{t(subItem.key)}</li>
+                      </NavLink>
+                    ))}
+                  </ul>
+                </div>
+              ) : (
+                <NavLink to={item.path} key={index}>
+                  <li className="nav-item">
+                    <p className="nav-link">
+                      <span className="nav-icon material-symbols-rounded">
+                        <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
+                      </span>
+                      <span className="nav-label">{t(item.key)}</span>
+                    </p>
+                  </li>
+                </NavLink>
+              )
+            )}
+
             <li className="nav-item translation">
               <div className="nav-link profile-link">
                 <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
