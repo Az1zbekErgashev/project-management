@@ -9,7 +9,6 @@ export const StyledLoginPage = styled.div`
     height: 100%; 
     overflow: hidden;
     position: relative;
-
     img {
       width: 100%;
       max-height: 100%;
@@ -19,37 +18,45 @@ export const StyledLoginPage = styled.div`
   .form-container {
     width: 50%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
     background: var(--white);
     padding: 20px;
-
+    border-radius: 15px;
+    background-color:rgb(255, 255, 255);
     form {
       width: 100%;
-      max-width: 400px;
+      max-width: 350px;
+      height: 500px;
       border-radius: 8px;
-      padding: 40px;
+      padding: 30px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       background: var(--white);
+
+      .login-input {
+        border-radius: 15px;
+      }
 
       .flex {
         display: flex;
         flex-direction: column;
+        justify-content: center;
         row-gap: 20px;
+        gap: 30px;
       }
 
       .button {
-        margin-top: 20px; 
+        margin-top: 30px; 
 
         button {
-          margin-top: 20px;;
+          margin-top: 90px;;
           width: 100%;
           background-color: var(navy);
           color: var(--white);
           border: none;
           font-size: 16px;
           font-weight: 500;
-          border-radius: 4px; 
+          border-radius: 15px; 
           transition: background-color 0.3s ease-in-out;
 
           &:hover {

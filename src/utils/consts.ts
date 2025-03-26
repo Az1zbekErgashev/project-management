@@ -15,7 +15,7 @@ export const ADMIN_NAVIGATE: adminNavigate[] = [
     children: [
       { key: 'all_requests', path: '/requests' },
       { key: 'deleted_requests', path: '/deleted-requests' },
-     // { key: 'pending_requests', path: '/pending-requests' },
+      { key: 'pending_requests', path: '/pending-requests' },
     ],
   },
   { key: 'logs', path: '/logs', icon: 'logs' },

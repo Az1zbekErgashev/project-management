@@ -57,6 +57,7 @@ export function LoginPage() {
           <div className="flex">
             <div>
               <Input
+                className={"login-input"}
                 label={t('email')}
                 placeholder="example@gmail.com"
                 type="email"
@@ -76,6 +77,7 @@ export function LoginPage() {
             </div>
             <div>
               <Input
+                className={"login-input"}
                 label={t('password')}
                 name="password"
                 type="password"
