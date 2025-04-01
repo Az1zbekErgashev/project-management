@@ -5,8 +5,8 @@ import dayjs from 'dayjs';
 import { StyledDatePicker } from './style';
 
 export interface DatePickerProps {
-  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  onBlur?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (date: dayjs.Dayjs | null, dateString: string) => void;
+  onBlur?: (event: React.FocusEvent<HTMLElement>) => void;
   placeholder?: string;
   required?: boolean;
   prefix?: React.ReactNode;

@@ -1,107 +1,57 @@
 import React, { useEffect, useState } from 'react';
-import { Bar } from 'react-chartjs-2';
-import { StyledHomePage } from './style';
+import { Row, Col, Card, Typography, Layout } from 'antd';
+import { Bar, Line, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
+  LineElement,
+  PointElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
-  ChartOptions,
-  ChartData,
 } from 'chart.js';
-import useQueryApiClient from 'utils/useQueryApiClient';
+import { Content } from 'antd/es/layout/layout';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend);
 
 const API_URL = 'api/logs/filter';
 
-export function HomePage() {
-  const [chartData, setChartData] = useState<ChartData<'bar'>>({
-    labels: [],
+export function Dashboard() {
+  const chartData = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
     datasets: [
       {
-        label: 'Users by Role',
-        data: [],
-        backgroundColor: 'rgba(27, 143, 143, 0.6)',
+        data: [3000, 4000, 3800, 5000, 4700, 6000, 7000],
+        borderColor: '#1677ff', // Синий цвет линии
+        backgroundColor: 'rgba(22, 119, 255, 0.2)',
+        fill: true, // Заполняем под линией
+        tension: 0.3, // Плавные линии
       },
     ],
-  });
-
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await fetch(`${API_URL}?PageIndex=1&PageSize=10`);
-        const data = await response.json();
-
-        if (data && Array.isArray(data)) {
-          const roles = data.map((user) => `User ${user.UserId}`);
-          const roleCounts = data.map((user) => user.Role || 0);
-
-          setChartData({
-            labels: roles,
-            datasets: [
-              {
-                label: 'User Roles',
-                data: roleCounts,
-                backgroundColor: 'rgba(75, 192, 192, 0.6)',
-              },
-            ],
-          });
-        }
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    }
-
-    fetchData();
-  }, []);
-
-  const options: ChartOptions<'bar'> = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-      },
-      title: {
-        display: true,
-        text: 'User Roles Data',
-      },
-    },
-    scales: {
-      x: {
-        type: 'category',
-        title: {
-          display: true,
-          text: 'Users',
-        },
-      },
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Roles',
-        },
-      },
-    },
   };
 
+  const chartOptions = {
+    plugins: { legend: { display: false } }, // Убираем легенду
+    scales: { x: { display: false }, y: { display: false } }, // Убираем оси
+    maintainAspectRatio: false,
+  };
   return (
-    <StyledHomePage>
-      <div className="main-chart">
-        <div className="top-chart">
-          <h2>User Role Distribution</h2>
-          <Bar data={chartData} options={options} />
-        </div>
-
-        <div className="big-chart">
-          <div className="chart-left">Chart left</div>
-          <div className="chart-right">Chart right</div>
-        </div>
-      </div>
-    </StyledHomePage>
+    <Content>
+      <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
+        <Col xs={24} md={12}>
+          <Card title="Sales Chart">
+            <Bar data={chartData} />
+          </Card>
+        </Col>
+        <Col xs={24} md={12}>
+          <Card title="Revenue Chart">
+            <Line data={chartData} />
+          </Card>
+        </Col>
+      </Row>
+    </Content>
   );
 }
