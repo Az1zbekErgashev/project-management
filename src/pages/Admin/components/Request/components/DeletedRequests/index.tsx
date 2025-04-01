@@ -214,9 +214,8 @@ export function DeletedRequests() {
   ];
 
   const handleFilterChange = (changedValue: any) => {
-
     console.log(changedValue);
-    
+
     setQueryParams((res) => ({
       ...res,
       ...changedValue,
@@ -249,12 +248,23 @@ export function DeletedRequests() {
       }));
   };
 
+  const { data: filterValue } = useQueryApiClient({
+    request: {
+      url: '/api/request/filter-values',
+      method: 'GET',
+      data: {
+        isDeleted: window.location.pathname.includes('deleted-request') ? 1 : 0,
+        status: window.location.pathname.includes('pending-request') ? 0 : null,
+      },
+    },
+  });
+
   return (
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
       </div>
-      <RequestFilter handleFilterChange={handleFilterChange} />
+      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
       <Tabs onChange={handleTabChange} type="card" items={items} className="admin-tabs  deleted-request-tab" />
     </StyledRequestList>
   );

@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
-import { Table, Button, Modal } from 'antd';
+import { Table } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
-import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
-import { Tabs } from 'ui';
+import { Button, ConfirmModal, Tabs } from 'ui';
 import { RequestFilter } from '../RequestFilter';
 import { Notification } from 'ui';
+import { TFunction } from 'i18next';
 
 interface QueryParamsType {
   PageSize: number;
@@ -20,10 +20,22 @@ interface QueryParamsType {
   RequestTitle?: string;
 }
 
+const createModalConfig = (t: TFunction, type: 'DELETE' | 'ACCEPT', onConfirm: () => void, onCancel: () => void) => ({
+  type,
+  cancelText: t('cancel'),
+  confirmText: t(type === 'DELETE' ? 'reject_request' : 'accept_request'),
+  title: t(type === 'DELETE' ? 'reject_request_title' : 'accept_request_title'),
+  content: t(type === 'DELETE' ? 'reject_request_description' : 'accept_request_description'),
+  open: true,
+  onConfirm,
+  onCancel,
+});
+
 export function PendingRequests() {
   const { t } = useTranslation();
   const [queryParams, setQueryParams] = useState<QueryParamsType>({ PageIndex: 1, PageSize: 10 });
-  const [processingId, setProcessingId] = useState<number | null>(null);
+  const [coniformModal, setConiformModal] = useState<any>(null);
+  const [requestId, setRequestId] = useState<{ id: number; status: boolean } | null>(null);
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -46,21 +58,11 @@ export function PendingRequests() {
       key: 'date',
       filterSearch: true,
       fixed: 'left',
-      render: (_, record) => (record.date ? dayjs(record.date).format('DD.MM.YYYY') : null),
     },
     {
-      title: t('inquiry_type'),
-      dataIndex: 'inquiryType',
-      key: 'inquiryType',
-      filterSearch: true,
-      fixed: 'left',
-    },
-    {
-      title: t('company_name'),
-      dataIndex: 'companyName',
-      key: 'companyName',
-      filterSearch: true,
-      fixed: 'left',
+      title: t('client_company'),
+      dataIndex: 'clientCompany',
+      key: 'clientCompany',
     },
     {
       title: t('department'),
@@ -76,27 +78,9 @@ export function PendingRequests() {
       filterSearch: true,
     },
     {
-      title: t('inquiry_field'),
-      dataIndex: 'inquiryField',
-      key: 'inquiryField',
-      filterSearch: true,
-    },
-    {
-      title: t('client_company'),
-      dataIndex: 'clientCompany',
-      key: 'clientCompany',
-      filterSearch: true,
-    },
-    {
-      title: t('project_details'), 
-      dataIndex: 'projectDetails',
-      key: 'projectDetails',
-      filterSearch: true,
-    },
-    {
-      title: t('client'),
-      dataIndex: 'client',
-      key: 'client',
+      title: t('inquiry_source'),
+      dataIndex: 'inquirySource',
+      key: 'inquirySource',
       filterSearch: true,
     },
     {
@@ -112,9 +96,15 @@ export function PendingRequests() {
       filterSearch: true,
     },
     {
-      title: t('notes'),
-      dataIndex: 'notes',
-      key: 'notes',
+      title: t('project_budget'),
+      dataIndex: 'projectBudget',
+      key: 'projectBudget',
+      filterSearch: true,
+    },
+    {
+      title: t('additional_information'),
+      dataIndex: 'additionalInformation',
+      key: 'additionalInformation',
       filterSearch: true,
     },
     {
@@ -122,38 +112,52 @@ export function PendingRequests() {
       dataIndex: 'deadline',
       key: 'deadline',
       filterSearch: true,
-      render: (_, record) => (record.deadline ? dayjs(record.deadline).diff(dayjs(record.createdAt), 'day') : null),
+      render: (_, record) => {
+        const remainingDays = record.deadline ? dayjs(record.deadline).diff(dayjs(), 'day') : null;
+        if (remainingDays === null) return null;
+        if (remainingDays <= 0) return t('overdue');
+        return remainingDays === 1 ? '1' : `${remainingDays} дня${remainingDays > 1 ? '' : ''}`;
+      },
     },
     {
-      title: t('Condition'),
+      title: t('condition'),
       dataIndex: 'condition',
       key: 'condition',
       filterSearch: true,
-      render: (_, record) => (
-        <div>
-          <Button 
-            type="primary" 
-            onClick={() => handleAccept(record)} 
-            style={{ marginRight: 8, borderRadius: "10px" }}
-            loading={processingId === record.id}
-            disabled={processingId !== null || !record.id}
-          >
-            {t('accept')}
-          </Button>
-          <Button 
-            type="default" 
-            onClick={() => handleReject(record)} 
-            style={{borderRadius: "10px"}} 
-            danger
-            loading={processingId === record.id}
-            disabled={processingId !== null || !record.id}
-          >
-            {t('reject')}
-          </Button>
-        </div>
-      ),
+      render: (_, record) => {
+        const remainingDays = record?.deadline ? dayjs(record?.deadline).diff(dayjs(), 'day') : null;
+        return (
+          <div>
+            {remainingDays && remainingDays > 0 && (
+              <Button onClick={() => handleConfirm('ACCEPT', record.id, true)} label={t('accept')} type="primary" />
+            )}
+            &nbsp;&nbsp;&nbsp;
+            <Button
+              onClick={() => handleConfirm('DELETE', record.id, false)}
+              label={t('reject')}
+              type="default"
+              danger
+            />
+          </div>
+        );
+      },
     },
   ];
+
+  const handleConfirm = (type: 'DELETE' | 'ACCEPT', id: number, status: boolean) => {
+    setConiformModal(
+      createModalConfig(
+        t,
+        type,
+        () => {
+          setRequestId({ id: id, status: status });
+        },
+        () => {
+          setConiformModal(null);
+        }
+      )
+    );
+  };
 
   const { data: categories } = useQueryApiClient({
     request: {
@@ -162,70 +166,25 @@ export function PendingRequests() {
     },
   });
 
-  const { appendData: changeRequestStatus } = useQueryApiClient({
+  const { refetch: changeRequestStatus } = useQueryApiClient({
     request: {
-      url: '/api/request/change-pending-request',
+      url: `/api/request/change-pending-request?id=${requestId?.id}&status=${requestId?.status}`,
       method: 'PUT',
     },
     onSuccess() {
       Notification({ text: t('requestStatusUpdated'), type: 'success' });
+
+      setRequestId(null);
+      setConiformModal(null);
+      getRequests();
+      getFilteredValue();
     },
     onError() {
       Notification({ text: t('requestUpdateFailed'), type: 'error' });
-    }
+      setRequestId(null);
+      setConiformModal(null);
+    },
   });
-
-  const handleAccept = async (record: RequestModel) => {
-    if (!record?.id) {
-      Notification({ text: t('invalidRequestId'), type: 'error' });
-      return;
-    }
-    setProcessingId(record.id);
-    try {
-      const urlWithParams = `/api/request/change-pending-request?id=${record.id}&status=true`;
-      await changeRequestStatus(null, null, { url: urlWithParams }); 
-      getRequests();
-    } catch (error) {
-      console.error('Error accepting request:', error);
-    } finally {
-      setProcessingId(null);
-    }
-  };
-
-  const handleReject = async (record: RequestModel) => {
-    if (!record?.id) {
-      Notification({ text: t('invalidRequestId'), type: 'error' });
-      return;
-    }
-    Modal.confirm({
-      title: t('confirmReject'),
-      content: t('areYouSureRejectRequest'),
-      onOk: async () => {
-        setProcessingId(record.id);
-        try {
-          const urlWithParams = `/api/request/change-pending-request?id=${record.id}&status=false`;
-          await changeRequestStatus({ url: urlWithParams }); 
-          getRequests();
-        } catch (error) {
-          console.error('Error rejecting request:', error);
-        } finally {
-          setProcessingId(null);
-        }
-      },
-      okText: t('yes'),
-      cancelText: t('no'),
-      okButtonProps: {
-        style: {
-          background: '#ff4d4f', 
-          borderColor: '#ff4d4f',
-        },
-        danger: true,
-      },
-      style: {
-        color: 'white',
-      },
-    });
-  };
 
   const {
     data: requests,
@@ -234,7 +193,7 @@ export function PendingRequests() {
     refetch: getRequests,
   } = useQueryApiClient({
     request: {
-      url: '/api/request/pending-requets', 
+      url: '/api/request/pending-requets',
       method: 'GET',
       data: queryParams,
       disableOnMount: true,
@@ -285,6 +244,12 @@ export function PendingRequests() {
     postRequest(queryParams);
   }, [queryParams]);
 
+  useEffect(() => {
+    if (requestId) {
+      changeRequestStatus();
+    }
+  }, [requestId]);
+
   const handleTabChange = (key: string) => {
     const selectedTab = items.find((item) => item.key === key);
     const label = selectedTab ? selectedTab.label : '';
@@ -307,13 +272,25 @@ export function PendingRequests() {
       }));
   };
 
+  const { data: filterValue, refetch: getFilteredValue } = useQueryApiClient({
+    request: {
+      url: '/api/request/filter-values',
+      method: 'GET',
+      data: {
+        isDeleted: window.location.pathname.includes('deleted-request') ? 1 : 0,
+        status: window.location.pathname.includes('pending-request') ? 0 : null,
+      },
+    },
+  });
+
   return (
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('pending_requests')}</h1>
       </div>
-      <RequestFilter handleFilterChange={handleFilterChange} />
+      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
       <Tabs onChange={handleTabChange} type="card" items={items} className="admin-tabs deleted-request-tab" />
+      {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequestList>
   );
 }

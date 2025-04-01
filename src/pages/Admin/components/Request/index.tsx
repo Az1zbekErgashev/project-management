@@ -135,6 +135,7 @@ export function Request() {
       getRequests();
       onClose();
       setConiformModal(null);
+      getFilteredValue();
     },
   });
 
@@ -159,6 +160,17 @@ export function Request() {
     }
   }, [requestId]);
 
+  const { data: filterValue, refetch: getFilteredValue } = useQueryApiClient({
+    request: {
+      url: '/api/request/filter-values',
+      method: 'GET',
+      data: {
+        isDeleted: window.location.pathname.includes('deleted-request') ? 1 : 0,
+        status: window.location.pathname.includes('pending-request') ? 0 : null,
+      },
+    },
+  });
+
   return (
     <StyledRequests>
       {!isFileLoading ? (
@@ -176,7 +188,7 @@ export function Request() {
             </div>
           </div>
 
-          <RequestFilter handleFilterChange={handleFilterChange} />
+          <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
           <RequestList
             setQueryParams={setQueryParams}
             requests={requests?.data || []}
