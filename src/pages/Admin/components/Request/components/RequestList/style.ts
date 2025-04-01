@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 
 export const StyledRequestList = styled.div`
-  padding-top: 50px;
+  padding-top: 20px;
 
   &.deleted-requests {
     padding-top: 0px;
     
     .deleted-request-tab {
-      padding-top: 50px !important;
+      padding-top: 20px !important;
     }
   }
 
