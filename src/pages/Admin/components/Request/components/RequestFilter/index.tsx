@@ -29,16 +29,20 @@ export function RequestFilter({ handleFilterChange, fieldsToShow, filterValue }:
               </SelectOption>
             ))}
         </Select>
-        <Select className={'input-selection'} name="InquiryType" mode="multiple" label={t('inquiry_type')}>
-          {filterValue?.data
-            ?.filter((item: any) => item.value === 'InquiryType')
-            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
-            .map((item: any) => (
-              <SelectOption key={item.value} value={item.text}>
-                {item.text}
-              </SelectOption>
-            ))}
-        </Select>
+
+        {!isPendingRequests && (
+          <Select className={'input-selection'} name="InquiryType" mode="multiple" label={t('inquiry_type')}>
+            {filterValue?.data
+              ?.filter((item: any) => item.value === 'InquiryType')
+              .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
+              .map((item: any) => (
+                <SelectOption key={item.value} value={item.text}>
+                  {item.text}
+                </SelectOption>
+              ))}
+          </Select>
+        )}
+
         {!isPendingRequests && (
           <Select className={'input-selection'} name="CompanyName" mode="multiple" label={t('company_name')}>
             {filterValue?.data
@@ -72,16 +76,19 @@ export function RequestFilter({ handleFilterChange, fieldsToShow, filterValue }:
               </SelectOption>
             ))}
         </Select>
-        <Select className={'input-selection'} name="InquiryField" mode="multiple" label={t('inquiry_field')}>
-          {filterValue?.data
-            ?.filter((item: any) => item.value === 'InquiryField')
-            .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
-            .map((item: any) => (
-              <SelectOption key={item.value} value={item.text}>
-                {item.text}
-              </SelectOption>
-            ))}
-        </Select>
+        {!isPendingRequests && (
+          <Select className={'input-selection'} name="InquiryField" mode="multiple" label={t('inquiry_field')}>
+            {filterValue?.data
+              ?.filter((item: any) => item.value === 'InquiryField')
+              .sort((a: any, b: any) => (a.text === 'Unknown' ? 1 : b.text === 'Unknown' ? -1 : 0))
+              .map((item: any) => (
+                <SelectOption key={item.value} value={item.text}>
+                  {item.text}
+                </SelectOption>
+              ))}
+          </Select>
+        )}
+
         <Select className={'input-selection'} name="ClientCompany" mode="multiple" label={t('client_company')}>
           {filterValue?.data
             ?.filter((item: any) => item.value === 'ClientCompany')

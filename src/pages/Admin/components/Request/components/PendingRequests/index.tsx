@@ -120,6 +120,11 @@ export function PendingRequests() {
       },
     },
     {
+      title: t('notes'),
+      dataIndex: 'notes',
+      key: 'notes',
+    },
+    {
       title: t('condition'),
       dataIndex: 'condition',
       key: 'condition',
