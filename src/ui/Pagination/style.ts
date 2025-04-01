@@ -7,7 +7,8 @@ export const StyledPagination = styled.div`
     justify-content: space-between;
     padding: 16px 24px;
     background: #ffffff;
-    border-radius: 12px;
+    border-bottom-left-radius: 12px;
+    border-bottom-right-radius: 12px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
     
