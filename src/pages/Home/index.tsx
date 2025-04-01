@@ -25,7 +25,6 @@ export function Dashboard() {
     request: {
       url: '/api/request/requets',
       method: 'GET',
-      data: { pageIndex: 1, pageSize: 1000 },
     },
   });
 
