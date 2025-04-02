@@ -24,7 +24,7 @@ export function LoginPage() {
     onSuccess(response) {
       set(response.data.token, 86400);
       setUser(response.data);
-      if (response.data.role === 'Employees') navigate('/users', { replace: true });
+      navigate('/', { replace: true });
     },
     onError() {
       form.setFields([
@@ -57,7 +57,7 @@ export function LoginPage() {
           <div className="flex">
             <div>
               <Input
-                className={"login-input"}
+                className={'login-input'}
                 label={t('email')}
                 placeholder="example@gmail.com"
                 type="email"
@@ -77,7 +77,7 @@ export function LoginPage() {
             </div>
             <div>
               <Input
-                className={"login-input"}
+                className={'login-input'}
                 label={t('password')}
                 name="password"
                 type="password"

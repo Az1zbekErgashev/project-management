@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyledSitebar } from './style';
 import { useTranslation } from 'react-i18next';
-import { ADMIN_NAVIGATE } from 'utils/consts';
+import { ADMIN_NAVIGATE, EMPLOYEE_NAVIGATE } from 'utils/consts';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import SvgSelector from 'assets/icons/SvgSelector';
@@ -46,6 +46,8 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
     if (window.location.pathname.includes('requests')) setShowRequests(true);
   }, []);
 
+  console.log(user);
+
   return (
     <StyledSitebar>
       <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -59,36 +61,67 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
         </header>
         <nav className="sidebar-nav">
           <ul className="nav-list primary-nav">
-            {ADMIN_NAVIGATE.map((item, index) =>
-              item.key === 'requests' ? (
-                <div key={index} className="nav-item dropdown">
-                  <p className="nav-link" onClick={() => setShowRequests(!showRequests)}>
-                    <span className="nav-icon material-symbols-rounded">
-                      <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
-                    </span>
-                    <span className="nav-label">{t(item.key)}</span>
-                  </p>
-                  <ul className={`submenu ${showRequests ? 'open' : ''}`}>
-                    {item?.children?.map((subItem, subIndex) => (
-                      <NavLink to={subItem.path} key={subIndex}>
-                        <li className="nav-sub-item">{t(subItem.key)}</li>
-                      </NavLink>
-                    ))}
-                  </ul>
-                </div>
-              ) : (
-                <NavLink to={item.path} key={index}>
-                  <li className="nav-item">
-                    <p className="nav-link">
-                      <span className="nav-icon material-symbols-rounded">
-                        <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
-                      </span>
-                      <span className="nav-label">{t(item.key)}</span>
-                    </p>
-                  </li>
-                </NavLink>
-              )
-            )}
+            {user?.role !== 'employees'
+              ? ADMIN_NAVIGATE.map((item, index) =>
+                  item.key === 'requests' ? (
+                    <div key={index} className="nav-item dropdown">
+                      <p className="nav-link" onClick={() => setShowRequests(!showRequests)}>
+                        <span className="nav-icon material-symbols-rounded">
+                          <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
+                        </span>
+                        <span className="nav-label">{t(item.key)}</span>
+                      </p>
+                      <ul className={`submenu ${showRequests ? 'open' : ''}`}>
+                        {item?.children?.map((subItem, subIndex) => (
+                          <NavLink to={subItem.path} key={subIndex}>
+                            <li className="nav-sub-item">{t(subItem.key)}</li>
+                          </NavLink>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <NavLink to={item.path} key={index}>
+                      <li className="nav-item">
+                        <p className="nav-link">
+                          <span className="nav-icon material-symbols-rounded">
+                            <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
+                          </span>
+                          <span className="nav-label">{t(item.key)}</span>
+                        </p>
+                      </li>
+                    </NavLink>
+                  )
+                )
+              : EMPLOYEE_NAVIGATE.map((item, index) =>
+                  item.key === 'requests' ? (
+                    <div key={index} className="nav-item dropdown">
+                      <p className="nav-link" onClick={() => setShowRequests(!showRequests)}>
+                        <span className="nav-icon material-symbols-rounded">
+                          <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
+                        </span>
+                        <span className="nav-label">{t(item.key)}</span>
+                      </p>
+                      <ul className={`submenu ${showRequests ? 'open' : ''}`}>
+                        {item?.children?.map((subItem, subIndex) => (
+                          <NavLink to={subItem.path} key={subIndex}>
+                            <li className="nav-sub-item">{t(subItem.key)}</li>
+                          </NavLink>
+                        ))}
+                      </ul>
+                    </div>
+                  ) : (
+                    <NavLink to={item.path} key={index}>
+                      <li className="nav-item">
+                        <p className="nav-link">
+                          <span className="nav-icon material-symbols-rounded">
+                            <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
+                          </span>
+                          <span className="nav-label">{t(item.key)}</span>
+                        </p>
+                      </li>
+                    </NavLink>
+                  )
+                )}
 
             <li className="nav-item translation">
               <div className="nav-link profile-link">

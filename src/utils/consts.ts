@@ -22,6 +22,20 @@ export const ADMIN_NAVIGATE: adminNavigate[] = [
   { key: 'translations', path: '/translations', icon: 'translations' },
 ];
 
+export const EMPLOYEE_NAVIGATE: adminNavigate[] = [
+  { key: 'dashboard', path: '/', icon: 'dashboard' },
+  {
+    key: 'requests',
+    path: '/requests',
+    icon: 'card-list',
+    children: [
+      { key: 'all_requests', path: '/requests' },
+      { key: 'deleted_requests', path: '/deleted-requests' },
+      { key: 'pending_requests', path: '/pending-requests' },
+    ],
+  },
+];
+
 interface IRoleInterface {
   id: number;
   text: string;
