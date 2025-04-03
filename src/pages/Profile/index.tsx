@@ -43,7 +43,6 @@ export function Profile() {
       multipart: true,
     },
     onSuccess(res) {
-      console.log('Profile updated successfully', res);
       Notification({ text: t('input_created_successfully'), type: 'success' });
       setActionForm({ type: 'VIEW' });
     },
@@ -55,10 +54,9 @@ export function Profile() {
       .validateFields()
       .then((values) => {
         values.dateOfBirth = values.dateOfBirth ? dayjs(values.dateOfBirth).format('YYYY-MM-DD') : null;
-        if (image?.img) values.image = image.img;
-
         values.UserId = user.id;
-        values.UpdateImage = true;
+        values.UpdateImage = image?.img === null ? false : true;
+        values.image = image?.img === null ? false : image?.img;
         if (Object.keys(values).length > 0) {
           appendData(values);
         }
@@ -80,12 +78,7 @@ export function Profile() {
         />
         <div className="actions">
           <Button label={t('cancel')} />
-          <Button
-            label={t('save_changes')}
-            type="primary"
-            onClick={handleUpdate}
-            loading={isLoading}
-          />
+          <Button label={t('save_changes')} type="primary" onClick={handleUpdate} loading={isLoading} />
         </div>
       </Form>
     </StyledProfile>

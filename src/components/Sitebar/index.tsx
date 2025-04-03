@@ -10,7 +10,6 @@ import { UserOutlined } from '@ant-design/icons';
 import { useUser } from 'hooks/useUserState';
 import { routes } from 'config/config';
 import { useLanguage } from 'contexts/LanguageContext';
-import { motion } from 'framer-motion';
 
 interface props {
   isCollapsed: boolean;
@@ -43,10 +42,16 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
   };
 
   useEffect(() => {
-    if (window.location.pathname.includes('requests')) setShowRequests(true);
+    if (window.location.pathname.includes('requests')) {
+      setShowRequests(true);
+    }
   }, []);
 
-  console.log(user);
+  useEffect(() => {
+    if (isCollapsed) {
+      setShowRequests(false);
+    }
+  }, [isCollapsed]);
 
   return (
     <StyledSitebar>

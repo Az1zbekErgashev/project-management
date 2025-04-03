@@ -196,7 +196,7 @@ export function ProfileActionForm({
       </div>
       <div className="right-layout">
         <div className="flex">
-        <Input
+          <Input
             name="name"
             disabled={disable}
             rules={[{ required: false, message: t('field_is_required') }]}
@@ -216,7 +216,6 @@ export function ProfileActionForm({
             type="email"
             disabled={disable}
           />
-
         </div>
         <div className="flex">
           <Input
@@ -225,30 +224,14 @@ export function ProfileActionForm({
             rules={[{ required: false, message: t('field_is_required') }]}
             label={t('surname')}
           />
-          <div className="password-item">
-            <Input
-              name="password"
-              rules={[{ required: actionForm.type == 'EDIT' ? passwordStatus : false, message: t('field_is_required') }]}
-              label={t('password')}
-              type="password"
-              disabled={!passwordStatus}
-            />
-            <div>
-              <Checkbox
-                label={t('update_password')}
-                checked={passwordStatus}
-                onChange={() => setPasswordStatus(!passwordStatus)}
-              />
-            </div>
-          </div>
-        </div>
-        <div className="flex">
           <Input
             name="phoneNumber"
             rules={[{ required: false, message: t('field_is_required') }]}
             label={t('phone_number')}
             disabled={disable}
           />
+        </div>
+        <div className="flex">
           <Select
             loading={isCountryLoading}
             name="countryId"

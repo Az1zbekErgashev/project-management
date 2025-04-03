@@ -33,7 +33,6 @@ interface Props {
 
 export function InputSelection({ form, onClose, getRequests, drawerStatus, handleDelete, setDrawerStatus }: Props) {
   const { t } = useTranslation();
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [disable, setDisable] = useState<boolean>(false);
 
   const { appendData: createData, isLoading } = useQueryApiClient({
@@ -79,10 +78,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     },
   });
 
-  const handleCategoryChange = (value: string | null) => {
-    setSelectedCategory(value);
-  };
-
   const { appendData } = useQueryApiClient({
     request: {
       url: '/api/request/create',
@@ -90,7 +85,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     },
     onSuccess() {
       refetch();
-      setSelectedCategory(null);
       form.setFieldValue('requestStatusId', null);
       form.setFieldValue('newRequestStatus', null);
     },
@@ -192,8 +186,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
           rules={[{ required: true, message: t('field_is_required') }]}
           label={t('category')}
           name="requestStatusId"
-          value={selectedCategory ?? ''}
-          onChange={handleCategoryChange}
           disabled={disable}
         >
           {categoryData?.data?.map((item: any) => (
@@ -203,20 +195,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
           ))}
           <SelectOption value="new">{t('new_category')}</SelectOption>
         </Select>
-
-        {selectedCategory === 'new' && (
-          <div className="category_input">
-            <Input
-              disabled={disable}
-              rules={[{ required: true, message: t('field_is_required') }]}
-              label={t('new_category')}
-              name="newRequestStatus"
-              onChange={(e) => console.log(form.getFieldsValue())}
-              placeholder={t('enter_category_name')}
-            />
-            <Button onClick={handleNewCategorySubmit} label={t('add')} type="primary" />
-          </div>
-        )}
       </div>
       <div className="action-btns">
         {drawerStatus.type !== 'VIEW' ? (
