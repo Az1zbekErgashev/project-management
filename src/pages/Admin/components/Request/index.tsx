@@ -53,6 +53,7 @@ export function Request() {
     sequence?: number;
   }>({ status: false, type: 'ADD' });
   const [form] = Form.useForm();
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const {
     data: requests,
@@ -116,6 +117,11 @@ export function Request() {
     form.resetFields();
   };
 
+  const showFilter = () => {
+    setIsFilterVisible(prev => !prev);
+  };
+  
+
   const { data: categories } = useQueryApiClient({
     request: {
       url: '/api/request/category',
@@ -178,6 +184,11 @@ export function Request() {
           <div className="header-line">
             <h1 className="global-title">{t('manage_requests')}</h1>
             <div className="upload-download">
+              <Button className='filter-butn'
+                type="primary"
+                label={isFilterVisible ? t('hide_filter') : t('show_filter')}
+                onClick={showFilter}
+              />
               <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
               <Button
                 className={'down-upload'}
@@ -188,7 +199,7 @@ export function Request() {
             </div>
           </div>
 
-          <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
+          {isFilterVisible && <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />}
           <RequestList
             setQueryParams={setQueryParams}
             requests={requests?.data || []}

@@ -8,6 +8,10 @@ export const StyledRequests = styled.div`
     align-items: center;
   }
 
+  .filter-butn {
+    margin-right: 50px;
+  }
+
   .upload-download {
     display: flex;
     gap: 10px;

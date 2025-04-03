@@ -6,7 +6,7 @@ import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
-import { Button, ConfirmModal, Tabs } from 'ui';
+import { Button, ConfirmModal } from 'ui';
 import { RequestFilter } from '../RequestFilter';
 import { Notification } from 'ui';
 import { TFunction } from 'i18next';
@@ -36,7 +36,8 @@ export function PendingRequests() {
   const [queryParams, setQueryParams] = useState<QueryParamsType>({ PageIndex: 1, PageSize: 10 });
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [requestId, setRequestId] = useState<{ id: number; status: boolean } | null>(null);
-
+  const [isVisible, setIsVisible] = useState(false);
+  
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
   };
@@ -136,7 +137,7 @@ export function PendingRequests() {
             {remainingDays && remainingDays > 0 && (
               <Button onClick={() => handleConfirm('ACCEPT', record.id, true)} label={t('accept')} type="primary" />
             )}
-            &nbsp;&nbsp;&nbsp;
+               
             <Button
               onClick={() => handleConfirm('DELETE', record.id, false)}
               label={t('reject')}
@@ -164,12 +165,9 @@ export function PendingRequests() {
     );
   };
 
-  const { data: categories } = useQueryApiClient({
-    request: {
-      url: '/api/request/category',
-      method: 'GET',
-    },
-  });
+  const handleFilterVisible = () => {
+    setIsVisible(prev => !prev);
+  }
 
   const { refetch: changeRequestStatus } = useQueryApiClient({
     request: {
@@ -178,7 +176,6 @@ export function PendingRequests() {
     },
     onSuccess() {
       Notification({ text: t('requestStatusUpdated'), type: 'success' });
-
       setRequestId(null);
       setConiformModal(null);
       getRequests();
@@ -205,39 +202,6 @@ export function PendingRequests() {
     },
   });
 
-  const items = [
-    {
-      label: t('all'),
-      key: 'Null',
-      children: (
-        <Table
-          columns={columns}
-          dataSource={requests?.data?.items || []}
-          onChange={handleFilter}
-          scroll={{ x: 'max-content' }}
-          pagination={false}
-          showSorterTooltip={false}
-          loading={isRequestsLoading}
-        />
-      ),
-    },
-    ...(categories?.data?.map((category: any) => ({
-      label: t(category.title),
-      key: category.id.toString(),
-      children: (
-        <Table
-          columns={columns}
-          dataSource={requests?.data?.items || []}
-          onChange={handleFilter}
-          scroll={{ x: 'max-content' }}
-          pagination={false}
-          showSorterTooltip={false}
-          loading={isRequestsLoading}
-        />
-      ),
-    })) || []),
-  ];
-
   const handleFilterChange = (changedValue: any) => {
     setQueryParams((res) => ({
       ...res,
@@ -255,28 +219,6 @@ export function PendingRequests() {
     }
   }, [requestId]);
 
-  const handleTabChange = (key: string) => {
-    const selectedTab = items.find((item) => item.key === key);
-    const label = selectedTab ? selectedTab.label : '';
-
-    if (key === 'Null')
-      setQueryParams((res: any) => ({
-        ...res,
-        PageIndex: 1,
-        PageSize: 10,
-        RequestStatusId: null,
-        RequestTitle: undefined,
-      }));
-    else
-      setQueryParams((res: any) => ({
-        ...res,
-        PageIndex: 1,
-        PageSize: 10,
-        RequestStatusId: parseInt(key),
-        RequestTitle: label,
-      }));
-  };
-
   const { data: filterValue, refetch: getFilteredValue } = useQueryApiClient({
     request: {
       url: '/api/request/filter-values',
@@ -292,9 +234,23 @@ export function PendingRequests() {
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('pending_requests')}</h1>
+        <Button
+          className='filter-btn'
+          type="primary"
+          onClick={handleFilterVisible}
+          label={isVisible ? t('hide_filter') : t('show_filter')}
+        />
       </div>
-      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
-      <Tabs onChange={handleTabChange} type="card" items={items} className="admin-tabs deleted-request-tab" />
+      {isVisible && <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />}
+      <Table
+        columns={columns}
+        dataSource={requests?.data?.items || []}
+        onChange={handleFilter}
+        scroll={{ x: 'max-content' }}
+        pagination={false}
+        showSorterTooltip={false}
+        loading={isRequestsLoading}
+      />
       {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequestList>
   );

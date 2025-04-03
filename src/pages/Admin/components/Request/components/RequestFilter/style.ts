@@ -5,7 +5,7 @@ export const StyledRequestFilter = styled.div`
     display: grid;
     grid-template-columns: repeat(6, 1fr);   
     gap: 5px;
-    border-radius: 5px;
+    border-radius: 30px;
     .input-selection {
       width: 100%;
       min-width: 0;

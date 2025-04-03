@@ -44,7 +44,7 @@ export function Dashboard() {
         return acc;
       }, {}) || {};
 
-    return ['To Do', 'Create', 'Canceled', 'Completed', 'InProgress'].map((status) => statusCount[status] || 0);
+    return ['ToDo', 'Create', 'Canceled', 'Completed', 'InProgress'].map((status) => statusCount[status] || 0);
   };
   const priorityDataHelper = (requests: any) => {
     const priorityCount =
@@ -54,7 +54,7 @@ export function Dashboard() {
         }
         return acc;
       }, {}) || {};
-    return ['Urgent', 'Normal', 'LowPriority'].map((priority) => priorityCount[priority] || 0);
+    return [t('Urgent'), t('Normal'), t('LowPriority')].map((priority) => priorityCount[priority] || 0);
   };
 
   const countRequestsByCategory = (requests: any, categoryTitle: string) => {
@@ -62,7 +62,7 @@ export function Dashboard() {
   };
 
   const statusData = {
-    labels: ['To Do', 'Create', 'Canceled', 'Completed', 'InProgress'],
+    labels: ['ToDo', 'Create', 'Canceled', 'Completed', 'InProgress'],
     datasets: [
       {
         label: t('request_status'),
@@ -76,7 +76,7 @@ export function Dashboard() {
     labels: ['Urgent', 'Normal', 'LowPriority'],
     datasets: [
       {
-        label: t('request_priorty'),
+        label: t('request_priority'),
         data: priorityDataHelper(requests),
         backgroundColor: ['#ff4d4f', '#1677ff', '#73d13d'],
       },
@@ -126,7 +126,7 @@ export function Dashboard() {
           </Card>
         </Col>
         <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={t('request_priorty')}>
+          <Card title={t('request_priority')}>
             <Line data={priorityData} />
           </Card>
         </Col>

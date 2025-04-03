@@ -66,4 +66,18 @@ export const StyledRequestList = styled.div`
   .ant-table-body::-webkit-scrollbar-thumb:hover {
     background: #555; /* Darker color on hover */
   }
+
+  .header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .header-btn {
+    display: flex;;
+  }
+
+  .filter-btn {
+    border-radius: 5px;
+}
 `;

@@ -142,79 +142,27 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
     },
   ];
 
-  const items = [
-    {
-      label: t('all'),
-      key: 'Null',
-      children: (
-        <Table
-          columns={columns}
-          loading={isRequestsLoading}
-          dataSource={requests?.items || []}
-          onChange={handleFilter}
-          scroll={{ x: 'max-content' }}
-          pagination={false}
-          showSorterTooltip={false}
-          onRow={(record, row) => ({
-            onClick: () => {
-              setDrawerStatus({
-                request: record,
-                status: true,
-                type: 'VIEW',
-                sequence: row != undefined ? row + 1 : 0,
-              });
-            },
-          })}
-        />
-      ),
-    },
-    ...(categories?.map((category) => ({
-      label: t(category.title),
-      key: category.id.toString(),
-      children: (
-        <Table
-          columns={columns}
-          loading={isRequestsLoading}
-          dataSource={requests?.items || []}
-          onChange={handleFilter}
-          scroll={{ x: 'max-content' }}
-          pagination={false}
-          showSorterTooltip={false}
-          onRow={(record) => ({
-            onClick: () => {
-              setDrawerStatus({ request: record, status: true, type: 'VIEW' });
-            },
-          })}
-        />
-      ),
-    })) || []),
-  ];
-
-  const handleTabChange = (key: string) => {
-    const selectedTab = items.find((item) => item.key === key);
-    const label = selectedTab ? selectedTab.label : '';
-
-    if (key === 'Null')
-      setQueryParams((res: any) => ({
-        ...res,
-        PageIndex: 1,
-        PageSize: 10,
-        RequestStatusId: null,
-        RequestTitle: undefined,
-      }));
-    else
-      setQueryParams((res: any) => ({
-        ...res,
-        PageIndex: 1,
-        PageSize: 10,
-        RequestStatusId: parseInt(key),
-        RequestTitle: label,
-      }));
-  };
-
   return (
     <StyledRequestList>
-      <Tabs onChange={handleTabChange} type="card" items={items} className="admin-tabs" />
+      <Table
+        columns={columns}
+        loading={isRequestsLoading}
+        dataSource={requests?.items || []}
+        onChange={handleFilter}
+        scroll={{ x: 'max-content' }}
+        pagination={false}
+        showSorterTooltip={false}
+        onRow={(record, row) => ({
+          onClick: () => {
+            setDrawerStatus({
+              request: record,
+              status: true,
+              type: 'VIEW',
+              sequence: row != undefined ? row + 1 : 0,
+            });
+          },
+        })}
+      />
     </StyledRequestList>
   );
 }

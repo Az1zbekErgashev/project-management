@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
 import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
-import { Tabs } from 'ui';
 import { RequestFilter } from '../RequestFilter';
 
 interface queryParamsType {
@@ -22,6 +21,8 @@ interface queryParamsType {
 export function DeletedRequests() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
+  const [isVisible, setIsVisible] = useState(false);
+
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
   };
@@ -159,13 +160,6 @@ export function DeletedRequests() {
     },
   ];
 
-  const { data: categories } = useQueryApiClient({
-    request: {
-      url: '/api/request/category',
-      method: 'GET',
-    },
-  });
-
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -180,73 +174,21 @@ export function DeletedRequests() {
     },
   });
 
-  const items = [
-    {
-      label: t('all'),
-      key: 'Null',
-      children: (
-        <Table
-          columns={columns}
-          dataSource={requests?.data?.items || []}
-          onChange={handleFilter}
-          scroll={{ x: 'max-content' }}
-          pagination={false}
-          showSorterTooltip={false}
-          loading={isRequestsLoading}
-        />
-      ),
-    },
-    ...(categories?.data?.map((category: any) => ({
-      label: t(category.title),
-      key: category.id.toString(),
-      children: (
-        <Table
-          columns={columns}
-          dataSource={requests?.data?.items || []}
-          onChange={handleFilter}
-          scroll={{ x: 'max-content' }}
-          pagination={false}
-          showSorterTooltip={false}
-          loading={isRequestsLoading}
-        />
-      ),
-    })) || []),
-  ];
-
   const handleFilterChange = (changedValue: any) => {
     console.log(changedValue);
-
     setQueryParams((res) => ({
       ...res,
       ...changedValue,
     }));
   };
 
+  const handleFilterVisible = () => {
+    setIsVisible(prev => !prev);
+  }
+
   useEffect(() => {
     postRequest(queryparams);
   }, [queryparams]);
-
-  const handleTabChange = (key: string) => {
-    const selectedTab = items.find((item) => item.key === key);
-    const label = selectedTab ? selectedTab.label : '';
-
-    if (key === 'Null')
-      setQueryParams((res: any) => ({
-        ...res,
-        PageIndex: 1,
-        PageSize: 10,
-        RequestStatusId: null,
-        RequestTitle: undefined,
-      }));
-    else
-      setQueryParams((res: any) => ({
-        ...res,
-        PageIndex: 1,
-        PageSize: 10,
-        RequestStatusId: parseInt(key),
-        RequestTitle: label,
-      }));
-  };
 
   const { data: filterValue } = useQueryApiClient({
     request: {
@@ -263,9 +205,26 @@ export function DeletedRequests() {
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
+        <div className='header-btn'>
+          <Button 
+            className='filter-btn'
+            type="primary"
+            onClick={handleFilterVisible}
+          >
+            {isVisible ? t('hide_filter') : t('show_filter')}
+          </Button>
+        </div>
       </div>
-      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
-      <Tabs onChange={handleTabChange} type="card" items={items} className="admin-tabs  deleted-request-tab" />
+      {isVisible && <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />}
+      <Table
+        columns={columns}
+        dataSource={requests?.data?.items || []}
+        onChange={handleFilter}
+        scroll={{ x: 'max-content' }}
+        pagination={false}
+        showSorterTooltip={false}
+        loading={isRequestsLoading}
+      />
     </StyledRequestList>
   );
 }
