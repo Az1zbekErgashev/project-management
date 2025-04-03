@@ -18,9 +18,8 @@ import dayjs from 'dayjs';
 interface queryParamsType {
   PageSize: number;
   PageIndex: number;
-  RequestStatusId?: number;
-  Date?: string[];
-  ClientCompany?: string[];
+  Text?: string[];
+  Category?: string;
   RequestTitle?: string;
 }
 
@@ -90,7 +89,7 @@ export function Request() {
 
     try {
       const response = await axios.get(`${routes.api.baseUrl}/api/request/export-excel`, {
-        params: { requestCategoryId: queryparams.RequestStatusId },
+        params: { requestCategoryId: queryparams.Category },
         responseType: 'blob',
       });
 
@@ -118,9 +117,8 @@ export function Request() {
   };
 
   const showFilter = () => {
-    setIsFilterVisible(prev => !prev);
+    setIsFilterVisible((prev) => !prev);
   };
-  
 
   const { data: categories } = useQueryApiClient({
     request: {
@@ -141,7 +139,6 @@ export function Request() {
       getRequests();
       onClose();
       setConiformModal(null);
-      getFilteredValue();
     },
   });
 
@@ -166,17 +163,12 @@ export function Request() {
     }
   }, [requestId]);
 
-  const { data: filterValue, refetch: getFilteredValue } = useQueryApiClient({
+  const { data: filterValue } = useQueryApiClient({
     request: {
-      url: '/api/request/filter-values',
+      url: '/api/request/category',
       method: 'GET',
-      data: {
-        isDeleted: window.location.pathname.includes('deleted-request') ? 1 : 0,
-        status: window.location.pathname.includes('pending-request') ? 0 : null,
-      },
     },
   });
-
   return (
     <StyledRequests>
       {!isFileLoading ? (
@@ -184,7 +176,8 @@ export function Request() {
           <div className="header-line">
             <h1 className="global-title">{t('manage_requests')}</h1>
             <div className="upload-download">
-              <Button className='filter-butn'
+              <Button
+                className="filter-butn"
                 type="primary"
                 label={isFilterVisible ? t('hide_filter') : t('show_filter')}
                 onClick={showFilter}
