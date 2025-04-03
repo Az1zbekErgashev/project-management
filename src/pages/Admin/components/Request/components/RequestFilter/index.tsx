@@ -18,16 +18,18 @@ export function RequestFilter({ handleFilterChange, fieldsToShow, filterValue }:
     <StyledRequestFilter>
       <Form layout="vertical" onValuesChange={handleFilterChange}>
         <Input className="input-selection" name="Text" label={t('text')} />
-        {!isPendingRequests && (
-          <Select className="input-selection" name="Category" modeType="FILTER" label={t('priority')}>
-            {filterValue?.data?.map((item: any, index: number) => (
-              <SelectOption key={index} value={item.id}>
-                {item.title}
-              </SelectOption>
-            ))}
-            <SelectOption value={null}>{t('all')}</SelectOption>
-          </Select>
-        )}
+        <div className="priory">
+          {!isPendingRequests && (
+            <Select className="input-selection-select" name="Category" modeType="FILTER" label={t('priority')}>
+              {filterValue?.data?.map((item: any, index: number) => (
+                <SelectOption key={index} value={item.id}>
+                  {item.title}
+                </SelectOption>
+              ))}
+              <SelectOption value={null}>{t('all')}</SelectOption>
+            </Select>
+          )}
+        </div>
       </Form>
     </StyledRequestFilter>
   );

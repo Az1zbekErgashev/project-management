@@ -8,12 +8,9 @@ export const StyledRequests = styled.div`
     align-items: center;
   }
 
-  .filter-butn {
-    margin-right: 50px;
-  }
-
   .upload-download {
     display: flex;
+    align-items: end;
     gap: 10px;
   }
   .spinnig-wrrap {

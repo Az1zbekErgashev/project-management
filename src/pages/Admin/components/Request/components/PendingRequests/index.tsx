@@ -37,7 +37,7 @@ export function PendingRequests() {
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [requestId, setRequestId] = useState<{ id: number; status: boolean } | null>(null);
   const [isVisible, setIsVisible] = useState(false);
-  
+
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
   };
@@ -166,8 +166,8 @@ export function PendingRequests() {
   };
 
   const handleFilterVisible = () => {
-    setIsVisible(prev => !prev);
-  }
+    setIsVisible((prev) => !prev);
+  };
 
   const { refetch: changeRequestStatus } = useQueryApiClient({
     request: {
@@ -234,14 +234,8 @@ export function PendingRequests() {
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('pending_requests')}</h1>
-        <Button
-          className='filter-btn'
-          type="primary"
-          onClick={handleFilterVisible}
-          label={isVisible ? t('hide_filter') : t('show_filter')}
-        />
       </div>
-      {isVisible && <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />}
+      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
       <Table
         columns={columns}
         dataSource={requests?.data?.items || []}

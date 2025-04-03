@@ -183,8 +183,8 @@ export function DeletedRequests() {
   };
 
   const handleFilterVisible = () => {
-    setIsVisible(prev => !prev);
-  }
+    setIsVisible((prev) => !prev);
+  };
 
   useEffect(() => {
     postRequest(queryparams);
@@ -192,12 +192,8 @@ export function DeletedRequests() {
 
   const { data: filterValue } = useQueryApiClient({
     request: {
-      url: '/api/request/filter-values',
+      url: '/api/request/category',
       method: 'GET',
-      data: {
-        isDeleted: window.location.pathname.includes('deleted-request') ? 1 : 0,
-        status: window.location.pathname.includes('pending-request') ? 0 : null,
-      },
     },
   });
 
@@ -205,17 +201,8 @@ export function DeletedRequests() {
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
-        <div className='header-btn'>
-          <Button 
-            className='filter-btn'
-            type="primary"
-            onClick={handleFilterVisible}
-          >
-            {isVisible ? t('hide_filter') : t('show_filter')}
-          </Button>
-        </div>
       </div>
-      {isVisible && <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />}
+      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
       <Table
         columns={columns}
         dataSource={requests?.data?.items || []}

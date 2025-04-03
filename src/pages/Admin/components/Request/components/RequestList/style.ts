@@ -1,41 +1,16 @@
 import styled from 'styled-components';
 
 export const StyledRequestList = styled.div`
-  padding-top: 20px;
-
   &.deleted-requests {
     padding-top: 0px;
-    
+
     .deleted-request-tab {
       padding-top: 20px !important;
     }
   }
 
-  .admin-tabs {
-    border: none !important;
-    .ant-tabs-tab {
-      background: transparent;
-      border-color: transparent;
-    }
-    .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
-      background: var(--base-color-semi-transparent);
-      height: 45px;
-      border-radius: 6px !important;
-      border-color: transparent;
-
-      .ant-tabs-tab-btn {
-        font-size: 0.77778rem;
-        line-height: 1.55556rem;
-        color: var(--base-color) !important;
-      }
-    }
-    .ant-tabs-card > .ant-tabs-nav {
-      .ant-tabs-tab-btn {
-        font-size: 0.77778rem;
-        line-height: 1.55556rem;
-        color: var(--black) !important;
-      }
-    }
+  .ant-table-container {
+    margin-top: 40px !important;
   }
 
   thead {
@@ -74,10 +49,10 @@ export const StyledRequestList = styled.div`
   }
 
   .header-btn {
-    display: flex;;
+    display: flex;
   }
 
   .filter-btn {
     border-radius: 5px;
-}
+  }
 `;
