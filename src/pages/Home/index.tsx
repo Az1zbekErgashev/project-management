@@ -119,6 +119,9 @@ export function Dashboard() {
       <div className="header-line">
         <h1 className="global-title">{t('requests_statistic')}</h1>
       </div>
+      <div className="header-b">
+        Here is content
+      </div>
       <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
         <Col xs={24} sm={24} md={12} lg={12}>
           <Card title={t('request_status')}>
