@@ -59,6 +59,9 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
       getUsers();
       onClose();
     },
+    onError(error) {
+      if (error?.data?.error) Notification({ text: t('cannot_change_last_admin'), type: 'error' });
+    },
   });
 
   const { data: country, isLoading: isCountryLoading } = useQueryApiClient({
