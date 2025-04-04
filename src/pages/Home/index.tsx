@@ -1,6 +1,6 @@
-import React, { useTransition } from 'react';
+import React from 'react';
 import { Card, Col, Row } from 'antd';
-import { Bar, Doughnut, Line, Pie, Bubble, Chart, Radar, PolarArea } from 'react-chartjs-2';
+import { Bar, Line, Chart } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -21,6 +21,7 @@ ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointEleme
 
 export function Dashboard() {
   const { t } = useTranslation();
+
   const { data: requests } = useQueryApiClient({
     request: {
       url: '/api/request/requets',
@@ -35,6 +36,13 @@ export function Dashboard() {
     },
   });
 
+  const { data: counts } = useQueryApiClient({
+    request: {
+      url: '/api/request/counts',
+      method: 'GET',
+    },
+  });
+
   const statusDataHelper = (requests: any) => {
     const statusCount =
       requests?.data?.items?.reduce((acc: any, request: any) => {
@@ -43,9 +51,9 @@ export function Dashboard() {
         }
         return acc;
       }, {}) || {};
-
     return ['ToDo', 'Create', 'Canceled', 'Completed', 'InProgress'].map((status) => statusCount[status] || 0);
   };
+
   const priorityDataHelper = (requests: any) => {
     const priorityCount =
       requests?.data?.items?.reduce((acc: any, request: any) => {
@@ -58,7 +66,7 @@ export function Dashboard() {
   };
 
   const countRequestsByCategory = (requests: any, categoryTitle: string) => {
-    return requests?.data?.items?.filter((request: any) => request?.requestStatus?.title === categoryTitle).length;
+    return requests?.data?.items?.filter((request: any) => request?.requestStatus?.title === categoryTitle).length || 0;
   };
 
   const statusData = {
@@ -114,36 +122,48 @@ export function Dashboard() {
     ],
   };
 
+  const renderCounts = () => {
+    if (!counts?.data) return <div className="loading">Loading...</div>;
+
+    return counts.data.map((item: any, index: number) => (
+      <div key={index} className="count-item">
+        <span className="count-title">{t(item.title)}</span>
+        <span className="count-value">{item.count}</span>
+      </div>
+    ));
+  };
+
   return (
     <StyledHomePage>
-      <div className="header-line">
-        <h1 className="global-title">{t('requests_statistic')}</h1>
+      <div className="dashboard-header">
+        <h1 className="dashboard-title">{t('requests_statistic')}</h1>
       </div>
-      <div className="header-b">
-        Here is content
+      <div className="header-stats">{renderCounts()}</div>
+      <br />
+      <div className="chart-container">
+        <Row gutter={[16, 16]}>
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title={t('request_status')}>
+              <Bar data={statusData} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title={t('request_priority')}>
+              <Line data={priorityData} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title={t('request_category')}>
+              <Chart type="bar" data={requestStatusData} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12}>
+            <Card title={t('request_createdAt')}>
+              <Bar data={chartData} />
+            </Card>
+          </Col>
+        </Row>
       </div>
-      <Row gutter={[16, 16]} style={{ marginTop: '16px' }}>
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={t('request_status')}>
-            <Bar data={statusData} />
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={t('request_priority')}>
-            <Line data={priorityData} />
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={t('request_category')}>
-            <Chart type="bar" data={requestStatusData} />
-          </Card>
-        </Col>
-        <Col xs={24} sm={24} md={12} lg={12}>
-          <Card title={t('request_createdAt')}>
-            <Bar data={chartData} />
-          </Card>
-        </Col>
-      </Row>
     </StyledHomePage>
   );
 }
