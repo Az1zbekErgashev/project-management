@@ -21,6 +21,7 @@ interface RequestProps {
   disableOnMount?: boolean;
   baseUrl?: string;
   headers?: Record<string, string>;
+  withCredentials?: boolean;
 }
 
 interface UseQueryApiClientProps {
@@ -66,6 +67,7 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
         request?.method,
         request?.mustRetry,
         request?.multipart,
+        request?.withCredentials,
         {},
         request.baseUrl
       );
@@ -112,7 +114,8 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
     mustRetry: boolean = true,
     multipart: boolean = false,
     passOnSuccess: any = {},
-    baseUrl: string = ''
+    baseUrl: string = '',
+    withCredentials: boolean
   ) => {
     if (!enabled) {
       return;
@@ -128,6 +131,7 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
       paramsSerializer: {
         indexes: true,
       },
+      withCredentials: withCredentials,
       headers: {
         Authorization: getToken,
         'Content-Type': multipart ? 'multipart/form-data' : 'application/json',

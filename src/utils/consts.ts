@@ -57,17 +57,16 @@ export const actions = [
 ];
 
 export const PRIORITY = [
-  { id: 0, text: 'Urgent' },
-  { id: 1, text: 'Normal' },
-  { id: 2, text: 'LowPriority' },
+  { id: 0, text: 'Medium' },
+  { id: 1, text: 'Low' },
+  { id: 2, text: 'High' },
 ];
 
 export const PROJECT_STATUS = [
-  { id: 0, text: 'ToDo' },
-  { id: 1, text: 'Create' },
+  { id: 0, text: 'Pending' },
   { id: 2, text: 'InProgress' },
   { id: 3, text: 'Completed' },
-  { id: 4, text: 'Canceled' },
+  { id: 4, text: 'Rejected' },
 ];
 
 export const defaultImageUrl =
