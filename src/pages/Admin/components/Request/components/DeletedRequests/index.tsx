@@ -202,7 +202,7 @@ export function DeletedRequests() {
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
       </div>
-      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
+      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} isDeleted={1} />
       <Table
         columns={columns}
         dataSource={requests?.data?.items || []}

@@ -185,7 +185,7 @@ export function Request() {
               />
             </div>
           </div>
-          <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} />
+          <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} isDeleted={0} />
 
           <RequestList
             setQueryParams={setQueryParams}

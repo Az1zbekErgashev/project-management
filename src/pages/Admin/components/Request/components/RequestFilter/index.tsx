@@ -1,16 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyledRequestFilter } from './style';
 import { AutoComplete, Form } from 'antd';
-import { Input, Select, SelectOption } from 'ui';
+import { Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
 
 interface props {
   handleFilterChange: (value: any) => void;
-  fieldsToShow?: string[];
+  isDeleted: number;
   filterValue: any;
+  status?: number | null;
 }
-export function RequestFilter({ handleFilterChange, fieldsToShow, filterValue }: props) {
+export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, status = null }: props) {
   const { t } = useTranslation();
   const isPendingRequests = window.location.pathname.includes('pending-request');
   const [value, setValue] = useState('');
@@ -27,15 +28,22 @@ export function RequestFilter({ handleFilterChange, fieldsToShow, filterValue }:
     setValue(data);
   };
 
-  const { data: options } = useQueryApiClient({
+  const { data: options, refetch } = useQueryApiClient({
     request: {
       url: '/api/request/filter-values',
       method: 'GET',
+      data: { IsDeleted: isDeleted, Status: status },
+      disableOnMount: true,
     },
     onSuccess(response) {
       setFilteredOptions(response?.data);
     },
   });
+
+  useEffect(() => {
+    refetch();
+  }, [window.location.pathname]);
+
   return (
     <StyledRequestFilter>
       <Form layout="vertical" onValuesChange={handleFilterChange}>
