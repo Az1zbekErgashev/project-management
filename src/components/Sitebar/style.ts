@@ -8,6 +8,7 @@ export const StyledSitebar = styled.div`
     background: #151a2d;
     height: 100vh;
     transition: all 0.4s ease;
+    overflow-y: scroll;
   }
   .sidebar.collapsed {
     width: 85px;
@@ -113,8 +114,7 @@ export const StyledSitebar = styled.div`
   }
 
   .sidebar-nav .secondary-nav {
-    position: absolute;
-    bottom: 30px;
+    margin-top: 110px !important;
     width: 100%;
   }
 
@@ -179,6 +179,7 @@ export const StyledSitebar = styled.div`
     row-gap: 5px;
     max-height: 0;
     overflow: hidden;
+    overflow-y: scroll;
     transition:
       max-height 0.3s ease-out,
       opacity 0.3s ease-out;

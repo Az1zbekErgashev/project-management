@@ -21,7 +21,6 @@ interface queryParamsType {
 export function DeletedRequests() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
-  const [isVisible, setIsVisible] = useState(false);
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -175,15 +174,10 @@ export function DeletedRequests() {
   });
 
   const handleFilterChange = (changedValue: any) => {
-    console.log(changedValue);
     setQueryParams((res) => ({
       ...res,
       ...changedValue,
     }));
-  };
-
-  const handleFilterVisible = () => {
-    setIsVisible((prev) => !prev);
   };
 
   useEffect(() => {

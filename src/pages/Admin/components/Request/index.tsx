@@ -52,7 +52,6 @@ export function Request() {
     sequence?: number;
   }>({ status: false, type: 'ADD' });
   const [form] = Form.useForm();
-  const [isFilterVisible, setIsFilterVisible] = useState(false);
 
   const {
     data: requests,
@@ -114,10 +113,6 @@ export function Request() {
   const onClose = async () => {
     setDrawerStatus({ status: false, type: 'ADD' });
     form.resetFields();
-  };
-
-  const showFilter = () => {
-    setIsFilterVisible((prev) => !prev);
   };
 
   const { data: categories } = useQueryApiClient({

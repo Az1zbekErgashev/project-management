@@ -36,7 +36,6 @@ export function PendingRequests() {
   const [queryParams, setQueryParams] = useState<QueryParamsType>({ PageIndex: 1, PageSize: 10 });
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [requestId, setRequestId] = useState<{ id: number; status: boolean } | null>(null);
-  const [isVisible, setIsVisible] = useState(false);
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -164,11 +163,6 @@ export function PendingRequests() {
       )
     );
   };
-
-  const handleFilterVisible = () => {
-    setIsVisible((prev) => !prev);
-  };
-
   const { refetch: changeRequestStatus } = useQueryApiClient({
     request: {
       url: `/api/request/change-pending-request?id=${requestId?.id}&status=${requestId?.status}`,
@@ -235,7 +229,7 @@ export function PendingRequests() {
       <div className="header-line">
         <h1 className="global-title">{t('pending_requests')}</h1>
       </div>
-      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} isDeleted={0} status={0}/>
+      <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} isDeleted={0} status={0} />
       <Table
         columns={columns}
         dataSource={requests?.data?.items || []}
