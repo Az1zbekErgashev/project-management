@@ -20,4 +20,8 @@ export const StyledRequestFilter = styled.div`
       width: 35%;
     }
   }
+
+  .custom-input {
+    height: 50px !important;
+  }
 `;

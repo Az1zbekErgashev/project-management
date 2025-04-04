@@ -5,7 +5,7 @@ import { Select } from 'antd';
 export const StyledSelect = styled(Select)`
   && {
     width: 100%;
-    height: ${token.inputHeight}px;
+    height: 50px;
     font-size: 0.7777777rem;
     .rc-virtual-list-scrollbar-thumb {
       background-color: ${token.colorBase} !important;
@@ -24,15 +24,5 @@ export const StyledSelect = styled(Select)`
     .ant-select-selection-placeholder {
       color: #cacaca !important;
     }
-  }
-
-  .cv-select .ant-select {
-    border-radius: 8px !important;
-  }
-
-  .cv-select .ant-select .ant-select-selector {
-    border-radius: 8px !important;
-    border: 1px solid 8px !important;
-    height: 50px !important;
   }
 `;
