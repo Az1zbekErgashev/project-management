@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
-import { Table, Button } from 'antd';
+import { Drawer, Form, Table } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
@@ -8,6 +8,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
 import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
 import { RequestFilter } from '../RequestFilter';
+import { InputSelection } from '../InputSelection';
 
 interface queryParamsType {
   PageSize: number;
@@ -21,6 +22,13 @@ interface queryParamsType {
 export function DeletedRequests() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
+  const [drawerStatus, setDrawerStatus] = useState<{
+    status: boolean;
+    type: 'VIEW' | 'EDIT' | 'ADD';
+    request?: RequestModel;
+    sequence?: number;
+  }>({ status: false, type: 'ADD' });
+  const [form] = Form.useForm();
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -191,6 +199,11 @@ export function DeletedRequests() {
     },
   });
 
+  const onClose = async () => {
+    setDrawerStatus({ status: false, type: 'ADD' });
+    form.resetFields();
+  };
+
   return (
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
@@ -205,7 +218,28 @@ export function DeletedRequests() {
         pagination={false}
         showSorterTooltip={false}
         loading={isRequestsLoading}
+        onRow={(record, row) => ({
+          onClick: () => {
+            setDrawerStatus({
+              request: record,
+              status: true,
+              type: 'VIEW',
+              sequence: row != undefined ? row + 1 : 0,
+            });
+          },
+        })}
       />
+      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus.status}>
+        <Form form={form} layout="vertical">
+          <InputSelection
+            setDrawerStatus={setDrawerStatus}
+            drawerStatus={drawerStatus}
+            getRequests={getRequests}
+            form={form}
+            onClose={onClose}
+          />
+        </Form>
+      </Drawer>
     </StyledRequestList>
   );
 }

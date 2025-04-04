@@ -20,7 +20,7 @@ interface Props {
     request?: RequestModel;
     sequence?: number;
   };
-  handleDelete: (id: number, type: 'DELETE' | 'RECOVER') => void;
+  handleDelete?: (id: number, type: 'DELETE' | 'RECOVER') => void;
   setDrawerStatus: React.Dispatch<
     React.SetStateAction<{
       status: boolean;
@@ -34,7 +34,7 @@ interface Props {
 export function InputSelection({ form, onClose, getRequests, drawerStatus, handleDelete, setDrawerStatus }: Props) {
   const { t } = useTranslation();
   const [disable, setDisable] = useState<boolean>(false);
-
+  const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url:
@@ -78,23 +78,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
     },
   });
 
-  const { appendData } = useQueryApiClient({
-    request: {
-      url: '/api/request/create',
-      method: 'POST',
-    },
-    onSuccess() {
-      refetch();
-      form.setFieldValue('requestStatusId', null);
-      form.setFieldValue('newRequestStatus', null);
-    },
-  });
-
-  const handleNewCategorySubmit = () => {
-    var value = form.getFieldsValue();
-    appendData({ title: value.newRequestStatus });
-  };
-
   useEffect(() => {
     if (drawerStatus.type == 'VIEW') {
       setDisable(true);
@@ -110,9 +93,9 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
 
   const handleDeleteRequest = () => {
     if (drawerStatus.request?.isDeleted === 0) {
-      handleDelete(drawerStatus?.request?.id, 'DELETE');
+      handleDelete && handleDelete(drawerStatus?.request?.id, 'DELETE');
     } else {
-      handleDelete(drawerStatus?.request?.id || 0, 'RECOVER');
+      handleDelete && handleDelete(drawerStatus?.request?.id || 0, 'RECOVER');
     }
   };
 
@@ -127,10 +110,13 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
 
   return (
     <StyledInputSelection>
-      <div className="title">
-        <h1>{t('request_id').replace('id', drawerStatus.sequence?.toString() || '0')}</h1>
-        <Button icon={<SvgSelector id="edit" />} onClick={handleUpdate} />
-      </div>
+      {!isDeletedRequesdts && (
+        <div className="title">
+          <h1>{t('request_id').replace('id', drawerStatus.sequence?.toString() || '0')}</h1>
+          <Button icon={<SvgSelector id="edit" />} onClick={handleUpdate} />
+        </div>
+      )}
+
       <div className="form-div">
         <div className="form-content">
           <Input disabled={disable} name="date" label={t('date_created')} />
@@ -196,31 +182,33 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
           <SelectOption value="new">{t('new_category')}</SelectOption>
         </Select>
       </div>
-      <div className="action-btns">
-        {drawerStatus.type !== 'VIEW' ? (
-          <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
-        ) : (
-          <>
+      {!isDeletedRequesdts && (
+        <div className="action-btns">
+          {drawerStatus.type !== 'VIEW' ? (
             <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
+          ) : (
+            <>
+              <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
+              <Button
+                danger
+                label={drawerStatus?.request?.isDeleted === 0 ? t('delete') : t('recover')}
+                className={drawerStatus?.request?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+                type="primary"
+                onClick={handleDeleteRequest}
+              />
+            </>
+          )}
+          {drawerStatus.type !== 'VIEW' && (
             <Button
-              danger
-              label={drawerStatus?.request?.isDeleted === 0 ? t('delete') : t('recover')}
-              className={drawerStatus?.request?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+              label={drawerStatus.type === 'ADD' ? t('create_request') : t('save_changes')}
               type="primary"
-              onClick={handleDeleteRequest}
+              htmlType="button"
+              onClick={handleSubmit}
+              loading={isLoading}
             />
-          </>
-        )}
-        {drawerStatus.type !== 'VIEW' && (
-          <Button
-            label={drawerStatus.type === 'ADD' ? t('create_request') : t('save_changes')}
-            type="primary"
-            htmlType="button"
-            onClick={handleSubmit}
-            loading={isLoading}
-          />
-        )}
-      </div>
+          )}
+        </div>
+      )}
     </StyledInputSelection>
   );
 }
