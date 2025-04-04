@@ -6,7 +6,7 @@ export const StyledLoginPage = styled.div`
 
   .image-container {
     width: 50%;
-    height: 100%; 
+    height: 100%;
     overflow: hidden;
     position: relative;
     img {
@@ -23,7 +23,7 @@ export const StyledLoginPage = styled.div`
     background: var(--white);
     padding: 20px;
     border-radius: 15px;
-    background-color:rgb(255, 255, 255);
+    background-color: rgb(255, 255, 255);
     form {
       width: 100%;
       max-width: 350px;
@@ -33,9 +33,7 @@ export const StyledLoginPage = styled.div`
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       background: var(--white);
 
-      .login-input {
-        border-radius: 15px;
-      }
+
 
       .flex {
         display: flex;
@@ -46,17 +44,17 @@ export const StyledLoginPage = styled.div`
       }
 
       .button {
-        margin-top: 30px; 
+        margin-top: 30px;
 
         button {
-          margin-top: 90px;;
+          margin-top: 90px;
           width: 100%;
           background-color: var(navy);
           color: var(--white);
           border: none;
           font-size: 16px;
           font-weight: 500;
-          border-radius: 15px; 
+          border-radius: 15px;
           transition: background-color 0.3s ease-in-out;
 
           &:hover {
