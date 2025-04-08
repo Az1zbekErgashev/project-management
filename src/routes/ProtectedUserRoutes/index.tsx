@@ -7,7 +7,7 @@ interface ProtectedUserRouteProps {
 
 const ProtectedUserRoute = ({ children }: ProtectedUserRouteProps) => {
   const { remove, getDecoded } = useJwt();
-  const tokenExp = getDecoded().exp;
+  const tokenExp = getDecoded()?.exp;
   if (tokenExp) {
     const currentDate = Date.now() / 1000;
     if (currentDate > tokenExp) {
