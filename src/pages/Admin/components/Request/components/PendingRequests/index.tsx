@@ -107,18 +107,18 @@ export function PendingRequests() {
       key: 'additionalInformation',
       filterSearch: true,
     },
-    {
-      title: t('deadline'),
-      dataIndex: 'deadline',
-      key: 'deadline',
-      filterSearch: true,
-      render: (_, record) => {
-        const remainingDays = record.deadline ? dayjs(record.deadline).diff(dayjs(), 'day') : null;
-        if (remainingDays === null) return null;
-        if (remainingDays <= 0) return t('overdue');
-        return remainingDays === 1 ? '1' : `${remainingDays} дня${remainingDays > 1 ? '' : ''}`;
-      },
-    },
+    // {
+    //   title: t('deadline'),
+    //   dataIndex: 'deadline',
+    //   key: 'deadline',
+    //   filterSearch: true,
+    //   render: (_, record) => {
+    //     const remainingDays = record.deadline ? dayjs(record.deadline).diff(dayjs(), 'day') : null;
+    //     if (remainingDays === null) return null;
+    //     if (remainingDays <= 0) return t('overdue');
+    //     return remainingDays === 1 ? '1' : `${remainingDays} дня${remainingDays > 1 ? '' : ''}`;
+    //   },
+    // },
     {
       title: t('notes'),
       dataIndex: 'notes',

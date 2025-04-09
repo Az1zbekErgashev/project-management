@@ -4,7 +4,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
-import { Button, ConfirmModal, Spinner, Notification } from 'ui';
+import { Button, ConfirmModal, Spinner, Notification, Modal } from 'ui';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
@@ -204,7 +204,7 @@ export function Request() {
         </div>
       )}
 
-      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus.status}>
+      <Modal width={750} title={t('request_action')} onCancel={onClose} open={drawerStatus.status}>
         <Form form={form} layout="vertical">
           <InputSelection
             setDrawerStatus={setDrawerStatus}
@@ -215,7 +215,7 @@ export function Request() {
             onClose={onClose}
           />
         </Form>
-      </Drawer>
+      </Modal>
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequests>

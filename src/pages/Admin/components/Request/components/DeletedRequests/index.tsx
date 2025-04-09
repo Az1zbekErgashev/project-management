@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
 import { RequestFilter } from '../RequestFilter';
 import { InputSelection } from '../InputSelection';
+import { Modal } from 'ui';
 
 interface queryParamsType {
   PageSize: number;
@@ -158,13 +159,13 @@ export function DeletedRequests() {
           return null;
         }),
     },
-    {
-      title: t('deadline'),
-      dataIndex: 'deadline',
-      key: 'deadline',
-      filterSearch: true,
-      render: (_, record) => (record.deadline ? dayjs(record.deadline).diff(dayjs(record.createdAt), 'day') : null),
-    },
+    // {
+    //   title: t('deadline'),
+    //   dataIndex: 'deadline',
+    //   key: 'deadline',
+    //   filterSearch: true,
+    //   render: (_, record) => (record.deadline ? dayjs(record.deadline).diff(dayjs(record.createdAt), 'day') : null),
+    // },
   ];
 
   const {
@@ -229,7 +230,7 @@ export function DeletedRequests() {
           },
         })}
       />
-      <Drawer width={600} title={t('request_action')} onClose={onClose} open={drawerStatus.status}>
+      <Modal width={750} title={t('request_action')} onCancel={onClose} open={drawerStatus.status}>
         <Form form={form} layout="vertical">
           <InputSelection
             setDrawerStatus={setDrawerStatus}
@@ -239,7 +240,7 @@ export function DeletedRequests() {
             onClose={onClose}
           />
         </Form>
-      </Drawer>
+      </Modal>
     </StyledRequestList>
   );
 }

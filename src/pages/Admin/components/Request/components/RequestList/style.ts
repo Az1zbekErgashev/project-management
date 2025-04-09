@@ -19,27 +19,42 @@ export const StyledRequestList = styled.div`
     }
   }
 
-  .ant-tooltip-placement-top {
-    display: none;
+  .ant-tooltip {
+    pointer-events: none; 
+    .ant-tooltip-inner {
+      background-color: rgba(0, 0, 0, 0.85) !important;
+      color: #fff !important;
+    }
+    .ant-tooltip-arrow {
+      &::before {
+        background-color: rgba(0, 0, 0, 0.85) !important;
+      }
+    }
+  }
+
+  .ant-table-row {
+    .ant-table-cell {
+      overflow: visible; 
+    }
   }
 
   .ant-table-body::-webkit-scrollbar {
-    height: 8px; /* Height of horizontal scrollbar */
-    width: 8px; /* Width of vertical scrollbar */
+    height: 8px;
+    width: 8px;
   }
 
   .ant-table-body::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Track color */
+    background: #f1f1f1;
     border-radius: 10px;
   }
 
   .ant-table-body::-webkit-scrollbar-thumb {
-    background: #888; /* Scrollbar color */
+    background: #888;
     border-radius: 10px;
   }
 
   .ant-table-body::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Darker color on hover */
+    background: #555;
   }
 
   .header-line {

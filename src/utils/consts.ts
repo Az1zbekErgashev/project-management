@@ -63,11 +63,10 @@ export const PRIORITY = [
 ];
 
 export const PROJECT_STATUS = [
-  { id: 0, text: 'ToDo' },
-  { id: 1, text: 'Create' },
-  { id: 2, text: 'InProgress' },
-  { id: 3, text: 'Completed' },
-  { id: 4, text: 'Canceled' },
+  { id: 0, text: 'Pending' },
+  { id: 1, text: 'InProgress' },
+  { id: 2, text: 'Completed' },
+  { id: 3, text: 'Rejected' },
 ];
 
 export const defaultImageUrl =

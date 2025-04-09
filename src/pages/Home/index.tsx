@@ -141,7 +141,7 @@ export function Dashboard() {
 
   const statusTypes = ['Pending', 'InProgress', 'Completed', 'Canceled'];
   const priorityTypes = ['High', 'Medium', 'Low'];
-  const categoryTypes = ['와이즈스톤티', 'ICT연구소', '더테스트', '마케팅본부(STF팀)', 'CRM', 'All'];
+  const categoryTypes = ['와이즈스톤티', 'ICT연구소', '더테스트', '마케팅본부(STF팀)', 'All'];
 
   const renderCountsByType = () => {
     if (!counts?.data) return <div className="loading">Loading...</div>;

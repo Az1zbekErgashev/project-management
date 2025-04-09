@@ -2,10 +2,36 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Tabs } from 'ui';
+import { Tabs } from 'ui'; 
 import { RequestItems, RequestModel } from './type';
+import { Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
+import styled from 'styled-components';
+
+const StatusBadge = styled(Tag)`
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-weight: 500;
+  font-size: 12px;
+  text-transform: uppercase;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    opacity: 0.85;
+    transform: scale(1.05);
+  }
+`;
+
+const NotesText = styled.span`
+  display: block;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  cursor: pointer;
+  pointer-events: auto; 
+`;
 
 interface props {
   isRequestsLoading: boolean;
@@ -97,11 +123,11 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'email',
       key: 'email',
     },
-    {
-      title: t('processing_status'),
-      dataIndex: 'processingStatus',
-      key: 'processingStatus',
-    },
+    // {
+    //   title: t('processing_status'),
+    //   dataIndex: 'processingStatus',
+    //   key: 'processingStatus',
+    // },
     {
       title: t('final_result'),
       dataIndex: 'finalResult',
@@ -111,17 +137,69 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       title: t('notes'),
       dataIndex: 'notes',
       key: 'notes',
+      width: 250,
+      render: (text) => {
+        const isLongText = text && text.length > 30; 
+        return isLongText ? (
+          <Tooltip
+          title={text}
+          placement="top"
+          overlayStyle={{ maxWidth: '500px' }}
+          overlayInnerStyle={{
+            backgroundColor: 'rgba(15, 10, 10, 0.85)',
+            color: '#fff',
+            padding: '8px 12px',
+            borderRadius: '4px',
+          }}
+          mouseEnterDelay={0}  
+          mouseLeaveDelay={-1}    
+          trigger={['hover']}    
+          destroyTooltipOnHide   
+        >
+          <NotesText>{text}</NotesText>
+        </Tooltip>
+        ) : (
+          <NotesText>{text || '-'}</NotesText>
+        );
+      },
     },
     {
       title: t('status'),
       dataIndex: 'status',
       key: 'status',
-      render: (_, record) =>
-        PROJECT_STATUS?.map((item, index) => {
-          if (item.text.toLowerCase() === record?.status?.toLowerCase())
-            return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
-          return null;
-        }),
+      render: (_, record) => {
+        const status = record?.status?.toLowerCase();
+        let color = '';
+        let backgroundColor = '';
+
+        switch (status) {
+          case 'pending':
+            color = '#d48806'; 
+            backgroundColor = '#fff7e6'; 
+            break;
+          case 'inprogress':
+            color = '#006644'; 
+            backgroundColor = '#e6ffe6'; 
+            break;
+          case 'completed':
+            color = '#006d75'; 
+            backgroundColor = '#e6f7fa';
+            break;
+          case 'rejected':
+            color = '#a8071a'; 
+            backgroundColor = '#ffe6e6'; 
+            break;
+          default:
+            color = '#000000'; 
+            backgroundColor = '#ffffff'; 
+        }
+
+        return (
+          <StatusBadge style={{ color, backgroundColor, border: 'none' }}>
+            {t(status || 'unknown_status')}
+          </StatusBadge>
+        );
+      },
     },
     {
       title: t('priority'),
@@ -133,12 +211,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
             return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
           return null;
         }),
-    },
-    {
-      title: t('deadline'),
-      dataIndex: 'deadline',
-      key: 'deadline',
-      render: (_, record) => (record.deadline ? dayjs(record.deadline).diff(dayjs(record.createdAt), 'day') : null),
     },
   ];
 
