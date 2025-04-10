@@ -207,7 +207,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       key: 'priority',
       render: (_, record) =>
         PRIORITY?.map((item, index) => {
-          if (item.text.toLowerCase() === record?.priority?.toLowerCase())
+          if (item?.text?.toLowerCase() === record?.priority?.toLowerCase())
             return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
           return null;
         }),

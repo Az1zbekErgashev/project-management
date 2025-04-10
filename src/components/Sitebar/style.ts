@@ -113,6 +113,13 @@ export const StyledSitebar = styled.div`
     position: relative;
   }
 
+  .sidebar-nav {
+    min-height: calc(100vh - 100px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
   .sidebar-nav .secondary-nav {
     margin-top: 110px !important;
     width: 100%;

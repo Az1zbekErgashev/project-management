@@ -112,7 +112,7 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
     mustRetry: boolean = true,
     multipart: boolean = false,
     passOnSuccess: any = {},
-    baseUrl: string = ''
+    baseUrl: string = '',
   ) => {
     if (!enabled) {
       return;

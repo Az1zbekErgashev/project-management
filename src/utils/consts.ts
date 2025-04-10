@@ -57,9 +57,9 @@ export const actions = [
 ];
 
 export const PRIORITY = [
-  { id: 0, text: 'High' },
-  { id: 1, text: 'Medium' },
-  { id: 2, text: 'Low' },
+  { id: 0, text: 'Medium' },
+  { id: 1, text: 'Low' },
+  { id: 2, text: 'High' },
 ];
 
 export const PROJECT_STATUS = [

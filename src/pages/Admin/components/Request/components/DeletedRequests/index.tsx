@@ -142,7 +142,7 @@ export function DeletedRequests() {
       filterSearch: true,
       render: (_, record) =>
         PROJECT_STATUS?.map((item, index) => {
-          if (item.text.toLowerCase() === record?.status?.toLowerCase())
+          if (item?.text?.toLowerCase() === record?.status?.toLowerCase())
             return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
           return null;
         }),
@@ -154,7 +154,7 @@ export function DeletedRequests() {
       filterSearch: true,
       render: (_, record) =>
         PRIORITY?.map((item, index) => {
-          if (item.text.toLowerCase() === record?.priority?.toLowerCase())
+          if (item?.text?.toLowerCase() === record?.priority?.toLowerCase())
             return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
           return null;
         }),
