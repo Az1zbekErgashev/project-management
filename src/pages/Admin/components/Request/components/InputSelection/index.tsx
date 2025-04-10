@@ -1,7 +1,7 @@
 import { Form } from 'antd';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DatePicker, Input, Notification, Select, SelectOption } from 'ui';
+import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
@@ -150,7 +150,12 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
           <Input name="email" disabled={disable} label={t('email')} />
           <Input name="responseStatus" disabled={disable} label={t('processing_status')} />
           <Input name="finalResult" disabled={disable} label={t('final_result')} />
-          <Input name="notes" disabled={disable} label={t('notes')} />
+          <TextArea
+          name="notes"
+          disabled={disable}
+          label={t('notes')}
+          rows={3}
+        />
         </div>
       </div>
       <div className="category">

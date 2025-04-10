@@ -23,14 +23,26 @@ const StatusBadge = styled(Tag)`
   }
 `;
 
-const NotesText = styled.span`
-  display: block;
-  max-width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+const NotesButton = styled.button`
+  padding: 4px 8px;
+  background-color: #1890ff; 
+  color: #fff;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
-  pointer-events: auto; 
+  font-size: 12px;
+  font-weight: 500;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #40a9ff; 
+    transform: scale(1.05);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+  }
 `;
 
 interface props {
@@ -47,6 +59,15 @@ interface props {
     }>
   >;
 }
+
+const FINAL_RESULT_TO_STATUS: { [key: string]: string } = {
+  '진행 중': 'InProgress',
+  '프로젝트 거절': 'Rejected',
+  '수주': 'Completed',
+  '프로젝트 보류': 'Pending',
+  '프로젝트 가결': 'Completed',
+  'Test api': 'Rejected',
+};
 
 export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: props) {
   const { t } = useTranslation();
@@ -123,11 +144,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'email',
       key: 'email',
     },
-    // {
-    //   title: t('processing_status'),
-    //   dataIndex: 'processingStatus',
-    //   key: 'processingStatus',
-    // },
     {
       title: t('final_result'),
       dataIndex: 'finalResult',
@@ -137,29 +153,29 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       title: t('notes'),
       dataIndex: 'notes',
       key: 'notes',
-      width: 250,
+      width: 120,
       render: (text) => {
         const isLongText = text && text.length > 30; 
         return isLongText ? (
           <Tooltip
-          title={text}
-          placement="top"
-          overlayStyle={{ maxWidth: '500px' }}
-          overlayInnerStyle={{
-            backgroundColor: 'rgba(15, 10, 10, 0.85)',
-            color: '#fff',
-            padding: '8px 12px',
-            borderRadius: '4px',
-          }}
-          mouseEnterDelay={0}  
-          mouseLeaveDelay={-1}    
-          trigger={['hover']}    
-          destroyTooltipOnHide   
-        >
-          <NotesText>{text}</NotesText>
-        </Tooltip>
+            title={text}
+            placement="top"
+            overlayStyle={{ maxWidth: '200px' }}
+            overlayInnerStyle={{
+              backgroundColor: 'rgba(15, 10, 10, 0.85)',
+              color: '#fff',
+              padding: '8px 12px',
+              borderRadius: '4px',
+            }}
+            mouseEnterDelay={0}
+            mouseLeaveDelay={0}
+            trigger={['hover']}
+            destroyTooltipOnHide
+          >
+            <NotesButton>{t('view_notes')}</NotesButton>
+          </Tooltip>
         ) : (
-          <NotesText>{text || '-'}</NotesText>
+          <span>{text || '-'}</span> 
         );
       },
     },
@@ -168,11 +184,15 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'status',
       key: 'status',
       render: (_, record) => {
-        const status = record?.status?.toLowerCase();
+        const finalResult = record?.finalResult;
+        const statusKey = finalResult && FINAL_RESULT_TO_STATUS[finalResult]
+          ? FINAL_RESULT_TO_STATUS[finalResult].toLowerCase()
+          : (record?.status ? String(record.status).toLowerCase() : 'unknown_status');
+        
         let color = '';
         let backgroundColor = '';
 
-        switch (status) {
+        switch (statusKey) {
           case 'pending':
             color = '#d48806'; 
             backgroundColor = '#fff7e6'; 
@@ -196,7 +216,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
 
         return (
           <StatusBadge style={{ color, backgroundColor, border: 'none' }}>
-            {t(status || 'unknown_status')}
+            {t(statusKey)}
           </StatusBadge>
         );
       },

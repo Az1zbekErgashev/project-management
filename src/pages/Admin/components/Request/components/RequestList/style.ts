@@ -20,21 +20,14 @@ export const StyledRequestList = styled.div`
   }
 
   .ant-tooltip {
-    pointer-events: none; 
     .ant-tooltip-inner {
-      background-color: rgba(0, 0, 0, 0.85) !important;
+      background-color: rgba(15, 10, 10, 0.85) !important;
       color: #fff !important;
     }
     .ant-tooltip-arrow {
       &::before {
-        background-color: rgba(0, 0, 0, 0.85) !important;
+        background-color: rgba(15, 10, 10, 0.85) !important;
       }
-    }
-  }
-
-  .ant-table-row {
-    .ant-table-cell {
-      overflow: visible; 
     }
   }
 

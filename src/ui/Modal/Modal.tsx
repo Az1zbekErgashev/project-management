@@ -13,6 +13,7 @@ export interface ModalProps {
   zIndex?: number;
   wrapClassName?: string;
   width?: number | string;
+  height?: number | string;
   footer?: React.ReactNode;
   forceRender?: any;
   getContainer?: string | false | HTMLElement | undefined;
