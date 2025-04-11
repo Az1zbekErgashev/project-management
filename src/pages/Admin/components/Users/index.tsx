@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyledAdminUsers } from './style';
-import { Button, ConfirmModal, Notification, Table } from 'ui';
+import { Button, ConfirmModal, Modal, Notification, Table } from 'ui';
 import { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
@@ -209,7 +209,7 @@ export function AdminUsers() {
       )}
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
-      <Drawer width={600} title={t('user-action')} onClose={onClose} open={drawerStatus}>
+      <Modal width={600} title={t('user-action')} onCancel={onClose} centered={true} open={drawerStatus}>
         <UserInformation
           getUsers={getUsers}
           handleDelete={handleDelete}
@@ -218,7 +218,7 @@ export function AdminUsers() {
           open={open}
           setOpen={setOpen}
         />
-      </Drawer>
+      </Modal>
     </StyledAdminUsers>
   );
 }

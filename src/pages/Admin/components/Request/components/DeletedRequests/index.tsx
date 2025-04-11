@@ -230,7 +230,7 @@ export function DeletedRequests() {
           },
         })}
       />
-      <Modal width={750} title={t('request_action')} onCancel={onClose} open={drawerStatus.status}>
+      <Modal width={750} title={t('request_action')} centered={true} onCancel={onClose} open={drawerStatus.status}>
         <Form form={form} layout="vertical">
           <InputSelection
             setDrawerStatus={setDrawerStatus}

@@ -66,7 +66,6 @@ const FINAL_RESULT_TO_STATUS: { [key: string]: string } = {
   '수주': 'Completed',
   '프로젝트 보류': 'Pending',
   '프로젝트 가결': 'Completed',
-  'Test api': 'Rejected',
 };
 
 export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: props) {

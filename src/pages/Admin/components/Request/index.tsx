@@ -14,6 +14,7 @@ import { RequestModel } from './components/RequestList/type';
 import { TFunction } from 'i18next';
 import { RequestFilter } from './components/RequestFilter';
 import dayjs from 'dayjs';
+import UploadModal from './components/Upload/upload';
 
 interface queryParamsType {
   PageSize: number;
@@ -51,6 +52,7 @@ export function Request() {
     request?: RequestModel;
     sequence?: number;
   }>({ status: false, type: 'ADD' });
+  const [showUpload, setShowUpload] = useState(false);
   const [form] = Form.useForm();
 
   const {
@@ -171,6 +173,10 @@ export function Request() {
           <div className="header-line">
             <h1 className="global-title">{t('manage_requests')}</h1>
             <div className="upload-download">
+              <Button label={t('upload')} type="primary" onClick={() => setShowUpload(true)} />
+              <Modal open={showUpload} width={600} onCancel={() => setShowUpload(false)}>
+              <UploadModal onClose={() => setShowUpload(false)} />
+              </Modal>
               <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
               <Button
                 className={'down-upload'}
@@ -204,7 +210,7 @@ export function Request() {
         </div>
       )}
 
-      <Modal width={750} title={t('request_action')} onCancel={onClose} open={drawerStatus.status}>
+      <Modal width={750} title={t('request_action')} centered={true} onCancel={onClose} open={drawerStatus.status}>
         <Form form={form} layout="vertical">
           <InputSelection
             setDrawerStatus={setDrawerStatus}
