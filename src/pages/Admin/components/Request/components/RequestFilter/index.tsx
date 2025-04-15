@@ -5,6 +5,8 @@ import { Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useForm } from 'antd/es/form/Form';
+import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
 
 interface props {
   handleFilterChange: (value: any) => void;
@@ -17,9 +19,11 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
   const isPendingRequests = window.location.pathname.includes('pending-request');
   const [value, setValue] = useState('');
   const [filteredOptions, setFilteredOptions] = useState([]);
-
+  const [form] = useForm();
   const [searchParams] = useSearchParams();
   const categoryId: string | null = searchParams.get('Category');
+  const statusQuery: string | null = searchParams.get('Status');
+  const priorty: string | null = searchParams.get('Priority');
 
   const handleSearch = (searchText: string) => {
     const filtered = options?.data?.filter((option: { text: string }) =>
@@ -43,14 +47,21 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
       setFilteredOptions(response?.data);
     },
   });
-
   useEffect(() => {
     refetch();
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      Category: categoryId ? parseInt(categoryId) : null,
+      Status: statusQuery ? parseInt(statusQuery) : null,
+      Priority: priorty ? parseInt(priorty) : null,
+    });
+  }, [categoryId, statusQuery, priorty]);
+
   return (
     <StyledRequestFilter>
-      <Form layout="vertical" onValuesChange={handleFilterChange}>
+      <Form form={form} layout="vertical" onValuesChange={handleFilterChange}>
         <Form.Item label={t('text')} name="Text">
           <AutoComplete
             value={value}
@@ -66,16 +77,30 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
 
         <div className="priory">
           {!isPendingRequests && (
-            <Select
-              className="input-selection-select"
-              name="Category"
-              modeType="FILTER"
-              label={t('priority')}
-              defaultValue={filterValue?.data?.find((item: any) => item.id === categoryId)?.title ?? null}
-            >
+            <Select className="input-selection-select" name="Category" modeType="FILTER" label={t('сategory')}>
               {filterValue?.data?.map((item: any, index: number) => (
                 <SelectOption key={index} value={item.id}>
                   {item.title}
+                </SelectOption>
+              ))}
+              <SelectOption value={null}>{t('all')}</SelectOption>
+            </Select>
+          )}
+          {!isPendingRequests && (
+            <Select className="input-selection-select" name="Priority" modeType="FILTER" label={t('priority')}>
+              {PRIORITY?.map((item: any, index: number) => (
+                <SelectOption key={index} value={item.id}>
+                  {item.text}
+                </SelectOption>
+              ))}
+              <SelectOption value={null}>{t('all')}</SelectOption>
+            </Select>
+          )}
+          {!isPendingRequests && (
+            <Select className="input-selection-select" name="Status" modeType="FILTER" label={t('status')}>
+              {PROJECT_STATUS?.map((item: any, index: number) => (
+                <SelectOption key={index} value={item.id}>
+                  {item.text}
                 </SelectOption>
               ))}
               <SelectOption value={null}>{t('all')}</SelectOption>

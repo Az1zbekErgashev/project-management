@@ -8,13 +8,13 @@ import { Button, ConfirmModal, Spinner, Notification, Modal } from 'ui';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
-import { Drawer, Form } from 'antd';
+import { Form } from 'antd';
 import { InputSelection } from './components/InputSelection';
 import { RequestModel } from './components/RequestList/type';
 import { TFunction } from 'i18next';
 import { RequestFilter } from './components/RequestFilter';
-import dayjs from 'dayjs';
 import UploadModal from './components/Upload/upload';
+import { useSearchParams } from 'react-router-dom';
 
 interface queryParamsType {
   PageSize: number;
@@ -46,6 +46,10 @@ export function Request() {
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [requestId, setRequestId] = useState<{ type: 'DELETE' | 'RECOVER'; id: number } | null>(null);
+  const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
+  const [searchParams] = useSearchParams();
+  const categoryId: string | null = searchParams.get('Category');
+
   const [drawerStatus, setDrawerStatus] = useState<{
     status: boolean;
     type: 'VIEW' | 'EDIT' | 'ADD';
@@ -64,7 +68,6 @@ export function Request() {
     request: {
       url: '/api/request/requets',
       method: 'GET',
-      data: queryparams,
       disableOnMount: true,
     },
   });
@@ -82,7 +85,12 @@ export function Request() {
   };
 
   useEffect(() => {
-    postRequest(queryparams);
+    postRequest({
+      ...queryparams,
+      Category: categoryId != null ? parseInt(categoryId) : queryparams.Category,
+      Status: searchParams.get('Status'),
+      Priority: searchParams.get('Priority'),
+    });
   }, [queryparams]);
 
   const handleDownload = async () => {
@@ -174,8 +182,16 @@ export function Request() {
             <h1 className="global-title">{t('manage_requests')}</h1>
             <div className="upload-download">
               <Button label={t('upload')} type="primary" onClick={() => setShowUpload(true)} />
-              <Modal open={showUpload} width={600} onCancel={() => setShowUpload(false)}>
-              <UploadModal onClose={() => setShowUpload(false)} />
+              <Modal
+                footer={null}
+                open={showUpload}
+                width={400}
+                onCancel={() => {
+                  setFileState(null);
+                  setShowUpload(false);
+                }}
+              >
+                <UploadModal setFileState={setFileState} filetState={filetState} onClose={() => setShowUpload(false)} />
               </Modal>
               <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
               <Button

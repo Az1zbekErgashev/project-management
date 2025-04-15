@@ -70,13 +70,16 @@ export function Dashboard() {
   };
 
   const countRequestsByCategory = (
-    requests: { data: { items: { filter: (arg0: (request: any) => boolean) => { (): any; new (): any; length: any } } } },
+    requests: {
+      data: { items: { filter: (arg0: (request: any) => boolean) => { (): any; new (): any; length: any } } };
+    },
     categoryTitle: any
   ) => {
     return requests?.data?.items?.filter((request) => request?.requestStatus?.title === categoryTitle).length || 0;
   };
 
-  const getMonth = (dateString: string | number | Date) => new Date(dateString).toLocaleString('en-us', { month: 'short' });
+  const getMonth = (dateString: string | number | Date) =>
+    new Date(dateString).toLocaleString('en-us', { month: 'short' });
 
   const monthCount =
     requests?.data?.items?.reduce((acc: { [x: string]: any }, request: { createdAt: any }) => {
@@ -148,75 +151,101 @@ export function Dashboard() {
   const priorityTypes = ['High', 'Medium', 'Low'];
   const categoryTypes = ['와이즈스톤티', 'ICT연구소', '더테스트', '마케팅본부(STF팀)', 'All'];
 
+  const mapFromName = (title: string) => {
+    switch (title) {
+      case 'Pending':
+        return 0;
+      case 'InProgress':
+        return 1;
+      case 'Completed':
+        return 2;
+      case 'Canceled':
+        return 3;
+      case 'High':
+        return 2;
+      case 'Medium':
+        return 0;
+      case 'Low':
+        return 1;
+      default:
+        return 0;
+        break;
+    }
+  };
+
   const renderCountsByType = () => {
-  if (!counts?.data) return <div className="loading">Loading...</div>;
+    if (!counts?.data) return <div className="loading">Loading...</div>;
 
-  const statusItems = counts.data.filter((item: { title: string }) => statusTypes.includes(item.title));
-  const priorityItems = counts.data.filter((item: { title: string }) => priorityTypes.includes(item.title));
-  const categoryItems = counts.data
-    .filter((item: { title: string }) => categoryTypes.includes(item.title))
-    .map((countItem: { title: string; count: number }) => ({
-      ...countItem,
-      id:
-        categories?.data?.find((cat: { title: string }) => cat.title === countItem.title)?.id ||
-        countItem.title, // Fallback to title if id not found
-    }));
+    const statusItems = counts.data.filter((item: { title: string }) => statusTypes.includes(item.title));
+    const priorityItems = counts.data.filter((item: { title: string }) => priorityTypes.includes(item.title));
+    const categoryItems = counts.data
+      .filter((item: { title: string }) => categoryTypes.includes(item.title))
+      .map((countItem: { title: string; count: number }) => ({
+        ...countItem,
+        id: categories?.data?.find((cat: { title: string }) => cat.title === countItem.title)?.id || countItem.title,
+      }));
 
-  return (
-    <>
-      <div style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
-        <div className="stats-section">
-          <h2>{t('request_status')}</h2>
-          <div className="stats-group">
-            {statusItems.map((item: { title: string; count: number }, index: number) => (
-              <div
-                key={index}
-                className="count-item"
-                style={{ cursor: 'pointer' }}
-                // onClick={() => navigate(`/filtered-requests?status=${encodeURIComponent(item.title)}`)}
-              >
-                <span className="count-title">{t(item.title)}</span>
-                <span className="count-value">{item.count}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="stats-section" style={{ flex: 1, minWidth: '300px' }}>
-          <h2>{t('request_priority')}</h2>
-          <div className="stats-group">
-            {priorityItems.map((item: { title: string; count: number }, index: number) => (
-              <div
-                key={index}
-                className="count-item"
-                style={{ cursor: 'pointer' }}
-                // onClick={() => navigate(`/filtered-requests?priority=${encodeURIComponent(item.title)}`)}
-              >
-                <span className="count-title">{t(item.title)}</span>
-                <span className="count-value">{item.count}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-      <div className="stats-section">
-        <h2>{t('request_category')}</h2>
-        <div className="stats-group">
-          {categoryItems.map((item: { id: string | number; title: string; count: number }, index: number) => (
-            <div
-              key={index}
-              className="count-item"
-              style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/requests?pageIndex=1&pageSize=10&Category=${encodeURIComponent(item.id)}`)}
-            >
-              <span className="count-title">{t(item.title)}</span>
-              <span className="count-value">{item.count}</span>
+    return (
+      <>
+        <div style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
+          <div className="stats-section">
+            <h2>{t('request_status')}</h2>
+            <div className="stats-group">
+              {statusItems.map((item: { title: string; count: number }, index: number) => (
+                <div
+                  key={index}
+                  className="count-item"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    navigate(`/requests?pageIndex=1&pageSize=10&Status=${encodeURIComponent(mapFromName(item.title))}`)
+                  }
+                >
+                  <span className="count-title">{t(item.title)}</span>
+                  <span className="count-value">{item.count}</span>
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
+          <div className="stats-section" style={{ flex: 1, minWidth: '300px' }}>
+            <h2>{t('request_priority')}</h2>
+            <div className="stats-group">
+              {priorityItems.map((item: { title: string; count: number }, index: number) => (
+                <div
+                  key={index}
+                  className="count-item"
+                  style={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    navigate(
+                      `/requests?pageIndex=1&pageSize=10&Priority=${encodeURIComponent(mapFromName(item.title))}`
+                    )
+                  }
+                >
+                  <span className="count-title">{t(item.title)}</span>
+                  <span className="count-value">{item.count}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
-      </div>
-    </>
-  );
-};
+        <div className="stats-section">
+          <h2>{t('request_category')}</h2>
+          <div className="stats-group">
+            {categoryItems.map((item: { id: string | number; title: string; count: number }, index: number) => (
+              <div
+                key={index}
+                className="count-item"
+                style={{ cursor: 'pointer' }}
+                onClick={() => navigate(`/requests?pageIndex=1&pageSize=10&Category=${encodeURIComponent(item.id)}`)}
+              >
+                <span className="count-title">{t(item.title)}</span>
+                <span className="count-value">{item.count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>
+    );
+  };
   // Chart options
   const pieOptions: ChartOptions<'pie'> = {
     plugins: {
