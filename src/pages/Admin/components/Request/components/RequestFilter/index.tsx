@@ -4,6 +4,7 @@ import { AutoComplete, Form } from 'antd';
 import { Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
+import { useParams, useSearchParams } from 'react-router-dom';
 
 interface props {
   handleFilterChange: (value: any) => void;
@@ -16,6 +17,9 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
   const isPendingRequests = window.location.pathname.includes('pending-request');
   const [value, setValue] = useState('');
   const [filteredOptions, setFilteredOptions] = useState([]);
+
+  const [searchParams] = useSearchParams();
+  const categoryId: string | null = searchParams.get('Category');
 
   const handleSearch = (searchText: string) => {
     const filtered = options?.data?.filter((option: { text: string }) =>
@@ -59,9 +63,16 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
             options={value ? filteredOptions.map((item: { text: string }) => ({ value: item.text })) : []}
           />
         </Form.Item>
+
         <div className="priory">
           {!isPendingRequests && (
-            <Select className="input-selection-select" name="Category" modeType="FILTER" label={t('priority')}>
+            <Select
+              className="input-selection-select"
+              name="Category"
+              modeType="FILTER"
+              label={t('priority')}
+              defaultValue={filterValue?.data?.find((item: any) => item.id === categoryId)?.title ?? null}
+            >
               {filterValue?.data?.map((item: any, index: number) => (
                 <SelectOption key={index} value={item.id}>
                   {item.title}

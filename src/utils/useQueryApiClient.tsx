@@ -1,10 +1,10 @@
-import { routes } from '../config/config';
 import { useNavigate } from 'react-router-dom';
 import useHandleError from './useHandleError';
 import { useEffect, useState } from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import useJwt from './useJwt';
 import Cookies from 'js-cookie';
+import { routes } from '../config/config';
 
 interface InvalidRequestResponse {
   status_code: number;
@@ -14,6 +14,7 @@ interface InvalidRequestResponse {
 interface RequestProps {
   url: string;
   data?: any;
+  params?: any; // Added params property
   method?: RequestMethod;
   mustRetry?: boolean;
   multipart?: boolean;
@@ -39,7 +40,6 @@ interface ErrorProps {
 
 type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
-// DON'T TOUCH IF YOU DON'T UNDERSTAND
 function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = true }: UseQueryApiClientProps) {
   const method = request?.method || 'GET';
   const [receivedData, setReceivedData] = useState<any>([]);
@@ -58,7 +58,6 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
   const disableOnMount = request?.disableOnMount;
 
   useEffect(() => {
-    //Enable or disable on mount fetch
     if (!disableOnMount && (enableOnMount || method === 'GET')) {
       actualCall(
         request.url,
@@ -70,7 +69,7 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
         request.baseUrl
       );
     }
-  }, [enabled, disableOnMount, enableOnMount]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [enabled, disableOnMount, enableOnMount, request.url, request.method, request.mustRetry, request.multipart, request.baseUrl]); // Added dependencies to prevent stale closures
 
   useEffect(() => {
     let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -81,7 +80,15 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
 
   const refetch = () => {
     setIsRefetching(true);
-    actualCall(request.url, request?.data, method, request?.mustRetry, request?.multipart, {}, request.baseUrl);
+    actualCall(
+      request.url,
+      request?.data,
+      method,
+      request?.mustRetry,
+      request?.multipart,
+      {},
+      request.baseUrl
+    );
   };
 
   const parsedError = (response: InvalidRequestResponse) => {
@@ -97,7 +104,6 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
       Object.entries(urlParams).forEach((entry: any) => {
         const key = entry[0];
         const value = entry[1];
-
         url = url.replace(':' + key, value);
       });
     }
@@ -105,14 +111,14 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
     actualCall(url, data, request?.method, request?.mustRetry, request?.multipart, passOnSuccess, request.baseUrl);
   };
 
-  const actualCall: any = async (
+  const actualCall = async (
     url: string,
     data: any = {},
     method: RequestMethod = 'GET',
     mustRetry: boolean = true,
     multipart: boolean = false,
     passOnSuccess: any = {},
-    baseUrl: string = '',
+    baseUrl: string = ''
   ) => {
     if (!enabled) {
       return;
@@ -132,30 +138,28 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
         Authorization: getToken,
         'Content-Type': multipart ? 'multipart/form-data' : 'application/json',
         'X-FRONTEND-ROUTE': window.location.pathname,
+        ...request.headers,
       },
     };
 
-    //set data in right place
+    // Set params or data based on method
     if (method === 'GET') {
-      requestConfig.params = data;
+      requestConfig.params = request.params || data; // Use params if provided, else fallback to data
     } else {
       requestConfig.data = data;
     }
 
     try {
-      //call request
       const response = await axios.request(requestConfig);
-
       const responseContent = response.data;
 
-      //if status code is error type, throw error
       if (responseContent && responseContent.status_code > 299) {
         throw parsedError(responseContent);
       }
 
       setReceivedData(responseContent);
       setIsSuccess(true);
-      onSuccess && onSuccess(responseContent, passOnSuccess); //Call onSuccess if set
+      onSuccess && onSuccess(responseContent, passOnSuccess);
 
       return responseContent;
     } catch (e: any) {
@@ -178,14 +182,11 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
       setIsError(true);
       let actualError: ErrorProps;
       if (e.response && e.response.data instanceof Blob) {
-        // If response data is a Blob, read it as text
         const blobData = await e.response.data.text();
-        // Parse the text data as JSON
         const jsonData = JSON.parse(blobData);
-        // Construct the error object
         actualError = {
           data: jsonData,
-          error: jsonData.errors && jsonData.errors.join(', '), // Adjust as needed based on the actual structure of the errors
+          error: jsonData.errors && jsonData.errors.join(', '),
           global: jsonData.global,
         };
       } else {
@@ -196,10 +197,10 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
         }
       }
 
-      onError && onError(actualError); //Call onSuccess if set
-      handleError(actualError); //hook for global handling of errors
+      onError && onError(actualError);
+      handleError(actualError);
     } finally {
-      onFinally && onFinally(); //Call onFinally if set
+      onFinally && onFinally();
       setIsRefetching(false);
       setIsLoading(false);
     }

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Card, Col, Row } from 'antd';
 import { Pie, Doughnut, Bar, Line } from 'react-chartjs-2';
+import { useNavigate } from 'react-router-dom';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -15,14 +16,15 @@ import {
   ChartOptions,
   ChartData,
 } from 'chart.js';
-import { StyledHomePage } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { useTranslation } from 'react-i18next';
+import { StyledHomePage } from './style';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, LineElement, PointElement, ArcElement, Title, Tooltip, Legend);
 
 export function Dashboard() {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const { data: requests } = useQueryApiClient({
     request: {
@@ -45,36 +47,39 @@ export function Dashboard() {
     },
   });
 
-  const statusDataHelper = (requests: { data: { items: any[]; }; }) => {
+  const statusDataHelper = (requests: { data: { items: any[] } }) => {
     const statusCount =
-      requests?.data?.items?.reduce((acc: { [x: string]: any; }, request: { status: string | number; }) => {
+      requests?.data?.items?.reduce((acc: { [x: string]: any }, request: { status: string | number }) => {
         if (request.status) {
           acc[request.status] = (acc[request.status] || 0) + 1;
         }
         return acc;
       }, {}) || {};
-    return ['Pending', 'Canceled', 'Completed', 'InProgress'].map((status) => statusCount[status] || 0);
+    return ['Pending', 'InProgress', 'Completed', 'Canceled'].map((status) => statusCount[status] || 0);
   };
 
-  const priorityDataHelper = (requests: { data: { items: any[]; }; }) => {
+  const priorityDataHelper = (requests: { data: { items: any[] } }) => {
     const priorityCount =
-      requests?.data?.items?.reduce((acc: { [x: string]: any; }, request: { priority: string | number; }) => {
+      requests?.data?.items?.reduce((acc: { [x: string]: any }, request: { priority: string | number }) => {
         if (request?.priority) {
           acc[request.priority] = (acc[request.priority] || 0) + 1;
         }
         return acc;
       }, {}) || {};
-    return [t('High'), t('Medium'), t('Low')].map((priority) => priorityCount[priority] || 0);
+    return ['High', 'Medium', 'Low'].map((priority) => priorityCount[t(priority)] || 0);
   };
 
-  const countRequestsByCategory = (requests: { data: { items: { filter: (arg0: (request: any) => boolean) => { (): any; new(): any; length: any; }; }; }; }, categoryTitle: any) => {
+  const countRequestsByCategory = (
+    requests: { data: { items: { filter: (arg0: (request: any) => boolean) => { (): any; new (): any; length: any } } } },
+    categoryTitle: any
+  ) => {
     return requests?.data?.items?.filter((request) => request?.requestStatus?.title === categoryTitle).length || 0;
   };
 
   const getMonth = (dateString: string | number | Date) => new Date(dateString).toLocaleString('en-us', { month: 'short' });
 
   const monthCount =
-    requests?.data?.items?.reduce((acc: { [x: string]: any; }, request: { createdAt: any; }) => {
+    requests?.data?.items?.reduce((acc: { [x: string]: any }, request: { createdAt: any }) => {
       const month = getMonth(request.createdAt);
       acc[month] = (acc[month] || 0) + 1;
       return acc;
@@ -82,7 +87,7 @@ export function Dashboard() {
 
   // Pie Chart Data
   const statusData: ChartData<'pie'> = {
-    labels: ['Pending', 'Canceled', 'Completed', 'InProgress'],
+    labels: ['Pending', 'InProgress', 'Completed', 'Canceled'],
     datasets: [
       {
         label: t('request_status'),
@@ -94,7 +99,7 @@ export function Dashboard() {
     ],
   };
 
-  // Doughnut Chart Data (Request Priority)
+  // Doughnut Chart Data
   const priorityData: ChartData<'doughnut'> = {
     labels: ['High', 'Medium', 'Low'],
     datasets: [
@@ -110,11 +115,11 @@ export function Dashboard() {
 
   // Bar Chart Data
   const requestStatusData: ChartData<'bar'> = {
-    labels: categories?.data?.map((item: { title: any; }) => item?.title),
+    labels: categories?.data?.map((item: { title: any }) => item?.title),
     datasets: [
       {
         label: t('request_category'),
-        data: categories?.data?.map((item: { title: any; }) => countRequestsByCategory(requests, item.title)),
+        data: categories?.data?.map((item: { title: any }) => countRequestsByCategory(requests, item.title)),
         backgroundColor: '#722ed1',
         borderRadius: 8,
         borderSkipped: false,
@@ -144,77 +149,87 @@ export function Dashboard() {
   const categoryTypes = ['와이즈스톤티', 'ICT연구소', '더테스트', '마케팅본부(STF팀)', 'All'];
 
   const renderCountsByType = () => {
-    if (!counts?.data) return <div className="loading">Loading...</div>;
+  if (!counts?.data) return <div className="loading">Loading...</div>;
 
-    const statusItems = counts.data.filter((item: { title: string; }) => statusTypes.includes(item.title));
-    const priorityItems = counts.data.filter((item: { title: string; }) => priorityTypes.includes(item.title));
-    const categoryItems = counts.data.filter((item: { title: string; }) => categoryTypes.includes(item.title));
+  const statusItems = counts.data.filter((item: { title: string }) => statusTypes.includes(item.title));
+  const priorityItems = counts.data.filter((item: { title: string }) => priorityTypes.includes(item.title));
+  const categoryItems = counts.data
+    .filter((item: { title: string }) => categoryTypes.includes(item.title))
+    .map((countItem: { title: string; count: number }) => ({
+      ...countItem,
+      id:
+        categories?.data?.find((cat: { title: string }) => cat.title === countItem.title)?.id ||
+        countItem.title, // Fallback to title if id not found
+    }));
 
-    return (
-      <>
-        <div style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
-          <div className="stats-section">
-            <h2>{t('request_status')}</h2>
-            <div className="stats-group">
-              {statusItems.map((item: { title: any | string | string[]; count: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Iterable<React.ReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
-                <div key={index} className="count-item">
-                  <span className="count-title">{t(item.title)}</span>
-                  <span className="count-value">{item.count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div className="stats-section" style={{ flex: 1, minWidth: '300px' }}>
-            <h2>{t('request_priority')}</h2>
-            <div className="stats-group">
-              {priorityItems.map((item: { title: any | string | string[]; count: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Iterable<React.ReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
-                <div key={index} className="count-item">
-                  <span className="count-title">{t(item.title)}</span>
-                  <span className="count-value">{item.count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
+  return (
+    <>
+      <div style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
         <div className="stats-section">
-          <h2>{t('request_category')}</h2>
+          <h2>{t('request_status')}</h2>
           <div className="stats-group">
-            {categoryItems.map((item: { title: any | string | string[]; count: string | number | boolean | React.ReactElement<any, string | React.JSXElementConstructor<any>> | Iterable<React.ReactNode> | React.ReactPortal | Iterable<React.ReactNode> | null | undefined; }, index: React.Key | null | undefined) => (
-              <div key={index} className="count-item">
+            {statusItems.map((item: { title: string; count: number }, index: number) => (
+              <div
+                key={index}
+                className="count-item"
+                style={{ cursor: 'pointer' }}
+                // onClick={() => navigate(`/filtered-requests?status=${encodeURIComponent(item.title)}`)}
+              >
                 <span className="count-title">{t(item.title)}</span>
                 <span className="count-value">{item.count}</span>
               </div>
             ))}
           </div>
         </div>
-      </>
-    );
-  };
-
+        <div className="stats-section" style={{ flex: 1, minWidth: '300px' }}>
+          <h2>{t('request_priority')}</h2>
+          <div className="stats-group">
+            {priorityItems.map((item: { title: string; count: number }, index: number) => (
+              <div
+                key={index}
+                className="count-item"
+                style={{ cursor: 'pointer' }}
+                // onClick={() => navigate(`/filtered-requests?priority=${encodeURIComponent(item.title)}`)}
+              >
+                <span className="count-title">{t(item.title)}</span>
+                <span className="count-value">{item.count}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="stats-section">
+        <h2>{t('request_category')}</h2>
+        <div className="stats-group">
+          {categoryItems.map((item: { id: string | number; title: string; count: number }, index: number) => (
+            <div
+              key={index}
+              className="count-item"
+              style={{ cursor: 'pointer' }}
+              onClick={() => navigate(`/requests?pageIndex=1&pageSize=10&Category=${encodeURIComponent(item.id)}`)}
+            >
+              <span className="count-title">{t(item.title)}</span>
+              <span className="count-value">{item.count}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+};
   // Chart options
   const pieOptions: ChartOptions<'pie'> = {
     plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { padding: 20, font: { size: 14 } },
-      },
+      legend: { position: 'bottom', labels: { padding: 20, font: { size: 14 } } },
       tooltip: { backgroundColor: '#333', titleFont: { size: 14 }, bodyFont: { size: 12 } },
     },
-    animation: {
-      animateScale: true,
-      animateRotate: true,
-      duration: 1000,
-      easing: 'easeOutBounce',
-    },
+    animation: { animateScale: true, animateRotate: true, duration: 1000, easing: 'easeOutBounce' },
     maintainAspectRatio: false,
   };
 
   const doughnutOptions: ChartOptions<'doughnut'> = {
     plugins: {
-      legend: {
-        position: 'bottom',
-        labels: { padding: 20, font: { size: 14 } },
-      },
+      legend: { position: 'bottom', labels: { padding: 20, font: { size: 14 } } },
       tooltip: {
         backgroundColor: '#333',
         titleFont: { size: 14 },
@@ -231,12 +246,7 @@ export function Dashboard() {
       },
     },
     cutout: '60%',
-    animation: {
-      animateScale: true,
-      animateRotate: true,
-      duration: 1200,
-      easing: 'easeOutQuart',
-    },
+    animation: { animateScale: true, animateRotate: true, duration: 1200, easing: 'easeOutQuart' },
     maintainAspectRatio: false,
     circumference: 360,
     rotation: 0,
@@ -247,10 +257,7 @@ export function Dashboard() {
       legend: { display: false },
       tooltip: { backgroundColor: '#333', titleFont: { size: 14 }, bodyFont: { size: 12 } },
     },
-    scales: {
-      y: { beginAtZero: true, grid: { display: false } },
-      x: { grid: { display: false } },
-    },
+    scales: { y: { beginAtZero: true, grid: { display: false } }, x: { grid: { display: false } } },
     animation: false,
     maintainAspectRatio: false,
   };
@@ -260,10 +267,7 @@ export function Dashboard() {
       legend: { position: 'top', labels: { padding: 20, font: { size: 14 } } },
       tooltip: { backgroundColor: '#333', titleFont: { size: 14 }, bodyFont: { size: 12 } },
     },
-    scales: {
-      y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } },
-      x: { grid: { display: false } },
-    },
+    scales: { y: { beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' } }, x: { grid: { display: false } } },
     animation: false,
     maintainAspectRatio: false,
   };
@@ -274,7 +278,6 @@ export function Dashboard() {
         <h1 className="dashboard-title">{t('requests_statistic')}</h1>
       </div>
       <div className="header-stats">{renderCountsByType()}</div>
-      <br />
       <div className="chart-container">
         <Row gutter={[16, 16]}>
           <Col xs={24} sm={24} md={12} lg={12}>

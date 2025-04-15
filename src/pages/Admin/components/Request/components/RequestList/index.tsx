@@ -235,6 +235,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
 
   return (
     <StyledRequestList>
+    
       <Table
         columns={columns}
         loading={isRequestsLoading}
