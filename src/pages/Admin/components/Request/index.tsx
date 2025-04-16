@@ -191,7 +191,7 @@ export function Request() {
                   setShowUpload(false);
                 }}
               >
-                <UploadModal setFileState={setFileState} filetState={filetState} onClose={() => setShowUpload(false)} />
+                <UploadModal getRequests={getRequests} setFileState={setFileState} filetState={filetState} onClose={() => setShowUpload(false)} />
               </Modal>
               <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
               <Button

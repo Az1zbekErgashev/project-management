@@ -7,9 +7,10 @@ interface UploadModalProps {
   onClose: () => void;
   filetState: any;
   setFileState: any;
+  getRequests: () => void;
 }
 
-const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileState }) => {
+const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileState, getRequests }) => {
   const { t } = useTranslation();
   const [categoryId, setCategoryId] = useState<number | null>(null);
   const handleChangeFile = (file: any) => {
@@ -35,12 +36,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileS
 
     const formData = new FormData();
     formData.append('file', filetState.file);
-
-    for (const [key, value] of formData.entries() as any) {
-      console.log(key, value);
-    }
-
-    postUploadData(formData);
     postUploadData(formData);
   };
 
@@ -49,6 +44,10 @@ const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileS
       url: `/api/request/upload?requestStatusId=${categoryId}`,
       method: 'POST',
       multipart: true,
+    },
+    onFinally() {
+      onClose();
+      getRequests();
     },
   });
 
