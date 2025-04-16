@@ -35,12 +35,6 @@ const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileS
 
     const formData = new FormData();
     formData.append('file', filetState.file);
-
-    for (const [key, value] of formData.entries() as any) {
-      console.log(key, value);
-    }
-
-    postUploadData(formData);
     postUploadData(formData);
   };
 
@@ -49,6 +43,9 @@ const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileS
       url: `/api/request/upload?requestStatusId=${categoryId}`,
       method: 'POST',
       multipart: true,
+    },
+    onFinally() {
+      onClose();
     },
   });
 
