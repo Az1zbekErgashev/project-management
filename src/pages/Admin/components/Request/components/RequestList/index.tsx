@@ -2,12 +2,11 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Tabs } from 'ui'; 
-import { RequestItems, RequestModel } from './type';
 import { Tag, Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
 import styled from 'styled-components';
+import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
+import { RequestItems, RequestModel } from './type';
 
 const StatusBadge = styled(Tag)`
   border-radius: 12px;
@@ -25,7 +24,7 @@ const StatusBadge = styled(Tag)`
 
 const NotesButton = styled.button`
   padding: 4px 8px;
-  background-color: #1890ff; 
+  background-color: #1890ff;
   color: #fff;
   border: none;
   border-radius: 4px;
@@ -35,7 +34,7 @@ const NotesButton = styled.button`
   transition: all 0.2s ease-in-out;
 
   &:hover {
-    background-color: #40a9ff; 
+    background-color: #40a9ff;
     transform: scale(1.05);
   }
 
@@ -45,7 +44,7 @@ const NotesButton = styled.button`
   }
 `;
 
-interface props {
+interface Props {
   isRequestsLoading: boolean;
   requests: RequestItems;
   setQueryParams: any;
@@ -68,8 +67,9 @@ const FINAL_RESULT_TO_STATUS: { [key: string]: string } = {
   '프로젝트 가결': 'Completed',
 };
 
-export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: props) {
+export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: Props) {
   const { t } = useTranslation();
+  console.log(requests, 'requests');
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -154,7 +154,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       key: 'notes',
       width: 120,
       render: (text) => {
-        const isLongText = text && text.length > 30; 
+        const isLongText = text && text.length > 30;
         return isLongText ? (
           <Tooltip
             title={text}
@@ -174,7 +174,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
             <NotesButton>{t('view_notes')}</NotesButton>
           </Tooltip>
         ) : (
-          <span>{text || '-'}</span> 
+          <span>{text || '-'}</span>
         );
       },
     },
@@ -187,30 +187,30 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
         const statusKey = finalResult && FINAL_RESULT_TO_STATUS[finalResult]
           ? FINAL_RESULT_TO_STATUS[finalResult].toLowerCase()
           : (record?.status ? String(record.status).toLowerCase() : 'unknown_status');
-        
+
         let color = '';
         let backgroundColor = '';
 
         switch (statusKey) {
           case 'pending':
-            color = '#d48806'; 
-            backgroundColor = '#fff7e6'; 
+            color = '#d48806';
+            backgroundColor = '#fff7e6';
             break;
           case 'inprogress':
-            color = '#006644'; 
-            backgroundColor = '#e6ffe6'; 
+            color = '#006644';
+            backgroundColor = '#e6ffe6';
             break;
           case 'completed':
-            color = '#006d75'; 
+            color = '#006d75';
             backgroundColor = '#e6f7fa';
             break;
           case 'rejected':
-            color = '#a8071a'; 
-            backgroundColor = '#ffe6e6'; 
+            color = '#a8071a';
+            backgroundColor = '#ffe6e6';
             break;
           default:
-            color = '#000000'; 
-            backgroundColor = '#ffffff'; 
+            color = '#000000';
+            backgroundColor = '#ffffff';
         }
 
         return (
@@ -235,7 +235,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
 
   return (
     <StyledRequestList>
-    
       <Table
         columns={columns}
         loading={isRequestsLoading}

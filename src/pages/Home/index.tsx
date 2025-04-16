@@ -206,8 +206,7 @@ export function Dashboard() {
               key={index}
               className="count-item"
               style={{ cursor: 'pointer' }}
-              onClick={() => navigate(`/requests?pageIndex=1&pageSize=10&Category=${encodeURIComponent(item.id)}`)}
-            >
+              onClick={() => navigate(`/requests?pageIndex=1&pageSize=10&Category=${encodeURIComponent(item.id)}`)}            >
               <span className="count-title">{t(item.title)}</span>
               <span className="count-value">{item.count}</span>
             </div>

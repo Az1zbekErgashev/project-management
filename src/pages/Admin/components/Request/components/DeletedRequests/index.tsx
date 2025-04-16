@@ -52,7 +52,7 @@ export function DeletedRequests() {
       key: 'date',
       filterSearch: true,
       fixed: 'left',
-      render: (_, record) => (record.date ? dayjs(record.date).format('DD.MM.YYYY') : null),
+      render: (_, record) => (record.date ? dayjs(record.date).format('YYYY.MM.DD') : null),
     },
     {
       title: t('inquiry_type'),

@@ -40,7 +40,8 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
       disableOnMount: true,
     },
     onSuccess(response) {
-      setFilteredOptions(response?.data);
+      console.log('API Response:', response?.data);
+      setFilteredOptions(response?.data.slice(0, 5));
     },
   });
 
