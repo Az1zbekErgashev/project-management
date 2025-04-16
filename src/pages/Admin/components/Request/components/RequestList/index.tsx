@@ -89,6 +89,11 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'date',
       key: 'date',
       fixed: 'left',
+      render: (date: string) => {
+        if (!date) return '-'; 
+        const parsedDate = dayjs(date, 'DD/MM/YYYY'); 
+        return parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : date; 
+      },
     },
     {
       title: t('inquiry_type'),

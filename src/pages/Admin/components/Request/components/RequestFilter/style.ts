@@ -18,6 +18,9 @@ export const StyledRequestFilter = styled.div`
 
     .priory {
       width: 35%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
   }
 

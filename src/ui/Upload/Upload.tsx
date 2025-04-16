@@ -15,6 +15,7 @@ interface UploadProps {
   children?: React.ReactNode;
   beforeUpload?: (file: File, fileList: File[]) => boolean | Promise<void>;
   disabled?: boolean;
+  accept?: string;
 }
 
 export const Upload = ({
@@ -28,6 +29,7 @@ export const Upload = ({
   children,
   beforeUpload,
   disabled,
+  accept,
 }: UploadProps) => {
   const customRequest = ({ file, onSuccess }: any) => {
     setTimeout(() => {
@@ -55,6 +57,7 @@ export const Upload = ({
         beforeUpload={beforeUpload}
         fileList={[]}
         disabled={disabled}
+        accept={accept}
       >
         {children ? children : <Button icon={<InboxOutlined />} className={className} label={btnLabel} />}
       </AntdUpload>

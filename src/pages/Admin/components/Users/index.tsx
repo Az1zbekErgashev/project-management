@@ -103,14 +103,14 @@ export function AdminUsers() {
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       width: 150,
-      render: (_, record) => record.updatedAt && dayjs(record.updatedAt).format('DD.MM.YYYY HH:mm'),
+      render: (_, record) => record.updatedAt && dayjs(record.updatedAt).format('YYYY-MM-DD'),
     },
     {
       title: t('createdAt'),
       dataIndex: 'createdAt',
       key: 'createdAt',
       width: 150,
-      render: (_, record) => record.createdAt && dayjs(record.createdAt).format('DD.MM.YYYY HH:mm'),
+      render: (_, record) => record.createdAt && dayjs(record.createdAt).format('YYYY-MM-DD'),
     },
     {
       title: t('email'),
@@ -131,7 +131,7 @@ export function AdminUsers() {
       title: t('dateOfBirth'),
       dataIndex: 'dateOfBirth',
       key: 'dateOfBirth',
-      render: (value, record) => value && dayjs(value).format('DD.MM.YYYY'),
+      render: (value, record) => value && dayjs(value).format('YYYY-MM-DD'),
     },
     { title: t('role'), dataIndex: 'role', key: 'role' },
     { title: t('name'), dataIndex: 'name', key: 'name' },
@@ -209,7 +209,7 @@ export function AdminUsers() {
       )}
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
-      <Modal width={600} title={t('user-action')} onCancel={onClose} centered={true} open={drawerStatus}>
+      <Modal footer={null} width={600} title={t('user-action')} onCancel={onClose} centered={true} open={drawerStatus}>
         <UserInformation
           getUsers={getUsers}
           handleDelete={handleDelete}
