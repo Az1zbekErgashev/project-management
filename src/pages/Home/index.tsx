@@ -197,7 +197,11 @@ export function Dashboard() {
                   className="count-item"
                   style={{ cursor: 'pointer' }}
                   onClick={() =>
-                    navigate(`/requests?pageIndex=1&pageSize=10&Status=${encodeURIComponent(mapFromName(item.title))}`)
+                    navigate(
+                      `/${
+                        item.title === 'Pending' ? `pending-requests` : `requests`
+                      }?pageIndex=1&pageSize=10&Status=${encodeURIComponent(mapFromName(item.title))}`
+                    )
                   }
                 >
                   <span className="count-title">{t(item.title)}</span>
