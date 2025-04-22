@@ -157,7 +157,7 @@ const TableDetail: React.FC<TableDetailProps> = ({
           alignItems: 'center',
           gap: '10px'
         }}>
-          <Text strong>Attach File</Text>
+          <Text strong>{t('attach_file')}</Text>
           <Upload
             beforeUpload={() => false}
             onChange={handleFileChange}
@@ -165,12 +165,12 @@ const TableDetail: React.FC<TableDetailProps> = ({
             style={{ display: 'block' }}
           >
             <AntButton icon={<UploadOutlined />} type='primary'>
-              Select File
+              {t('select_file')}
             </AntButton>
           </Upload>
           {selectedFile && (
             <Text type="secondary" style={{ display: 'block' }}>
-              Selected: {selectedFile.name}
+              {t('selected')}: {selectedFile.name}
             </Text>
           )}
         </div>
@@ -180,12 +180,12 @@ const TableDetail: React.FC<TableDetailProps> = ({
           <TabPane 
             tab={
               <span style={{padding: '10px'}}> 
-                <SendOutlined /> Comments
+                <SendOutlined /> {t('comments')}
               </span>
             }
             key="1"
           >
-            <Title level={4}>Comments</Title>
+            <Title level={4}>{t('comments')}</Title>
             <List 
               dataSource={comments}
               renderItem={item => (
@@ -205,26 +205,26 @@ const TableDetail: React.FC<TableDetailProps> = ({
               <Input
                 value={newComment}
                 onChange={(e) => setNewComment(e.target.value)}
-                placeholder="Enter a comment"
+                placeholder={t('add_comment')}
                 style={{ flex: 1 }}
               />
               <Button
                 type="primary"
                 icon={<SendOutlined />}
                 onClick={handleCommentSubmit}
-                label="Submit"
+                label={t('submit')}
               />
             </Space>
           </TabPane>
           <TabPane style={{padding: '16px'}}
             tab={
               <span style={{padding: '10px'}}>
-                <HistoryOutlined /> Change History
+                <HistoryOutlined /> {t('change_history')}
               </span>
             }
             key="2"
           >
-            <Title level={4}>Change History</Title>
+            <Title level={4}>{t('change_history')}</Title>
             <List
               dataSource={changes}
               renderItem={item => (
@@ -248,13 +248,13 @@ const TableDetail: React.FC<TableDetailProps> = ({
           <TabPane
             tab={
               <span style={{padding: '10px'}}>
-                <TableOutlined /> Inquiries
+                <TableOutlined /> {t('inquiries')}
               </span>
             }
             key="3"
           >
-            <Title level={4}>Inquiries</Title>
-            <Text>No inquiries available.</Text>
+            <Title level={4}>{t('inquiries')}</Title>
+            <Text>{t('no_inqueries_available')}</Text>
           </TabPane>
         </Tabs>
       </div>
