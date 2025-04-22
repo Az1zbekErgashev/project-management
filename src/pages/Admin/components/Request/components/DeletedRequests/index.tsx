@@ -147,25 +147,6 @@ export function DeletedRequests() {
           return null;
         }),
     },
-    {
-      title: t('priority'),
-      dataIndex: 'priority',
-      key: 'priority',
-      filterSearch: true,
-      render: (_, record) =>
-        PRIORITY?.map((item, index) => {
-          if (item?.text?.toLowerCase() === record?.priority?.toLowerCase())
-            return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
-          return null;
-        }),
-    },
-    // {
-    //   title: t('deadline'),
-    //   dataIndex: 'deadline',
-    //   key: 'deadline',
-    //   filterSearch: true,
-    //   render: (_, record) => (record.deadline ? dayjs(record.deadline).diff(dayjs(record.createdAt), 'day') : null),
-    // },
   ];
 
   const {

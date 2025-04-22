@@ -4,26 +4,45 @@ export const StyledInputSelection = styled.div`
   .title {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 24px;
 
     h1 {
       font-weight: 700;
     }
   }
+
   .form-div {
     display: flex;
     justify-content: space-around;
     gap: 10px;
-  }
-
-  .input-div {
-    width: 100%;
+    padding-top: 20px;
   }
 
   .form-content {
     width: 400px;
     display: flex;
     flex-direction: column;
+    row-gap: 15px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
     row-gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      background-color:rgb(214, 207, 207);
+      padding: 10px;
+      border-radius: 8px;
+    }
   }
 
   .action-btns {
@@ -35,11 +54,13 @@ export const StyledInputSelection = styled.div`
 
   .category {
     width: 100%;
-    margin-top: 20px !important;
+    margin-top: 0 !important;
+
     .category_input {
       margin-top: 20px !important;
       display: flex;
       gap: 10px;
+
       .ant-form-item {
         width: 100%;
       }

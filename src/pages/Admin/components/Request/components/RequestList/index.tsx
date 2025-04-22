@@ -59,14 +59,6 @@ interface Props {
   >;
 }
 
-const FINAL_RESULT_TO_STATUS: { [key: string]: string } = {
-  '진행 중': 'InProgress',
-  '프로젝트 거절': 'Rejected',
-  '수주': 'Completed',
-  '프로젝트 보류': 'Pending',
-  '프로젝트 가결': 'Completed',
-};
-
 export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: Props) {
   const { t } = useTranslation();
   console.log(requests, 'requests');
@@ -94,6 +86,12 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
         const parsedDate = dayjs(date, 'DD/MM/YYYY'); 
         return parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : date; 
       },
+    },
+    {
+      title: t('updatedAt'),
+      dataIndex: 'updatedAt',
+      key: 'updatedAt',
+      fixed: 'left',
     },
     {
       title: t('inquiry_type'),
@@ -187,55 +185,18 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       title: t('status'),
       dataIndex: 'status',
       key: 'status',
-      render: (_, record) => {
-        const finalResult = record?.finalResult;
-        const statusKey = finalResult && FINAL_RESULT_TO_STATUS[finalResult]
-          ? FINAL_RESULT_TO_STATUS[finalResult].toLowerCase()
-          : (record?.status ? String(record.status).toLowerCase() : 'unknown_status');
-
-        let color = '';
-        let backgroundColor = '';
-
-        switch (statusKey) {
-          case 'pending':
-            color = '#d48806';
-            backgroundColor = '#fff7e6';
-            break;
-          case 'inprogress':
-            color = '#006644';
-            backgroundColor = '#e6ffe6';
-            break;
-          case 'completed':
-            color = '#006d75';
-            backgroundColor = '#e6f7fa';
-            break;
-          case 'rejected':
-            color = '#a8071a';
-            backgroundColor = '#ffe6e6';
-            break;
-          default:
-            color = '#000000';
-            backgroundColor = '#ffffff';
-        }
-
-        return (
-          <StatusBadge style={{ color, backgroundColor, border: 'none' }}>
-            {t(statusKey)}
-          </StatusBadge>
-        );
-      },
-    },
-    {
-      title: t('priority'),
-      dataIndex: 'priority',
-      key: 'priority',
       render: (_, record) =>
-        PRIORITY?.map((item, index) => {
-          if (item?.text?.toLowerCase() === record?.priority?.toLowerCase())
+        PROJECT_STATUS?.map((item, index) => {
+          if (item?.text?.toLowerCase() === record?.status?.toLowerCase())
             return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
           return null;
         }),
     },
+    {
+      title: t('action'),
+      dataIndex: 'action',
+    },
+    
   ];
 
   return (
