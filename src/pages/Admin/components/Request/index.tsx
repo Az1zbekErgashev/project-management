@@ -9,12 +9,12 @@ import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
 import { Form } from 'antd';
-import { InputSelection } from './components/InputSelection';
-import { RequestModel } from './components/RequestList/type';
-import { TFunction } from 'i18next';
 import { RequestFilter } from './components/RequestFilter';
 import UploadModal from './components/Upload/upload';
 import { useSearchParams } from 'react-router-dom';
+import TableDetail from './components/TableDetails';
+import { TFunction } from 'i18next';
+import { RequestModel } from './components/RequestList/type';
 
 interface queryParamsType {
   PageSize: number;
@@ -23,22 +23,6 @@ interface queryParamsType {
   Category?: string;
   RequestTitle?: string;
 }
-
-const createModalConfig = (
-  t: TFunction,
-  isDelete: 'DELETE' | 'RECOVER',
-  onConfirm: () => void,
-  onCancel: () => void
-) => ({
-  isDelete,
-  cancelText: t('cancel'),
-  confirmText: t(isDelete === 'DELETE' ? 'delete_request' : 'recover_request'),
-  title: t(isDelete === 'DELETE' ? 'delete_request_title' : 'recover_request_title'),
-  content: t(isDelete === 'DELETE' ? 'delete_request_description' : 'recover_request_description'),
-  open: true,
-  onConfirm,
-  onCancel,
-});
 
 export function Request() {
   const { t } = useTranslation();
@@ -95,21 +79,17 @@ export function Request() {
 
   const handleDownload = async () => {
     setIsFileLoading(true);
-
     try {
       const response = await axios.get(`${routes.api.baseUrl}/api/request/export-excel`, {
         params: { requestCategoryId: queryparams.Category },
         responseType: 'blob',
       });
-
       const url = window.URL.createObjectURL(new Blob([response.data]));
-
       const a = document.createElement('a');
       a.href = url;
       a.download = `${queryparams.RequestTitle == undefined ? 'All' : queryparams.RequestTitle}.xlsx`;
       document?.body?.appendChild(a);
       a.click();
-
       if (document.body.contains(a)) {
         document.body.removeChild(a);
       }
@@ -174,9 +154,25 @@ export function Request() {
       method: 'GET',
     },
   });
+
   return (
     <StyledRequests>
-      {!isFileLoading ? (
+      {isFileLoading ? (
+        <div className="spinnig-wrrap">
+          <Spinner spinning={true} />
+        </div>
+      ) : drawerStatus.status ? (
+        // Render TableDetail directly without a modal
+        <TableDetail
+          drawerStatus={drawerStatus}
+          setDrawerStatus={setDrawerStatus}
+          handleDelete={handleDelete}
+          getRequests={getRequests}
+          form={form}
+          onClose={onClose}
+        />
+      ) : (
+        // Show the main RequestList view
         <React.Fragment>
           <div className="header-line">
             <h1 className="global-title">{t('manage_requests')}</h1>
@@ -191,7 +187,12 @@ export function Request() {
                   setShowUpload(false);
                 }}
               >
-                <UploadModal getRequests={getRequests} setFileState={setFileState} filetState={filetState} onClose={() => setShowUpload(false)} />
+                <UploadModal
+                  getRequests={getRequests}
+                  setFileState={setFileState}
+                  filetState={filetState}
+                  onClose={() => setShowUpload(false)}
+                />
               </Modal>
               <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
               <Button
@@ -220,26 +221,13 @@ export function Request() {
             current={requests?.data?.PageIndex}
           />
         </React.Fragment>
-      ) : (
-        <div className="spinnig-wrrap">
-          <Spinner spinning={true} />
-        </div>
       )}
-
-      <Modal width={750} title={t('request_action')} centered={true} onCancel={onClose} open={drawerStatus.status}>
-        <Form form={form} layout="vertical">
-          <InputSelection
-            setDrawerStatus={setDrawerStatus}
-            handleDelete={handleDelete}
-            drawerStatus={drawerStatus}
-            getRequests={getRequests}
-            form={form}
-            onClose={onClose}
-          />
-        </Form>
-      </Modal>
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequests>
   );
+}
+
+function createModalConfig(t: TFunction<"translation", undefined>, type: string, arg2: () => void, arg3: () => void): any {
+  throw new Error('Function not implemented.');
 }

@@ -119,74 +119,93 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
 
       <div className="form-div">
         <div className="form-content">
-          <Input disabled={disable} name="date" label={t('date_created')} />
-          <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
-
-          <Input name="companyName" disabled={disable} label={t('company_name')} />
-          <Input name="department" disabled={disable} label={t('department')} />
-          <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
-          <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
-          <Input name="clientCompany" disabled={disable} label={t('client_company')} />
-          <Select
-            disabled={disable}
-            rules={[{ required: true, message: t('field_is_required') }]}
-            label={t('priority')}
-            name="priority"
-          >
-            {PRIORITY.map((item: any) => (
-              <SelectOption value={item.id} key={item.id}>
-                {t(item.text)}
-              </SelectOption>
-            ))}
-          </Select>
-        </div>
-        <div className="form-content">
-          <div className="date-picker">
-            <DatePicker disabled={disable} name="deadline" label={t('deadline')} />
+          {/* Submission Info */}
+          <div className="form-group">
+            <h3>{t('submission_info')}</h3>
+            <Input disabled={disable} name="date" label={t('date_created')} />
+            {/* <div className="date-picker">
+              <DatePicker disabled={disable} name="deadline" label={t('deadline')} />
+            </div> */}
           </div>
-          <Input name="projectDetails" disabled={disable} label={t('project_details')} />
-          <Input name="client" disabled={disable} label={t('client')} />
-          <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-          <Input name="email" disabled={disable} label={t('email')} />
-          <Input name="responseStatus" disabled={disable} label={t('processing_status')} />
-          <Input name="finalResult" disabled={disable} label={t('final_result')} />
-          <TextArea
-          name="notes"
-          disabled={disable}
-          label={t('notes')}
-          rows={3}
-        />
+
+          {/* Inquiry Details */}
+          <div className="form-group">
+            <h3>{t('inquiry_details')}</h3>
+            <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
+            <Input name="projectDetails" disabled={disable} label={t('project_details')} />
+            <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
+          </div>
+
+          {/* Client Information */}
+          <div className="form-group">
+            <h3>{t('client_information')}</h3>
+            <Input name="clientCompany" disabled={disable} label={t('client_company')} />
+            <Input name="client" disabled={disable} label={t('client')} />
+            <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
+            <Input name="email" disabled={disable} label={t('email')} />
+          </div>
+        </div>
+
+        <div className="form-content">
+          {/* Internal Assignment */}
+          <div className="form-group">
+            <h3>{t('internal_assignment')}</h3>
+            <Input name="companyName" disabled={disable} label={t('company_name')} />
+            <Input name="department" disabled={disable} label={t('department')} />
+            <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
+          </div>
+
+          {/* Notes & Status */}
+          <div className="form-group">
+            <h3>{t('notes_and_status')}</h3>
+            <Input name="status" disabled={disable} label={t('processing_status')} />
+            <Input name="finalResult" disabled={disable} label={t('final_result')} />
+            <TextArea name="notes" disabled={disable} label={t('notes')} rows={3} />
+            {/* <Select
+              disabled={disable}
+              rules={[{ required: true, message: t('field_is_required') }]}
+              label={t('priority')}
+              name="priority"
+            >
+              {PRIORITY.map((item: any) => (
+                <SelectOption value={item.id} key={item.id}>
+                  {t(item.text)}
+                </SelectOption>
+              ))}
+            </Select> */}
+            <div className="category">
+              <Select
+                disabled={disable}
+                rules={[{ required: true, message: t('field_is_required') }]}
+                label={t('status')}
+                name="projectStatus"
+              >
+                {PROJECT_STATUS.map((item: any) => (
+                  <SelectOption value={item.id} key={item.id}>
+                    {t(item.text)}
+                  </SelectOption>
+                ))}
+              </Select>
+            </div>
+            <div className="category">
+              <Select
+                rules={[{ required: true, message: t('field_is_required') }]}
+                label={t('category')}
+                name="requestStatusId"
+                disabled={disable}
+              >
+                {categoryData?.data?.map((item: any) => (
+                  <SelectOption value={item.id} key={item.id}>
+                    {item.title}
+                  </SelectOption>
+                ))}
+                <SelectOption value="new">{t('new_category')}</SelectOption>
+              </Select>
+            </div>
+          </div>
         </div>
       </div>
-      <div className="category">
-        <Select
-          disabled={disable}
-          rules={[{ required: true, message: t('field_is_required') }]}
-          label={t('status')}
-          name="status"
-        >
-          {PROJECT_STATUS.map((item: any) => (
-            <SelectOption value={item.id} key={item.id}>
-              {t(item.text)}
-            </SelectOption>
-          ))}
-        </Select>
-      </div>
-      <div className="category">
-        <Select
-          rules={[{ required: true, message: t('field_is_required') }]}
-          label={t('category')}
-          name="requestStatusId"
-          disabled={disable}
-        >
-          {categoryData?.data?.map((item: any) => (
-            <SelectOption value={item.id} key={item.id}>
-              {item.title}
-            </SelectOption>
-          ))}
-          <SelectOption value="new">{t('new_category')}</SelectOption>
-        </Select>
-      </div>
+
       {!isDeletedRequesdts && (
         <div className="action-btns">
           {drawerStatus.type !== 'VIEW' ? (

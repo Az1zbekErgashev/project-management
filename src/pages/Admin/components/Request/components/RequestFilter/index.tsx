@@ -44,7 +44,8 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
       disableOnMount: true,
     },
     onSuccess(response) {
-      setFilteredOptions(response?.data);
+      console.log('API Response:', response?.data);
+      setFilteredOptions(response?.data.slice(0, 5));
     },
   });
   useEffect(() => {
@@ -55,7 +56,7 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
     form.setFieldsValue({
       Category: categoryId ? parseInt(categoryId) : null,
       Status: statusQuery ? parseInt(statusQuery) : null,
-      Priority: priorty ? parseInt(priorty) : null,
+      // Priority: priorty ? parseInt(priorty) : null,
     });
   }, [categoryId, statusQuery, priorty]);
 
@@ -77,7 +78,7 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
 
         <div className="priory">
           {!isPendingRequests && (
-            <Select className="input-selection-select" name="Category" modeType="FILTER" label={t('сategory')}>
+            <Select className="input-selection-select" name="Category" modeType="FILTER" label={t('category')}>
               {filterValue?.data?.map((item: any, index: number) => (
                 <SelectOption key={index} value={item.id}>
                   {item.title}
@@ -86,6 +87,16 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
               <SelectOption value={null}>{t('all')}</SelectOption>
             </Select>
           )}
+          {/* {!isPendingRequests && (
+            <Select className="input-selection-select" name="Priority" modeType="FILTER" label={t('priority')}>
+              {PRIORITY?.map((item: any, index: number) => (
+                <SelectOption key={index} value={item.id}>
+                  {item.text}
+                </SelectOption>
+              ))}
+              <SelectOption value={null}>{t('all')}</SelectOption>
+            </Select>
+          )} */}
           {!isPendingRequests && (
             <Select className="input-selection-select" name="Status" modeType="FILTER" label={t('status')}>
               {PROJECT_STATUS?.map((item: any, index: number) => (

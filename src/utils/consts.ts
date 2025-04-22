@@ -15,9 +15,11 @@ export const ADMIN_NAVIGATE: adminNavigate[] = [
     children: [
       { key: 'all_requests', path: '/requests' },
       { key: 'deleted_requests', path: '/deleted-requests' },
-      { key: 'pending_requests', path: '/pending-requests' },
+      // { key: 'pending_requests', path: '/pending-requests' },
     ],
   },
+  // { key: 'state_management', path: '/state-management', icon: 'state-management' },
+  // { key: 'issue_management', path: '/issue-management', icon: 'issue-management' },
   { key: 'logs', path: '/logs', icon: 'logs' },
   { key: 'translations', path: '/translations', icon: 'translations' },
 ];
@@ -31,7 +33,7 @@ export const EMPLOYEE_NAVIGATE: adminNavigate[] = [
     children: [
       { key: 'all_requests', path: '/requests' },
       { key: 'deleted_requests', path: '/deleted-requests' },
-      { key: 'pending_requests', path: '/pending-requests' },
+      // { key: 'pending_requests', path: '/pending-requests' },
     ],
   },
 ];
@@ -63,10 +65,11 @@ export const PRIORITY = [
 ];
 
 export const PROJECT_STATUS = [
-  { id: 0, text: 'Pending' },
-  { id: 1, text: 'InProgress' },
-  { id: 2, text: 'Completed' },
-  { id: 3, text: 'Rejected' },
+  { id: 0, text: 'Failed' },
+  { id: 1, text: 'Made' },
+  { id: 2, text: 'On-going' },
+  { id: 3, text: 'On-hold' },
+  { id: 4, text: 'Dropped' },
 ];
 
 export const defaultImageUrl =
