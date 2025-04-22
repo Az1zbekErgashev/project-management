@@ -6,3 +6,4 @@ export { Translations } from './Admin/components/Translations';
 export { Profile } from './Profile';
 export { DeletedRequests } from './Admin/components/Request/components/DeletedRequests';
 export { Dashboard } from './Home';
+export { TableDetail } from './Admin/components/Request/components/TableDetails';

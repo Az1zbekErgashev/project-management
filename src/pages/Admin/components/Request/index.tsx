@@ -11,8 +11,7 @@ import { routes } from 'config/config';
 import { Form } from 'antd';
 import { RequestFilter } from './components/RequestFilter';
 import UploadModal from './components/Upload/upload';
-import { useSearchParams } from 'react-router-dom';
-import TableDetail from './components/TableDetails';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { TFunction } from 'i18next';
 import { RequestModel } from './components/RequestList/type';
 
@@ -33,7 +32,7 @@ export function Request() {
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
   const [searchParams] = useSearchParams();
   const categoryId: string | null = searchParams.get('Category');
-
+  const navigate = useNavigate();
   const [drawerStatus, setDrawerStatus] = useState<{
     status: boolean;
     type: 'VIEW' | 'EDIT' | 'ADD';
@@ -127,21 +126,6 @@ export function Request() {
     },
   });
 
-  const handleDelete = (id: number, type: 'DELETE' | 'RECOVER') => {
-    setConiformModal(
-      createModalConfig(
-        t,
-        type,
-        () => {
-          setRequestId({ type: type, id: id });
-        },
-        () => {
-          setConiformModal(null);
-        }
-      )
-    );
-  };
-
   useEffect(() => {
     if (requestId?.id) {
       requestDelete();
@@ -161,16 +145,6 @@ export function Request() {
         <div className="spinnig-wrrap">
           <Spinner spinning={true} />
         </div>
-      ) : drawerStatus.status ? (
-        // Render TableDetail directly without a modal
-        <TableDetail
-          drawerStatus={drawerStatus}
-          setDrawerStatus={setDrawerStatus}
-          handleDelete={handleDelete}
-          getRequests={getRequests}
-          form={form}
-          onClose={onClose}
-        />
       ) : (
         // Show the main RequestList view
         <React.Fragment>
@@ -199,7 +173,7 @@ export function Request() {
                 className={'down-upload'}
                 label={t('add_new_request')}
                 type="primary"
-                onClick={() => setDrawerStatus({ status: true, type: 'ADD' })}
+                onClick={() => navigate('/add-requests')}
               />
             </div>
           </div>
@@ -226,8 +200,4 @@ export function Request() {
       {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequests>
   );
-}
-
-function createModalConfig(t: TFunction<"translation", undefined>, type: string, arg2: () => void, arg3: () => void): any {
-  throw new Error('Function not implemented.');
 }

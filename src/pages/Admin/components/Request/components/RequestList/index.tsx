@@ -2,47 +2,11 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Tag, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import dayjs from 'dayjs';
-import styled from 'styled-components';
-import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
+
+import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
-
-const StatusBadge = styled(Tag)`
-  border-radius: 12px;
-  padding: 4px 10px;
-  font-weight: 500;
-  font-size: 12px;
-  text-transform: uppercase;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    opacity: 0.85;
-    transform: scale(1.05);
-  }
-`;
-
-const NotesButton = styled.button`
-  padding: 4px 8px;
-  background-color: #1890ff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  transition: all 0.2s ease-in-out;
-
-  &:hover {
-    background-color: #40a9ff;
-    transform: scale(1.05);
-  }
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
-  }
-`;
 
 interface Props {
   isRequestsLoading: boolean;
@@ -61,7 +25,6 @@ interface Props {
 
 export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: Props) {
   const { t } = useTranslation();
-  console.log(requests, 'requests');
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -82,9 +45,9 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       key: 'date',
       fixed: 'left',
       render: (date: string) => {
-        if (!date) return '-'; 
-        const parsedDate = dayjs(date, 'DD/MM/YYYY'); 
-        return parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : date; 
+        if (!date) return '-';
+        const parsedDate = dayjs(date, 'DD/MM/YYYY');
+        return parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : date;
       },
     },
     {
@@ -156,30 +119,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'notes',
       key: 'notes',
       width: 120,
-      render: (text) => {
-        const isLongText = text && text.length > 30;
-        return isLongText ? (
-          <Tooltip
-            title={text}
-            placement="top"
-            overlayStyle={{ maxWidth: '200px' }}
-            overlayInnerStyle={{
-              backgroundColor: 'rgba(15, 10, 10, 0.85)',
-              color: '#fff',
-              padding: '8px 12px',
-              borderRadius: '4px',
-            }}
-            mouseEnterDelay={0}
-            mouseLeaveDelay={0}
-            trigger={['hover']}
-            destroyTooltipOnHide
-          >
-            <NotesButton>{t('view_notes')}</NotesButton>
-          </Tooltip>
-        ) : (
-          <span>{text || '-'}</span>
-        );
-      },
     },
     {
       title: t('status'),
@@ -196,7 +135,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       title: t('action'),
       dataIndex: 'action',
     },
-    
   ];
 
   return (

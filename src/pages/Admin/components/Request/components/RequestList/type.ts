@@ -18,9 +18,8 @@ export interface RequestModel {
   requestStatus?: RequestStatusModel | null;
   isDeleted: number;
   date: string | null;
-  deadline: string | null;
   status: string | null;
-  priority: string | null;
+  lastUpdate: string | null;
 }
 
 export interface RequestStatusModel {

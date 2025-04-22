@@ -1,57 +1,47 @@
 import { Form } from 'antd';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
+import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 import dayjs from 'dayjs';
-import SvgSelector from 'assets/icons/SvgSelector';
+
+type ActionStatus = {
+  type: 'VIEW' | 'EDIT' | 'ADD';
+  request?: RequestModel;
+} | null;
 
 interface Props {
   form: FormInstance;
-  onClose: () => void;
-  getRequests: () => void;
-  drawerStatus: {
-    status: boolean;
+  actionStatus: {
     type: 'VIEW' | 'EDIT' | 'ADD';
     request?: RequestModel;
-    sequence?: number;
-  };
-  handleDelete?: (id: number, type: 'DELETE' | 'RECOVER') => void;
-  setDrawerStatus: React.Dispatch<
-    React.SetStateAction<{
-      status: boolean;
-      type: 'VIEW' | 'EDIT' | 'ADD';
-      request?: RequestModel;
-      sequence?: number;
-    }>
-  >;
+  } | null;
+  setActionStatus: React.Dispatch<React.SetStateAction<ActionStatus>>;
 }
 
-export function InputSelection({ form, onClose, getRequests, drawerStatus, handleDelete, setDrawerStatus }: Props) {
+export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
   const { t } = useTranslation();
   const [disable, setDisable] = useState<boolean>(false);
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url:
-        drawerStatus.type == 'EDIT'
-          ? `api/request/update-request?id=${drawerStatus.request?.id}`
+        actionStatus && actionStatus.type == 'EDIT'
+          ? `api/request/update-request?id=${actionStatus.request?.id}`
           : '/api/request/create-request',
-      method: drawerStatus.type == 'EDIT' ? 'PUT' : 'POST',
+      method: actionStatus && actionStatus.type == 'EDIT' ? 'PUT' : 'POST',
       multipart: false,
     },
     onSuccess() {
-      getRequests();
-      if (drawerStatus.type == 'EDIT') {
+      if (actionStatus && actionStatus.type == 'EDIT') {
         Notification({ text: t('request_created_success'), type: 'success' });
       } else {
         Notification({ text: t('request_updated_success'), type: 'success' });
       }
-      onClose();
       form.resetFields();
     },
     onError() {
@@ -79,53 +69,42 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
   });
 
   useEffect(() => {
-    if (drawerStatus.type == 'VIEW') {
+    if (actionStatus && actionStatus.type == 'VIEW') {
       setDisable(true);
       form.setFieldsValue({
-        ...drawerStatus.request,
-        deadline: drawerStatus.request?.deadline && dayjs(drawerStatus.request?.deadline),
-        requestStatusId: drawerStatus?.request?.requestStatus?.id,
+        ...actionStatus.request,
+        requestStatusId: actionStatus?.request?.requestStatus?.id,
       });
     } else {
       setDisable(false);
     }
-  }, [drawerStatus]);
+  }, [actionStatus]);
 
   const handleDeleteRequest = () => {
-    if (drawerStatus.request?.isDeleted === 0) {
-      handleDelete && handleDelete(drawerStatus?.request?.id, 'DELETE');
-    } else {
-      handleDelete && handleDelete(drawerStatus?.request?.id || 0, 'RECOVER');
-    }
+    // if (actionStatus && actionStatus.request?.isDeleted === 0) {
+    //   handleDelete && handleDelete(actionStatus && actionStatus?.request?.id, 'DELETE');
+    // } else {
+    //   handleDelete && handleDelete(actionStatus?.request?.id || 0, 'RECOVER');
+    // }
   };
 
   const handleUpdate = () => {
-    setDrawerStatus((prev) => ({
-      ...prev,
-      type: 'EDIT',
-      user: prev.request,
-    }));
+    setActionStatus &&
+      setActionStatus((prev) => ({
+        ...prev,
+        type: 'EDIT',
+        request: prev?.request,
+      }));
     setDisable(false);
   };
 
   return (
     <StyledInputSelection>
-      {!isDeletedRequesdts && (
-        <div className="title">
-          <h1>{t('request_id').replace('id', drawerStatus.sequence?.toString() || '0')}</h1>
-          <Button icon={<SvgSelector id="edit" />} onClick={handleUpdate} />
-        </div>
-      )}
-
       <div className="form-div">
         <div className="form-content">
-          {/* Submission Info */}
           <div className="form-group">
             <h3>{t('submission_info')}</h3>
             <Input disabled={disable} name="date" label={t('date_created')} />
-            {/* <div className="date-picker">
-              <DatePicker disabled={disable} name="deadline" label={t('deadline')} />
-            </div> */}
           </div>
 
           {/* Inquiry Details */}
@@ -161,18 +140,6 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
             <Input name="status" disabled={disable} label={t('processing_status')} />
             <Input name="finalResult" disabled={disable} label={t('final_result')} />
             <TextArea name="notes" disabled={disable} label={t('notes')} rows={3} />
-            {/* <Select
-              disabled={disable}
-              rules={[{ required: true, message: t('field_is_required') }]}
-              label={t('priority')}
-              name="priority"
-            >
-              {PRIORITY.map((item: any) => (
-                <SelectOption value={item.id} key={item.id}>
-                  {t(item.text)}
-                </SelectOption>
-              ))}
-            </Select> */}
             <div className="category">
               <Select
                 disabled={disable}
@@ -208,23 +175,23 @@ export function InputSelection({ form, onClose, getRequests, drawerStatus, handl
 
       {!isDeletedRequesdts && (
         <div className="action-btns">
-          {drawerStatus.type !== 'VIEW' ? (
-            <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
+          {actionStatus && actionStatus.type !== 'VIEW' ? (
+            <Button label={t('cancel')} type="default" className="cancel-button" />
           ) : (
             <>
-              <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
+              <Button label={t('cancel')} type="default" className="cancel-button" />
               <Button
                 danger
-                label={drawerStatus?.request?.isDeleted === 0 ? t('delete') : t('recover')}
-                className={drawerStatus?.request?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+                label={actionStatus?.request?.isDeleted === 0 ? t('delete') : t('recover')}
+                className={actionStatus?.request?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
                 type="primary"
                 onClick={handleDeleteRequest}
               />
             </>
           )}
-          {drawerStatus.type !== 'VIEW' && (
+          {actionStatus && actionStatus.type !== 'VIEW' && (
             <Button
-              label={drawerStatus.type === 'ADD' ? t('create_request') : t('save_changes')}
+              label={actionStatus && actionStatus.type === 'ADD' ? t('create_request') : t('save_changes')}
               type="primary"
               htmlType="button"
               onClick={handleSubmit}
