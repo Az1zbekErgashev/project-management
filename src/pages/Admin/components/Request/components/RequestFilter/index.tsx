@@ -4,9 +4,9 @@ import { AutoComplete, Form } from 'antd';
 import { Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'antd/es/form/Form';
-import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
+import { PROJECT_STATUS } from 'utils/consts';
 
 interface props {
   handleFilterChange: (value: any) => void;
@@ -81,16 +81,6 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
               {filterValue?.data?.map((item: any, index: number) => (
                 <SelectOption key={index} value={item.id}>
                   {item.title}
-                </SelectOption>
-              ))}
-              <SelectOption value={null}>{t('all')}</SelectOption>
-            </Select>
-          )}
-          {!isPendingRequests && (
-            <Select className="input-selection-select" name="Priority" modeType="FILTER" label={t('priority')}>
-              {PRIORITY?.map((item: any, index: number) => (
-                <SelectOption key={index} value={item.id}>
-                  {item.text}
                 </SelectOption>
               ))}
               <SelectOption value={null}>{t('all')}</SelectOption>

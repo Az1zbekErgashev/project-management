@@ -209,7 +209,7 @@ export function AdminUsers() {
       )}
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
-      <Modal footer={null} width={600} title={t('user-action')} onCancel={onClose} centered={true} open={drawerStatus}>
+      <Modal footer={null} width={600} onCancel={onClose} centered={true} open={drawerStatus}>
         <UserInformation
           getUsers={getUsers}
           handleDelete={handleDelete}
