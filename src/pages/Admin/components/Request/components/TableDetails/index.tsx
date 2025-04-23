@@ -47,7 +47,7 @@ interface Change {
   file?: File;
 }
 
-export const TableDetail = () => {
+export function TableDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [form] = Form.useForm();
@@ -74,7 +74,6 @@ export const TableDetail = () => {
     },
   ]);
   const [newComment, setNewComment] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
@@ -91,32 +90,13 @@ export const TableDetail = () => {
     }
   };
 
-  const handleFileChange = (info: any) => {
-    const file = info.file.originFileObj as File;
-    if (file) {
-      setSelectedFile(file);
-      setChanges((prev) => [
-        ...prev,
-        {
-          id: crypto.randomUUID(),
-          field: 'file',
-          oldValue: '',
-          newValue: 'File uploaded',
-          author: 'Current User',
-          timestamp: new Date(),
-          file,
-        },
-      ]);
-    }
-  };
-
   return (
     <StyledTableDetail>
       <div className="table-detail">
         <div className="header-line">
           <div className="title-line">
             <div className="back-buttton">
-              <BackButton color="black" label={t('back')} />
+              <BackButton onClick={() => navigate(-1)} color="black" label={t('back')} />
             </div>
             <h2 className="global-title">{t('request_action')}</h2>
           </div>
@@ -205,4 +185,4 @@ export const TableDetail = () => {
       </div>
     </StyledTableDetail>
   );
-};
+}

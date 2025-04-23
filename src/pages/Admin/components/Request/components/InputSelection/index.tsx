@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DatePicker, Input, Notification, Select, SelectOption, Tabs, TextArea, Upload } from 'ui';
+import { Button, Input, Notification, Select, SelectOption, TextArea, Upload } from 'ui';
 import { FormInstance, GetProp, UploadFile, UploadProps } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
@@ -8,7 +8,8 @@ import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 import dayjs from 'dayjs';
 import { PlusOutlined } from '@ant-design/icons';
-import { Image } from 'antd';
+import { useNavigate } from 'react-router-dom';
+
 type ActionStatus = {
   type: 'VIEW' | 'EDIT' | 'ADD';
   request?: RequestModel;
@@ -22,22 +23,13 @@ interface Props {
   } | null;
   setActionStatus: React.Dispatch<React.SetStateAction<ActionStatus>>;
 }
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
 
 export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
   const { t } = useTranslation();
   const [disable, setDisable] = useState<boolean>(false);
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
-
+  const [fileList, setFileList] = useState<File | null>(null);
+  const navigate = useNavigate();
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url:
@@ -45,7 +37,7 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
           ? `api/request/update-request?id=${actionStatus.request?.id}`
           : '/api/request/create-request',
       method: actionStatus && actionStatus.type == 'EDIT' ? 'PUT' : 'POST',
-      multipart: false,
+      multipart: true,
     },
     onSuccess() {
       if (actionStatus && actionStatus.type == 'EDIT') {
@@ -54,6 +46,7 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
         Notification({ text: t('request_updated_success'), type: 'success' });
       }
       form.resetFields();
+      navigate(-1);
     },
     onError() {
       Notification({ text: t('input_creation_failed'), type: 'error' });
@@ -64,7 +57,7 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     form
       .validateFields()
       .then((res) => {
-        res.deadline = res.deadline !== null ? dayjs(res.deadline) : null;
+        res.File = fileList;
         createData(res);
       })
       .catch(() => {
@@ -72,7 +65,7 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
       });
   };
 
-  const { data: categoryData, refetch } = useQueryApiClient({
+  const { data: categoryData } = useQueryApiClient({
     request: {
       url: '/api/request/category',
       method: 'GET',
@@ -94,7 +87,7 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     } else {
       setDisable(false);
     }
-  }, [actionStatus]);
+  }, []);
 
   const handleDeleteRequest = () => {
     // if (actionStatus && actionStatus.request?.isDeleted === 0) {
@@ -114,19 +107,6 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     setDisable(false);
   };
 
-  const handlePreview = async (file: UploadFile) => {
-    const isImage = file.type?.startsWith('image');
-
-    if (isImage) {
-      if (!file.url && !file.preview) {
-        file.preview = await getBase64(file.originFileObj as FileType);
-      }
-    } else {
-      const fileURL = file.url || URL.createObjectURL(file.originFileObj as Blob);
-      window.open(fileURL, '_blank');
-    }
-  };
-
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
       <PlusOutlined />
@@ -134,8 +114,15 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     </button>
   );
 
-  const handleChange = ({ file }: { file: UploadFile }) => {
-    setFileList(file ? [file] : []);
+  const handleChange = (file: any) => {
+    const realFile =
+      file?.file instanceof File
+        ? file.file
+        : file?.file?.originFileObj instanceof File
+          ? file.file.originFileObj
+          : null;
+
+    setFileList(realFile ? realFile : null);
   };
 
   const formatSize = (size: number) => {
@@ -171,7 +158,25 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
               <h3>{t('notes_and_status')}</h3>
             </div>
             <div className="inputs">
-              <Input name="status" disabled={disable} label={t('status')} />
+              <Select
+                name="requestStatusId"
+                rules={[{ required: true, message: t('this_field_required') }]}
+                label={t('category')}
+              >
+                {categoryData?.data?.map((item: any, index: any) => (
+                  <SelectOption key={index} value={item.id}>
+                    {item.title}
+                  </SelectOption>
+                ))}
+              </Select>
+              <Select rules={[{ required: true, message: t('this_field_required') }]} name="status" label={t('status')}>
+                {PROJECT_STATUS.map((item, index) => (
+                  <SelectOption key={index} value={item.text}>
+                    {item.text}
+                  </SelectOption>
+                ))}
+              </Select>
+
               <TextArea allowClear name="notes" disabled={disable} label={t('notes')} rows={3} />
             </div>
           </div>
@@ -204,27 +209,20 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
               <h3>{t('client_information')}</h3>
             </div>
             <div className="inputs">
-              <Upload
-                fileList={fileList}
-                onChange={handleChange}
-                onPreview={handlePreview}
-                maxCount={1}
-                showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
-                className="upload-box"
-              >
+              <Upload fileList={fileList} onChange={handleChange} maxCount={1} className="upload-box">
                 <div className="centeredFileName">
-                  {fileList.length === 0 ? (
+                  {fileList == null ? (
                     uploadButton
                   ) : (
                     <div className="uploaded-file">
                       <div className="flex">
                         <div>
                           <span>{t('file_name')}</span>
-                          <span>{fileList[0].name}</span>
+                          <span>{fileList.name}</span>
                         </div>
                         <div>
                           <span>{t('size')}</span>
-                          <span>{formatSize(fileList[0].size || 0)}</span>
+                          <span>{formatSize(fileList.size || 0)}</span>
                         </div>
                         <br />
                       </div>
