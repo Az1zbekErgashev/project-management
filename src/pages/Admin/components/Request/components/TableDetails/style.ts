@@ -11,6 +11,15 @@ export const StyledTableDetail = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    .title-line {
+      display: flex;
+      gap: 20px;
+    }
+
+    .back-buttton {
+      margin: 18px 0 40px 0 !important;
+    }
   }
 
   .title {

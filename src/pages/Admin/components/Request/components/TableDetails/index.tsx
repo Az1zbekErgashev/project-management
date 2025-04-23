@@ -7,6 +7,7 @@ import { InputSelection } from '../InputSelection';
 import { StyledTableDetail } from './style';
 import dayjs from 'dayjs';
 import { useNavigate } from 'react-router-dom';
+import { BackButton } from 'ui';
 
 const { TabPane } = Tabs;
 const { Text, Title } = Typography;
@@ -113,117 +114,94 @@ export const TableDetail = () => {
     <StyledTableDetail>
       <div className="table-detail">
         <div className="header-line">
-          <h2 className="global-title">{t('request_action')}</h2>
-          <Button label={t('close')} type="primary" onClick={() => navigate(-1)} className="close-button" />
+          <div className="title-line">
+            <div className="back-buttton">
+              <BackButton color="black" label={t('back')} />
+            </div>
+            <h2 className="global-title">{t('request_action')}</h2>
+          </div>
         </div>
         <Form form={form} layout="vertical">
           <InputSelection actionStatus={actionStatus} setActionStatus={setActionStatus} form={form} />
         </Form>
         <br />
-        <div
-          style={{
-            marginTop: '16px',
-            marginLeft: '16px',
-            marginBottom: '16px',
-            paddingTop: '10px',
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: '10px',
-          }}
-        >
-          <Text strong>{t('attach_file')}</Text>
-          <Upload
-            beforeUpload={() => false}
-            onChange={handleFileChange}
-            showUploadList={false}
-            style={{ display: 'block' }}
-          >
-            <AntButton icon={<UploadOutlined />} type="primary">
-              {t('select_file')}
-            </AntButton>
-          </Upload>
-          {selectedFile && (
-            <Text type="secondary" style={{ display: 'block' }}>
-              {t('selected')}: {selectedFile.name}
-            </Text>
-          )}
-        </div>
-        <Tabs defaultActiveKey="1">
-          <TabPane
-            tab={
-              <span style={{ padding: '10px' }}>
-                <SendOutlined /> {t('comments')}
-              </span>
-            }
-            key="1"
-          >
-            <Title level={4}>{t('comments')}</Title>
-            <List
-              dataSource={comments}
-              renderItem={(item) => (
-                <List.Item>
-                  <Card style={{ width: '100%' }}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                      <Text strong>{item.author}</Text>
-                      <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
-                      <Text>{item.text}</Text>
-                    </Space>
-                  </Card>
-                </List.Item>
-              )}
-            />
-            <Divider />
-            <Space style={{ width: '100%' }}>
-              <Input
-                value={newComment}
-                onChange={(e) => setNewComment(e.target.value)}
-                placeholder={t('add_comment')}
-                style={{ flex: 1 }}
+        {!window.location.pathname.includes('/add-requests') && (
+          <Tabs defaultActiveKey="1">
+            <TabPane
+              tab={
+                <span style={{ padding: '10px' }}>
+                  <SendOutlined /> {t('comments')}
+                </span>
+              }
+              key="1"
+            >
+              <Title level={4}>{t('comments')}</Title>
+              <List
+                dataSource={comments}
+                renderItem={(item) => (
+                  <List.Item>
+                    <Card style={{ width: '100%' }}>
+                      <Space direction="vertical" style={{ width: '100%' }}>
+                        <Text strong>{item.author}</Text>
+                        <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
+                        <Text>{item.text}</Text>
+                      </Space>
+                    </Card>
+                  </List.Item>
+                )}
               />
-              <Button type="primary" icon={<SendOutlined />} onClick={handleCommentSubmit} label={t('submit')} />
-            </Space>
-          </TabPane>
-          <TabPane
-            style={{ padding: '16px' }}
-            tab={
-              <span style={{ padding: '10px' }}>
-                <HistoryOutlined /> {t('change_history')}
-              </span>
-            }
-            key="2"
-          >
-            <Title level={4}>{t('change_history')}</Title>
-            <List
-              dataSource={changes}
-              renderItem={(item) => (
-                <List.Item>
-                  <Card style={{ width: '100%' }}>
-                    <Space direction="vertical" style={{ width: '100%' }}>
-                      <Text strong>{item.author}</Text>
-                      <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
-                      <Text>
-                        Changed {item.field.toLowerCase()}: "{item.oldValue}" → "{item.newValue}"
-                      </Text>
-                      {item.file && <Text style={{ color: '#1890ff', cursor: 'pointer' }}>{item.file.name}</Text>}
-                    </Space>
-                  </Card>
-                </List.Item>
-              )}
-            />
-          </TabPane>
-          <TabPane
-            tab={
-              <span style={{ padding: '10px' }}>
-                <TableOutlined /> {t('inquiries')}
-              </span>
-            }
-            key="3"
-          >
-            <Title level={4}>{t('inquiries')}</Title>
-            <Text>{t('no_inqueries_available')}</Text>
-          </TabPane>
-        </Tabs>
+              <Divider />
+              <Space style={{ width: '100%' }}>
+                <Input
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder={t('add_comment')}
+                  style={{ flex: 1 }}
+                />
+                <Button type="primary" icon={<SendOutlined />} onClick={handleCommentSubmit} label={t('submit')} />
+              </Space>
+            </TabPane>
+            <TabPane
+              style={{ padding: '16px' }}
+              tab={
+                <span style={{ padding: '10px' }}>
+                  <HistoryOutlined /> {t('change_history')}
+                </span>
+              }
+              key="2"
+            >
+              <Title level={4}>{t('change_history')}</Title>
+              <List
+                dataSource={changes}
+                renderItem={(item) => (
+                  <List.Item>
+                    <Card style={{ width: '100%' }}>
+                      <Space direction="vertical" style={{ width: '100%' }}>
+                        <Text strong>{item.author}</Text>
+                        <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
+                        <Text>
+                          Changed {item.field.toLowerCase()}: "{item.oldValue}" → "{item.newValue}"
+                        </Text>
+                        {item.file && <Text style={{ color: '#1890ff', cursor: 'pointer' }}>{item.file.name}</Text>}
+                      </Space>
+                    </Card>
+                  </List.Item>
+                )}
+              />
+            </TabPane>
+            <TabPane
+              tab={
+                <span style={{ padding: '10px' }}>
+                  <TableOutlined /> {t('inquiries')}
+                </span>
+              }
+              key="3"
+            >
+              <Title level={4}>{t('inquiries')}</Title>
+              <Text>{t('no_inqueries_available')}</Text>
+            </TabPane>
+          </Tabs>
+        )}
       </div>
     </StyledTableDetail>
   );

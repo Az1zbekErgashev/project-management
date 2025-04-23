@@ -13,9 +13,9 @@ export const StyledInputSelection = styled.div`
 
   .fields {
     display: flex;
+    gap: 20px;
     .rows {
       width: 100%;
-      padding: 0 20px;
 
       display: flex;
       flex-direction: column;
@@ -87,5 +87,9 @@ export const StyledInputSelection = styled.div`
     .ant-form-item {
       width: 100%;
     }
+  }
+
+  .action-btns {
+    margin-top: 20px !important;
   }
 `;

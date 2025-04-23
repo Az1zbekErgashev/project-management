@@ -8,7 +8,6 @@ import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 import dayjs from 'dayjs';
 
-
 type ActionStatus = {
   type: 'VIEW' | 'EDIT' | 'ADD';
   request?: RequestModel;
@@ -80,6 +79,11 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
         ...actionStatus.request,
         requestStatusId: actionStatus?.request?.requestStatus?.id,
       });
+    } else if (window.location.pathname.includes('add-requests')) {
+      setActionStatus((prev) => ({
+        ...prev,
+        type: 'ADD',
+      }));
     } else {
       setDisable(false);
     }
@@ -102,7 +106,6 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
       }));
     setDisable(false);
   };
-
 
   return (
     <StyledInputSelection>
@@ -174,10 +177,9 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
       {!isDeletedRequesdts && (
         <div className="action-btns">
           {actionStatus && actionStatus.type !== 'VIEW' ? (
-            <Button label={t('cancel')} type="default" className="cancel-button" />
+            <></>
           ) : (
             <>
-              <Button label={t('cancel')} type="default" className="cancel-button" />
               <Button
                 danger
                 label={actionStatus?.request?.isDeleted === 0 ? t('delete') : t('recover')}
