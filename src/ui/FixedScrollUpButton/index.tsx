@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyledFixedScrollUpButton } from './style';
 import { smoothScroll } from 'utils/globalFunctions';
+import { ArrowUpOutlined } from '@ant-design/icons';
 
 export const FixedScrollUpButton = () => {
   const [isVisibleButton, setIsVisibleButton] = useState(false);
@@ -24,6 +25,7 @@ export const FixedScrollUpButton = () => {
         smoothScroll('top', 0);
       }}
     >
+      <ArrowUpOutlined color="white" />
     </StyledFixedScrollUpButton>
   );
 };

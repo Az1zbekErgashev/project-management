@@ -15,7 +15,7 @@ export const StyledFixedScrollUpButton = styled.button`
   right: 30px;
   bottom: 60px;
   font-size: 30px;
-  background-color: #fafafa;
+  background-color: var(--white);
   &:hover {
     svg path {
       fill: var(--white);
@@ -29,13 +29,13 @@ export const StyledFixedScrollUpButton = styled.button`
   }
 
   svg {
-    fill: var(--accent-color);
+    fill: var(--base-color);
     width: 18px;
     height: 20px;
   }
 
   &:hover {
-    background-color: var(--accent-color);
+    background-color: var(--base-color);
     svg {
       fill: var(--white);
     }
