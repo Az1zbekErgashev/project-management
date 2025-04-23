@@ -11,63 +11,71 @@ export const StyledInputSelection = styled.div`
     }
   }
 
-  .form-div {
+  .fields {
     display: flex;
-    justify-content: space-around;
-    gap: 10px;
-    padding-top: 20px;
-  }
+    .rows {
+      width: 100%;
+      padding: 0 20px;
 
-  .form-content {
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-    row-gap: 15px;
-  }
-
-  .form-group {
-    display: flex;
-    flex-direction: column;
-    row-gap: 12px;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    background-color: #fff;
-
-    h3 {
-      font-size: 16px;
-      font-weight: 600;
-      color: #1a1a1a;
-      margin-bottom: 12px;
-      background-color:rgb(214, 207, 207);
-      padding: 10px;
-      border-radius: 8px;
-    }
-  }
-
-  .action-btns {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 30px !important;
-  }
-
-  .category {
-    width: 100%;
-    margin-top: 0 !important;
-
-    .category_input {
-      margin-top: 20px !important;
       display: flex;
-      gap: 10px;
+      flex-direction: column;
+      row-gap: 20px;
+      .cards {
+        min-height: 380px;
 
-      .ant-form-item {
-        width: 100%;
-      }
+        border: 1px solid var(--gray-300);
+        border-radius: 10px;
+        overflow: hidden;
 
-      button {
-        margin-top: 30px !important;
+        .card_header {
+          height: 50px;
+          display: flex;
+          align-items: center;
+          padding-left: 50px;
+          background: #f9f9fa;
+
+          h3 {
+            font-weight: 600;
+          }
+        }
+
+        .inputs {
+          display: flex;
+          flex-direction: column;
+          row-gap: 12px;
+          padding: 20px 50px 30px 50px;
+        }
       }
+    }
+
+    .ant-upload {
+      width: 100%;
+    }
+
+    .upload-box {
+      margin-top: 30px;
+      background-color: #f4f4f4;
+      border: 2px dashed #ccc;
+      height: 150px;
+      width: 400px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .centeredFileName {
+      text-align: center;
+      margin: 10px 0;
+      color: #333;
+      font-size: 14px;
+      word-break: break-all;
+      height: 150px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #f4f4f4;
+      border: 2px dashed #ccc;
     }
   }
 

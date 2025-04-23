@@ -58,7 +58,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileS
         <p className="file-rules">{t('only_excel_allowed')} (.xlsx, .xls)</p>
 
         <Upload onChange={handleChangeFile} accept=".xlsx,.xls" className="upload-box">
-          <div className="centeredFileName">{filetState?.name}</div>
+          <div className="centeredFileName">{filetState?.name ? filetState?.name : 'Upload Excel'}</div>
         </Upload>
 
         <Select onChange={(x: any) => setCategoryId(x)}>

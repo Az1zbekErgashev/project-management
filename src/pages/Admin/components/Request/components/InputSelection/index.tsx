@@ -1,4 +1,3 @@
-import { Form } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DatePicker, Input, Notification, Select, SelectOption, Tabs, TextArea, Upload } from 'ui';
@@ -8,6 +7,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 import dayjs from 'dayjs';
+
 
 type ActionStatus = {
   type: 'VIEW' | 'EDIT' | 'ADD';
@@ -26,7 +26,12 @@ interface Props {
 export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
   const { t } = useTranslation();
   const [disable, setDisable] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadedFile, setUploadedFile] = useState<{ name: string; url: string; type: string } | null>(null);
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
+
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url:
@@ -98,75 +103,74 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     setDisable(false);
   };
 
-  const items = [
-    {
-      key: '1',
-      label: t('request_detail'),
-      children: (
+
+  return (
+    <StyledInputSelection>
+      <div className="fields">
         <div className="rows">
           <div className="cards">
             <div className="card_header">
               <h3>{t('dates')}</h3>
             </div>
-            <Input disabled={disable} name="date" label={t('date_created')} />
+            <div className="inputs">
+              <Input disabled={disable} name="date" label={t('date_created')} />
+            </div>
           </div>
           <div className="cards">
             <div className="card_header">
               <h3>{t('inquiry_details')}</h3>
             </div>
-            <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
-            <Input name="projectDetails" disabled={disable} label={t('project_details')} />
-            <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
-          </div>
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('client_information')}</h3>
+            <div className="inputs">
+              <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
+              <Input name="projectDetails" disabled={disable} label={t('project_details')} />
+              <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
             </div>
-            <Input name="clientCompany" disabled={disable} label={t('client_company')} />
-            <Input name="client" disabled={disable} label={t('client')} />
-            <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-            <Input name="email" disabled={disable} label={t('email')} />
-          </div>
-        </div>
-      ),
-    },
-    {
-      key: '2',
-      label: t('assigns_details'),
-      children: (
-        <div className="rows">
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('internal_assignment')}</h3>
-            </div>
-            <Input name="companyName" disabled={disable} label={t('company_name')} />
-            <Input name="department" disabled={disable} label={t('department')} />
-            <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
           </div>
           <div className="cards">
             <div className="card_header">
               <h3>{t('notes_and_status')}</h3>
             </div>
-            <Input name="status" disabled={disable} label={t('processing_status')} />
-            <Input name="finalResult" disabled={disable} label={t('final_result')} />
-            <TextArea allowClear name="notes" disabled={disable} label={t('notes')} rows={3} />
-          </div>
-          <div className="cards">
-            <div></div>
-            <Upload></Upload>
+            <div className="inputs">
+              <Input name="status" disabled={disable} label={t('status')} />
+              <TextArea allowClear name="notes" disabled={disable} label={t('notes')} rows={3} />
+            </div>
           </div>
         </div>
-      ),
-    },
-    {
-      key: '3',
-      label: t('attachment'),
-      children: <div></div>,
-    },
-  ];
+        <div className="rows">
+          <div className="cards">
+            <div className="card_header">
+              <h3>{t('internal_assignment')}</h3>
+            </div>
+            <div className="inputs">
+              <Input name="companyName" disabled={disable} label={t('company_name')} />
+              <Input name="department" disabled={disable} label={t('department')} />
+              <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
+            </div>
+          </div>
+          <div className="cards">
+            <div className="card_header">
+              <h3>{t('client_information')}</h3>
+            </div>
+            <div className="inputs">
+              <Input name="clientCompany" disabled={disable} label={t('client_company')} />
+              <Input name="client" disabled={disable} label={t('client')} />
+              <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
+              <Input name="email" disabled={disable} label={t('email')} />
+            </div>
+          </div>
 
-  return (
-    <StyledInputSelection>
+          <div className="cards">
+            <div className="card_header">
+              <h3>{t('client_information')}</h3>
+            </div>
+            <div className="inputs">
+              <Upload className="upload-box">
+                <div className="centeredFileName"></div>
+              </Upload>
+            </div>
+          </div>
+        </div>
+      </div>
       {!isDeletedRequesdts && (
         <div className="action-btns">
           {actionStatus && actionStatus.type !== 'VIEW' ? (
