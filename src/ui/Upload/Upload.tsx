@@ -16,6 +16,10 @@ interface UploadProps {
   beforeUpload?: (file: File, fileList: File[]) => boolean | Promise<void>;
   disabled?: boolean;
   accept?: string;
+  onPreview?: any;
+  fileList?: any;
+  maxCount?: any;
+  showUploadList?: any;
 }
 
 export const Upload = ({
@@ -30,6 +34,10 @@ export const Upload = ({
   beforeUpload,
   disabled,
   accept,
+  onPreview,
+  fileList,
+  maxCount,
+  showUploadList,
 }: UploadProps) => {
   const customRequest = ({ file, onSuccess }: any) => {
     setTimeout(() => {
@@ -58,6 +66,8 @@ export const Upload = ({
         fileList={[]}
         disabled={disabled}
         accept={accept}
+        onPreview={onPreview}
+        maxCount={maxCount}
       >
         {children ? children : <Button icon={<InboxOutlined />} className={className} label={btnLabel} />}
       </AntdUpload>

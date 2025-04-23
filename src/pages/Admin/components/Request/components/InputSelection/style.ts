@@ -70,7 +70,7 @@ export const StyledInputSelection = styled.div`
       font-size: 14px;
       word-break: break-all;
       height: 150px;
-      padding: 0 20px;
+      padding: 20px 20px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -91,5 +91,31 @@ export const StyledInputSelection = styled.div`
 
   .action-btns {
     margin-top: 20px !important;
+  }
+
+  .uploaded-file {
+    background: red;
+    width: 100%;
+    height: 100%;
+    background: var(--white);
+    border: 1px solid var(--gray-300);
+    border-radius: 10px;
+
+    .flex {
+      text-align: start;
+      padding: 20px;
+
+      display: flex;
+      flex-direction: column;
+      row-gap: 12px;
+
+      div {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 0.88888rem;
+        font-weight: 600;
+      }
+    }
   }
 `;

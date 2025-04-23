@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DatePicker, Input, Notification, Select, SelectOption, Tabs, TextArea, Upload } from 'ui';
-import { FormInstance } from 'antd/lib';
+import { FormInstance, GetProp, UploadFile, UploadProps } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 import dayjs from 'dayjs';
-
+import { PlusOutlined } from '@ant-design/icons';
+import { Image } from 'antd';
 type ActionStatus = {
   type: 'VIEW' | 'EDIT' | 'ADD';
   request?: RequestModel;
@@ -21,15 +22,21 @@ interface Props {
   } | null;
   setActionStatus: React.Dispatch<React.SetStateAction<ActionStatus>>;
 }
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
+const getBase64 = (file: FileType): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
   const { t } = useTranslation();
   const [disable, setDisable] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [uploading, setUploading] = useState<boolean>(false);
-  const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [uploadedFile, setUploadedFile] = useState<{ name: string; url: string; type: string } | null>(null);
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
@@ -107,6 +114,36 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     setDisable(false);
   };
 
+  const handlePreview = async (file: UploadFile) => {
+    const isImage = file.type?.startsWith('image');
+
+    if (isImage) {
+      if (!file.url && !file.preview) {
+        file.preview = await getBase64(file.originFileObj as FileType);
+      }
+    } else {
+      const fileURL = file.url || URL.createObjectURL(file.originFileObj as Blob);
+      window.open(fileURL, '_blank');
+    }
+  };
+
+  const uploadButton = (
+    <button style={{ border: 0, background: 'none' }} type="button">
+      <PlusOutlined />
+      <div style={{ marginTop: 8 }}>Upload</div>
+    </button>
+  );
+
+  const handleChange = ({ file }: { file: UploadFile }) => {
+    setFileList(file ? [file] : []);
+  };
+
+  const formatSize = (size: number) => {
+    if (size < 1024) return `${size} B`;
+    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
+    return `${(size / 1024 / 1024).toFixed(1)} MB`;
+  };
+
   return (
     <StyledInputSelection>
       <div className="fields">
@@ -167,8 +204,33 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
               <h3>{t('client_information')}</h3>
             </div>
             <div className="inputs">
-              <Upload className="upload-box">
-                <div className="centeredFileName"></div>
+              <Upload
+                fileList={fileList}
+                onChange={handleChange}
+                onPreview={handlePreview}
+                maxCount={1}
+                showUploadList={{ showPreviewIcon: true, showRemoveIcon: true }}
+                className="upload-box"
+              >
+                <div className="centeredFileName">
+                  {fileList.length === 0 ? (
+                    uploadButton
+                  ) : (
+                    <div className="uploaded-file">
+                      <div className="flex">
+                        <div>
+                          <span>{t('file_name')}</span>
+                          <span>{fileList[0].name}</span>
+                        </div>
+                        <div>
+                          <span>{t('size')}</span>
+                          <span>{formatSize(fileList[0].size || 0)}</span>
+                        </div>
+                        <br />
+                      </div>
+                    </div>
+                  )}
+                </div>
               </Upload>
             </div>
           </div>

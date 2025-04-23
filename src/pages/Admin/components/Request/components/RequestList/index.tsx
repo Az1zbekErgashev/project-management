@@ -32,14 +32,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
 
   const columns: ColumnsType<RequestModel> = [
     {
-      title: t('id'),
-      dataIndex: 'id',
-      key: 'id',
-      width: 80,
-      render: (_, record, index) => <div>{(requests?.pageIndex - 1) * requests?.itemsPerPage + index + 1}</div>,
-      fixed: 'left',
-    },
-    {
       title: t('createdAt'),
       dataIndex: 'date',
       key: 'date',
@@ -108,11 +100,6 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       title: t('email'),
       dataIndex: 'email',
       key: 'email',
-    },
-    {
-      title: t('final_result'),
-      dataIndex: 'finalResult',
-      key: 'finalResult',
     },
     {
       title: t('notes'),
