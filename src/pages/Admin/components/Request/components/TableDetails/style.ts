@@ -35,4 +35,10 @@ export const StyledTableDetail = styled.div`
     cursor: pointer;
     font-size: 14px;
   }
+
+  /* .delete-comment-button {
+    background-color: red;
+    width: 50px;
+    height: 50px;
+  } */
 `;

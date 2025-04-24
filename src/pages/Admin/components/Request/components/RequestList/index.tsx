@@ -8,6 +8,9 @@ import dayjs from 'dayjs';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import useJwt from 'utils/useJwt';
+import { DeleteOutlined } from '@ant-design/icons'; 
 
 interface Props {
   isRequestsLoading: boolean;
@@ -27,11 +30,24 @@ interface Props {
 export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const { getHeader } = useJwt();
+  const getToken = getHeader();
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
   };
 
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await axios.delete(`https://crm-api.wisestone-u.com/api/request/delete/${id}`, {
+        headers: {
+          Authorization: getToken,
+        },
+      });
+      console.log('Delete response:', response.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
   const columns: ColumnsType<RequestModel> = [
     {
       title: t('createdAt'),
@@ -125,17 +141,29 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'action',
       key: 'action',
       render: (_, record, index) => (
-          <Button
-            type="primary"
-            onClick={() => {
-              navigate(`/request-detail/${record.id}`);
-            }}
-          >
-            {t('view details')}
-          </Button>
+        <Button
+          type="primary"
+          onClick={() => {
+            navigate(`/request-detail/${record.id}`);
+          }}
+        >
+          {t('view_details')}
+        </Button>
       ),
-    }
-    
+    },
+    {
+      title: t('delete'),
+      dataIndex: 'detele',
+      key: 'delete',
+      render: (_, record, index) => (
+        <Button
+          icon={<DeleteOutlined style={{color: "red"}} />} 
+          onClick={() => {
+            handleDelete(record.id);
+          }}
+        />
+      ),
+    },
   ];
 
   return (
