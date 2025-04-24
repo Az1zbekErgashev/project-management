@@ -2,11 +2,12 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Tooltip } from 'antd';
+import { Button, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
+import { useNavigate } from 'react-router-dom';
 
 interface Props {
   isRequestsLoading: boolean;
@@ -25,6 +26,7 @@ interface Props {
 
 export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: Props) {
   const { t } = useTranslation();
+  const navigate = useNavigate();
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -121,7 +123,19 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
     {
       title: t('action'),
       dataIndex: 'action',
-    },
+      key: 'action',
+      render: (_, record, index) => (
+          <Button
+            type="primary"
+            onClick={() => {
+              navigate(`/request-detail/${record.id}`);
+            }}
+          >
+            {t('view details')}
+          </Button>
+      ),
+    }
+    
   ];
 
   return (

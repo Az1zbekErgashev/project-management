@@ -42,6 +42,7 @@ export const router = createBrowserRouter([
       { path: '/profile', element: <Profile /> },
       { path: '/logs', element: <Logs /> },
       { path: '/add-requests', element: <TableDetail /> },
+      { path: '/request-detail/:id', element: <TableDetail /> },
     ],
   },
 ]);
