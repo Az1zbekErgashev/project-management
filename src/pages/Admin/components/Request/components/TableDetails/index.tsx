@@ -330,7 +330,7 @@ export function TableDetail() {
                   <List.Item>
                     <Card style={{ width: '100%' }}>
                       <Space direction="vertical" style={{ width: '100%' }}>
-                        <Text strong>{item.author}</Text>
+                        <Text strong className="comment-author">{item.author}</Text>
                         <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
                         {editingCommentId === item.id ? (
                           <>
