@@ -36,9 +36,13 @@ export const StyledTableDetail = styled.div`
     font-size: 14px;
   }
 
-  /* .delete-comment-button {
-    background-color: red;
-    width: 50px;
-    height: 50px;
-  } */
+  .delete-comment-button {
+    background-color:rgb(240, 143, 143);
+    width: 40px;
+    height: 40px;
+  }
+
+  .edit-comment-button {
+    background-color: #B7E0FF
+  }
 `;

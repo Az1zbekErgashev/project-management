@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Form, Input, Tabs, List, Card, Space, Typography, Divider, Upload, Button as AntButton, message } from 'antd';
-import { SendOutlined, HistoryOutlined, UploadOutlined, TableOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import {
+  SendOutlined,
+  HistoryOutlined,
+  UploadOutlined,
+  TableOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { InputSelection } from '../InputSelection';
@@ -10,6 +17,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton, Notification } from 'ui';
 import axios from 'axios';
 import useJwt from 'utils/useJwt';
+import { get } from 'http';
 
 const { TabPane } = Tabs;
 const { Text, Title } = Typography;
@@ -40,11 +48,9 @@ interface Comment {
 }
 
 interface Change {
+  user: any;
+  log: string;
   id: string;
-  field: string;
-  oldValue: string;
-  newValue: string;
-  author: string;
   timestamp: Date;
   file?: File;
 }
@@ -267,17 +273,28 @@ export function TableDetail() {
     }
   }, [id]);
 
-  const [changes, setChanges] = useState<Change[]>([
-    {
-      id: '1',
-      field: 'department',
-      oldValue: '',
-      newValue: 'Changed department',
-      author: 'Ivan Petrov',
-      timestamp: new Date('2025-04-20T10:00:00'),
-      file: new File(['dummy content'], 'document.pdf', { type: 'application/pdf' }),
-    },
-  ]);
+  const [changes, setChanges] = useState<Change[]>([]);
+ 
+  const getHistoryChanges = async () => {
+    try {
+      const response = await axios.get('https://crm-api.wisestone-u.com/api/comment/history', {
+        headers: {
+          Authorization: getToken,
+        },
+        params: {
+          RequestId: parseInt(id || '0'),
+          PageIndex: 1,
+          PageSize: 10,
+        },
+      });
+      console.log('GET /api/comment/history response buuu:', response.data.data);
+      setChanges(response.data.data.items);
+    } catch (error: any) {
+      console.error('Error fetching history changes:', error);
+      console.error('Error details:', error.response?.data || error.message);
+      message.error(t('failed_to_load_history'));
+    }
+  };
 
   return (
     <StyledTableDetail>
@@ -305,6 +322,7 @@ export function TableDetail() {
               }
               key="1"
             >
+              <br />
               <Title level={4}>{t('comments')}</Title>
               <List
                 dataSource={comments}
@@ -322,16 +340,8 @@ export function TableDetail() {
                               placeholder={t('edit_comment')}
                             />
                             <Space style={{ marginTop: 8 }}>
-                              <Button
-                                label={t('save')}
-                                type="primary"
-                                onClick={() => handleUpdateComment(item.id)}
-                              />
-                              <Button
-                                label={t('cancel')}
-                                type="default"
-                                onClick={cancelEditingComment}
-                              />
+                              <Button label={t('save')} type="primary" onClick={() => handleUpdateComment(item.id)} />
+                              <Button label={t('cancel')} type="default" onClick={cancelEditingComment} />
                             </Space>
                           </>
                         ) : (
@@ -346,6 +356,7 @@ export function TableDetail() {
                             icon={<DeleteOutlined style={{ color: 'red', fontSize: '18px' }} />}
                             onClick={() => handleDeleteComment(item.id)}
                           />
+                          <br />
                           {editingCommentId !== item.id && (
                             <Button
                               label=""
@@ -375,7 +386,7 @@ export function TableDetail() {
             <TabPane
               style={{ padding: '16px' }}
               tab={
-                <span style={{ padding: '10px' }}>
+                <span onClick={getHistoryChanges} style={{ padding: '10px' }}>
                   <HistoryOutlined /> {t('change_history')}
                 </span>
               }
@@ -388,11 +399,9 @@ export function TableDetail() {
                   <List.Item>
                     <Card style={{ width: '100%' }}>
                       <Space direction="vertical" style={{ width: '100%' }}>
-                        <Text strong>{item.author}</Text>
+                        <Text strong>{item.user?.name}</Text>
                         <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
-                        <Text>
-                          Changed {item.field.toLowerCase()}: "{item.oldValue}" → "{item.newValue}"
-                        </Text>
+                        <Text>{item.log}</Text>
                         {item.file && <Text style={{ color: '#1890ff', cursor: 'pointer' }}>{item.file.name}</Text>}
                       </Space>
                     </Card>
