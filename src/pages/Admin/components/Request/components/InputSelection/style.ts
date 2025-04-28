@@ -120,4 +120,28 @@ export const StyledInputSelection = styled.div`
       }
     }
   }
+
+  .link {
+    transition: 0.3s;
+    cursor: pointer;
+    &:hover {
+      color: var(--base-color);
+    }
+  }
+
+  .upload-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    svg {
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      transition: 0.3s;
+      &:hover {
+        color: var(--base-color);
+      }
+    }
+  }
 `;

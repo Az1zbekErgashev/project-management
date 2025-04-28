@@ -1,28 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Notification, Select, SelectOption, TextArea, Upload } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
-import { RequestModel } from '../RequestList/type';
-
-import { PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-
-type ActionStatus = {
-  type: 'VIEW' | 'EDIT' | 'ADD';
-  request?: RequestModel;
-} | null;
 
 interface Props {
   form: FormInstance;
-
   disable: boolean;
   setDisable: any;
+  request: any;
 }
 
-export function InputSelection({ form, disable, setDisable }: Props) {
+export function InputSelection({ form, disable, setDisable, request }: Props) {
   const [fileList, setFileList] = useState<File | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -63,9 +56,6 @@ export function InputSelection({ form, disable, setDisable }: Props) {
         if (window.location.pathname.includes('request-detail')) {
           res.UpdateFile = fileList ? true : null;
         }
-
-        console.log(res);
-
         createData(res);
       })
       .catch(() => {
@@ -103,6 +93,8 @@ export function InputSelection({ form, disable, setDisable }: Props) {
     if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
     return `${(size / 1024 / 1024).toFixed(1)} MB`;
   };
+
+  console.log(request?.data?.file?.path);
 
   return (
     <StyledInputSelection>
@@ -196,18 +188,23 @@ export function InputSelection({ form, disable, setDisable }: Props) {
                 className="upload-box"
               >
                 <div className="centeredFileName">
-                  {fileList == null ? (
+                  {request?.data?.file?.path === null && fileList == null ? (
                     uploadButton
                   ) : (
                     <div className="uploaded-file">
                       <div className="flex">
-                        <div>
-                          <span>{t('file_name')}</span>
-                          <span>{fileList.name}</span>
+                        <div className="upload-card-header">
+                          <div>
+                            <span>{t('file_name')}</span>
+                            <div>{fileList?.name || <span  className="link">{request?.data?.file?.path}</span>}</div>
+                          </div>
+                          <div>
+                            <CloseCircleOutlined />
+                          </div>
                         </div>
                         <div>
                           <span>{t('size')}</span>
-                          <span>{formatSize(fileList.size || 0)}</span>
+                          <span>{formatSize(fileList?.size || 0)}</span>
                         </div>
                         <br />
                       </div>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Form, TabsProps } from 'antd';
 import { HistoryOutlined, MessageOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
-import { RequestModel } from '../RequestList/type';
 import { InputSelection } from '../InputSelection';
 import { StyledTableDetail } from './style';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -31,7 +30,7 @@ export function TableDetail() {
   const [disable, setDisable] = useState<boolean>(true);
   const [actionModal, setActionModal] = useState<any>();
 
-  const { refetch: handleFetchClick } = useQueryApiClient({
+  const { refetch: handleFetchClick, data: request } = useQueryApiClient({
     request: {
       url: `/api/request/requets/${id}`,
       method: 'GET',
@@ -124,7 +123,7 @@ export function TableDetail() {
         </div>
 
         <Form form={form} layout="vertical" className="form">
-          <InputSelection setDisable={setDisable} disable={disable} form={form} />
+          <InputSelection request={request} setDisable={setDisable} disable={disable} form={form} />
         </Form>
         <br />
         {!window.location.pathname.includes('/add-requests') && (
