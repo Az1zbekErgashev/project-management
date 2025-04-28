@@ -37,24 +37,29 @@ export const StyledTableDetail = styled.div`
   }
 
   .delete-comment-button {
-    background-color:rgb(226, 151, 151);
+    background-color: rgb(226, 151, 151);
     width: 40px;
     height: 40px;
     border-radius: 10px;
   }
 
   .edit-comment-button {
-    background-color: #B7E0FF;
+    background-color: #b7e0ff;
     width: 40px;
     height: 40px;
     border-radius: 10px;
   }
 
   .comment-author {
-    background-color: #D9EAFD;
+    background-color: #d9eafd;
     padding: 5px;
     border-radius: 4px;
-    color:rgb(67, 105, 144);
+    color: rgb(67, 105, 144);
     font-weight: 300;
+  }
+
+  .header-btn {
+    display: flex;
+    gap: 12px;
   }
 `;

@@ -91,6 +91,8 @@ export const StyledInputSelection = styled.div`
 
   .action-btns {
     margin-top: 20px !important;
+    display: flex;
+    gap: 12px;
   }
 
   .uploaded-file {

@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, Input, Notification, Select, SelectOption, TextArea, Upload } from 'ui';
-import { FormInstance, GetProp, UploadFile, UploadProps } from 'antd/lib';
+import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
-import dayjs from 'dayjs';
+
 import { PlusOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 
@@ -22,14 +22,15 @@ interface Props {
     request?: RequestModel;
   } | null;
   setActionStatus: React.Dispatch<React.SetStateAction<ActionStatus>>;
+  disable: boolean;
+  setDisable: any;
 }
 
-export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
+export function InputSelection({ form, actionStatus, setActionStatus, disable, setDisable }: Props) {
   const { t } = useTranslation();
-  const [disable, setDisable] = useState<boolean>(false);
+  const navigate = useNavigate();
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
   const [fileList, setFileList] = useState<File | null>(null);
-  const navigate = useNavigate();
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url:
@@ -74,7 +75,6 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
 
   useEffect(() => {
     if (actionStatus && actionStatus.type == 'VIEW') {
-      setDisable(true);
       form.setFieldsValue({
         ...actionStatus.request,
         requestStatusId: actionStatus?.request?.requestStatus?.id,
@@ -84,8 +84,6 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
         ...prev,
         type: 'ADD',
       }));
-    } else {
-      setDisable(false);
     }
   }, []);
 
@@ -95,16 +93,6 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
     // } else {
     //   handleDelete && handleDelete(actionStatus?.request?.id || 0, 'RECOVER');
     // }
-  };
-
-  const handleUpdate = () => {
-    setActionStatus &&
-      setActionStatus((prev) => ({
-        ...prev,
-        type: 'EDIT',
-        request: prev?.request,
-      }));
-    setDisable(false);
   };
 
   const uploadButton = (
@@ -162,6 +150,7 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
                 name="requestStatusId"
                 rules={[{ required: true, message: t('this_field_required') }]}
                 label={t('category')}
+                disabled={disable}
               >
                 {categoryData?.data?.map((item: any, index: any) => (
                   <SelectOption key={index} value={item.id}>
@@ -169,7 +158,12 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
                   </SelectOption>
                 ))}
               </Select>
-              <Select rules={[{ required: true, message: t('this_field_required') }]} name="status" label={t('status')}>
+              <Select
+                rules={[{ required: true, message: t('this_field_required') }]}
+                name="status"
+                label={t('status')}
+                disabled={disable}
+              >
                 {PROJECT_STATUS.map((item, index) => (
                   <SelectOption key={index} value={item.text}>
                     {item.text}
@@ -209,7 +203,13 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
               <h3>{t('client_information')}</h3>
             </div>
             <div className="inputs">
-              <Upload fileList={fileList} onChange={handleChange} maxCount={1} className="upload-box">
+              <Upload
+                disabled={disable}
+                fileList={fileList}
+                onChange={handleChange}
+                maxCount={1}
+                className="upload-box"
+              >
                 <div className="centeredFileName">
                   {fileList == null ? (
                     uploadButton
@@ -236,20 +236,15 @@ export function InputSelection({ form, actionStatus, setActionStatus }: Props) {
       </div>
       {!isDeletedRequesdts && (
         <div className="action-btns">
-          {actionStatus && actionStatus.type !== 'VIEW' ? (
-            <></>
-          ) : (
-            <>
-              <Button
-                danger
-                label={actionStatus?.request?.isDeleted === 0 ? t('delete') : t('recover')}
-                className={actionStatus?.request?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
-                type="primary"
-                onClick={handleDeleteRequest}
-              />
-            </>
+          {window.location.pathname.includes('request-detail') && !disable && (
+            <Button
+              onClick={() => setDisable(true)}
+              label={t('cancel_to_view_mode')}
+              htmlType="button"
+              loading={isLoading}
+            />
           )}
-          {actionStatus && actionStatus.type !== 'VIEW' && (
+          {!disable && (
             <Button
               label={actionStatus && actionStatus.type === 'ADD' ? t('create_request') : t('save_changes')}
               type="primary"
