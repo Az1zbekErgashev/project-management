@@ -1,44 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Form, Input, Tabs, List, Card, Space, Typography, Divider, Upload, Button as AntButton, message } from 'antd';
-import {
-  SendOutlined,
-  HistoryOutlined,
-  UploadOutlined,
-  TableOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from '@ant-design/icons';
+import { Form, Input, Tabs, List, Card, Space, Typography, Divider, message } from 'antd';
+import { SendOutlined, HistoryOutlined, DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { InputSelection } from '../InputSelection';
 import { StyledTableDetail } from './style';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BackButton, Notification } from 'ui';
+import { BackButton, Button, ConfirmModal, Notification } from 'ui';
 import axios from 'axios';
 import useJwt from 'utils/useJwt';
-import { get } from 'http';
+import useQueryApiClient from 'utils/useQueryApiClient';
+import { TFunction } from 'i18next';
 
 const { TabPane } = Tabs;
 const { Text, Title } = Typography;
-
-const Button = ({
-  label,
-  type,
-  onClick,
-  className,
-  icon,
-}: {
-  label: string;
-  type: string;
-  onClick: () => void;
-  className?: string;
-  icon?: React.ReactNode;
-}) => (
-  <AntButton type={type as any} onClick={onClick} className={className} icon={icon}>
-    {label}
-  </AntButton>
-);
 
 interface Comment {
   id: string;
@@ -55,6 +31,16 @@ interface Change {
   file?: File;
 }
 
+const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
+  cancelText: t('cancel'),
+  confirmText: t('delete'),
+  title: t('delete_requests_title'),
+  content: t('delete_requests_description'),
+  open: true,
+  onConfirm,
+  onCancel,
+});
+
 export function TableDetail() {
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -69,76 +55,21 @@ export function TableDetail() {
   const [newComment, setNewComment] = useState('');
   const [editingCommentId, setEditingCommentId] = useState<string | null>(null);
   const [editingCommentText, setEditingCommentText] = useState('');
+  const [disable, setDisable] = useState<boolean>(true);
+  const [actionModal, setActionModal] = useState<any>();
 
-  const handleFetchClick = async () => {
-    try {
-      const response = await axios.get(`https://crm-api.wisestone-u.com/api/request/requets/${id}`, {
-        headers: {
-          Authorization: getToken,
-        },
+  const { refetch: handleFetchClick, data: request } = useQueryApiClient({
+    request: {
+      url: `/api/request/requets/${id}`,
+      method: 'GET',
+      disableOnMount: true,
+    },
+    onSuccess(response) {
+      form.setFieldsValue({
+        ...response.data,
       });
-
-      if (response.data) {
-        form.setFieldsValue({
-          ...response.data.data,
-        });
-        setActionStatus({ type: 'EDIT', request: { id, ...response.data.data } });
-        console.log('Request data fetched successfully:', response.data.data);
-      }
-    } catch (error: any) {
-      console.error('Error fetching request data:', error);
-      console.error('Error details:', error.response?.data, error.message);
-      message.error(t('failed_to_load_request'));
-    }
-  };
-
-  const fetchComments = async () => {
-    try {
-      console.log('Fetching comments for RequestId:', id);
-      const response = await axios.get('https://crm-api.wisestone-u.com/api/comment/comments', {
-        headers: {
-          Authorization: getToken,
-        },
-        params: {
-          RequestId: parseInt(id || '0'),
-          PageIndex: 1,
-          PageSize: 10,
-        },
-      });
-
-      console.log('GET /api/comment/comments full response: 123', response.data.data);
-      console.log('GET /api/comment/comments data:', response.data);
-
-      let fetchedComments: Comment[] = [];
-      if (response.data && Array.isArray(response.data.data.items)) {
-        fetchedComments = response.data.data.items.map((comment: any) => ({
-          id: comment.id.toString(),
-          text: comment.text,
-          author: comment.user.name || 'Unknown',
-          timestamp: new Date(comment.createdAt || Date.now()),
-        }));
-      } else if (response.data && Array.isArray(response.data)) {
-        // Fallback: If response.data is the array directly
-        fetchedComments = response.data.map((comment: any) => ({
-          id: comment.id.toString(),
-          text: comment.text,
-          author: comment.author || 'Unknown',
-          timestamp: new Date(comment.createdAt || Date.now()),
-        }));
-      } else {
-        console.warn('No comments found or invalid data structure:', response.data);
-      }
-
-      setComments(fetchedComments);
-      console.log('Fetched comments:', fetchedComments);
-    } catch (error: any) {
-      console.error('Error fetching comments:', error);
-      console.error('Error details:', error.response?.data || error.message);
-      message.error(t('failed_to_load_comments'));
-      return false;
-    }
-    return true;
-  };
+    },
+  });
 
   const handleCommentSubmit = async () => {
     if (newComment.trim()) {
@@ -169,10 +100,7 @@ export function TableDetail() {
           setNewComment('');
           Notification({ type: 'success', text: t('comment_created_successfully') });
 
-          const fetchSuccess = await fetchComments();
-          if (!fetchSuccess) {
-            console.warn('Fetch comments failed, preserving optimistic update');
-          }
+          handleFetchClick();
         }
       } catch (error: any) {
         console.error('Error creating comment:', error);
@@ -199,10 +127,7 @@ export function TableDetail() {
         setComments((prev) => prev.filter((comment) => comment.id !== commentId));
         Notification({ type: 'success', text: t('comment_deleted_successfully') });
 
-        const fetchSuccess = await fetchComments();
-        if (!fetchSuccess) {
-          console.warn('Fetch comments failed after delete, preserving optimistic update');
-        }
+        handleFetchClick();
       }
     } catch (error: any) {
       console.error('Error deleting comment:', error);
@@ -242,10 +167,7 @@ export function TableDetail() {
           Notification({ type: 'success', text: t('comment_updated_successfully') });
 
           // Refetch comments to ensure consistency
-          const fetchSuccess = await fetchComments();
-          if (!fetchSuccess) {
-            console.warn('Fetch comments failed after update, preserving optimistic update');
-          }
+          handleFetchClick();
         }
       } catch (error: any) {
         console.error('Error updating comment:', error);
@@ -266,15 +188,13 @@ export function TableDetail() {
   };
 
   useEffect(() => {
-    if (id) {
-      console.log('Initializing with RequestId:', id);
+    if (window.location.pathname.includes('request-detail')) {
       handleFetchClick();
-      fetchComments();
     }
-  }, [id]);
+  }, []);
 
   const [changes, setChanges] = useState<Change[]>([]);
- 
+
   const getHistoryChanges = async () => {
     try {
       const response = await axios.get('https://crm-api.wisestone-u.com/api/comment/history', {
@@ -296,6 +216,35 @@ export function TableDetail() {
     }
   };
 
+  useEffect(() => {
+    if (window.location.pathname.includes('add-requests')) setDisable(false);
+    else setDisable(true);
+  }, []);
+
+  const { refetch: handleDelete } = useQueryApiClient({
+    request: {
+      url: `/api/request/delete-request?id=${id}`,
+      method: 'DELETE',
+    },
+    onSuccess() {
+      navigate(-1);
+    },
+  });
+
+  const handleDeleteModal = () => {
+    setActionModal(
+      createModalConfig(
+        t,
+        () => {
+          handleDelete();
+        },
+        () => {
+          setActionModal(null);
+        }
+      )
+    );
+  };
+
   return (
     <StyledTableDetail>
       <div className="table-detail">
@@ -306,10 +255,22 @@ export function TableDetail() {
             </div>
             <h2 className="global-title">{t('request_action')}</h2>
           </div>
+          {disable && window.location.pathname.includes('request-detail') && (
+            <div className="header-btn">
+              <Button onClick={handleDeleteModal} className="btn" danger label={t('delete')} />
+              <Button onClick={() => setDisable(false)} className="btn" type="primary" label={t('edit_request')} />
+            </div>
+          )}
         </div>
 
         <Form form={form} layout="vertical" className="form">
-          <InputSelection actionStatus={actionStatus} setActionStatus={setActionStatus} form={form} />
+          <InputSelection
+            setDisable={setDisable}
+            disable={disable}
+            actionStatus={actionStatus}
+            setActionStatus={setActionStatus}
+            form={form}
+          />
         </Form>
         <br />
         {!window.location.pathname.includes('/add-requests') && (
@@ -321,16 +282,19 @@ export function TableDetail() {
                 </span>
               }
               key="1"
+              forceRender
             >
               <br />
               <Title level={4}>{t('comments')}</Title>
               <List
-                dataSource={comments}
-                renderItem={(item) => (
+                dataSource={request?.data?.comments}
+                renderItem={(item: any) => (
                   <List.Item>
                     <Card style={{ width: '100%' }}>
                       <Space direction="vertical" style={{ width: '100%' }}>
-                        <Text strong className="comment-author">{item.author}</Text>
+                        <Text strong className="comment-author">
+                          {item?.user?.name}&nbsp;{item?.user?.surname}
+                        </Text>
                         <Text type="secondary">{dayjs(item.timestamp).format('MMM D, YYYY h:mm A')}</Text>
                         {editingCommentId === item.id ? (
                           <>
@@ -384,7 +348,7 @@ export function TableDetail() {
               </Space>
             </TabPane>
             <TabPane
-              style={{ padding: '16px' }}
+              forceRender
               tab={
                 <span onClick={getHistoryChanges} style={{ padding: '10px' }}>
                   <HistoryOutlined /> {t('change_history')}
@@ -412,6 +376,7 @@ export function TableDetail() {
           </Tabs>
         )}
       </div>
+      {actionModal && <ConfirmModal {...actionModal} />}
     </StyledTableDetail>
   );
 }
