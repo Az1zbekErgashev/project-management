@@ -25,15 +25,19 @@ export function CommentsSection({ requestId }: props) {
               <p>{t('no_comment_yet')}</p>
             </div>
           ) : (
-            comments?.items?.map((comment: any) => (
-              <Comment
-                key={comment.id}
-                requestId={requestId}
-                comment={comment}
-                onDelete={() => handleDelete(comment.id)}
-                onEdit={updateComment}
-              />
-            ))
+            comments?.items?.map((comment: any) => {
+              if (comment.parentCommentId == null) {
+                return (
+                  <Comment
+                    key={comment.id}
+                    requestId={requestId}
+                    comment={comment}
+                    onDelete={() => handleDelete(comment.id)}
+                    onEdit={updateComment}
+                  />
+                );
+              }
+            })
           )}
         </div>
 

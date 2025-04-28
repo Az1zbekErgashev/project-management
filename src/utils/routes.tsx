@@ -10,7 +10,6 @@ import {
   TableDetail,
   Translations,
 } from 'pages';
-import CommentsPage from 'pages/Admin/components/Request/components/Comments';
 import StateManagement from 'pages/Admin/components/StateManagement';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProtectedUserRoute from 'routes/ProtectedUserRoutes';
@@ -37,7 +36,6 @@ export const router = createBrowserRouter([
       { path: '/requests', element: <Request /> },
       { path: '/deleted-requests', element: <DeletedRequests /> },
       { path: '/state-management', element: <StateManagement /> },
-      { path: '/comments', element: <CommentsPage /> },
       { path: '/translations', element: <Translations /> },
       { path: '/profile', element: <Profile /> },
       { path: '/logs', element: <Logs /> },
