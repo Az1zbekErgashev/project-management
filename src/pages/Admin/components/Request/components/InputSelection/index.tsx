@@ -8,7 +8,7 @@ import { PROJECT_STATUS } from 'utils/consts';
 import { RequestModel } from '../RequestList/type';
 
 import { PlusOutlined } from '@ant-design/icons';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 type ActionStatus = {
   type: 'VIEW' | 'EDIT' | 'ADD';
@@ -17,31 +17,29 @@ type ActionStatus = {
 
 interface Props {
   form: FormInstance;
-  actionStatus: {
-    type: 'VIEW' | 'EDIT' | 'ADD';
-    request?: RequestModel;
-  } | null;
-  setActionStatus: React.Dispatch<React.SetStateAction<ActionStatus>>;
+
   disable: boolean;
   setDisable: any;
 }
 
-export function InputSelection({ form, actionStatus, setActionStatus, disable, setDisable }: Props) {
+export function InputSelection({ form, disable, setDisable }: Props) {
+  const [fileList, setFileList] = useState<File | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { id } = useParams<{ id: string }>();
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
-  const [fileList, setFileList] = useState<File | null>(null);
+
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
-      url:
-        actionStatus && actionStatus.type == 'EDIT'
-          ? `api/request/update-request?id=${actionStatus.request?.id}`
-          : '/api/request/create-request',
-      method: actionStatus && actionStatus.type == 'EDIT' ? 'PUT' : 'POST',
+      url: window.location.pathname.includes('request-detail')
+        ? `api/request/update-request?id=${id}`
+        : '/api/request/create-request',
+      method: window.location.pathname.includes('request-detail') ? 'PUT' : 'POST',
       multipart: true,
     },
     onSuccess() {
-      if (actionStatus && actionStatus.type == 'EDIT') {
+      setFileList(null);
+      if (!window.location.pathname.includes('request-detail')) {
         Notification({ text: t('request_created_success'), type: 'success' });
       } else {
         Notification({ text: t('request_updated_success'), type: 'success' });
@@ -58,7 +56,16 @@ export function InputSelection({ form, actionStatus, setActionStatus, disable, s
     form
       .validateFields()
       .then((res) => {
+        console.log(fileList);
+        console.log(res);
+
         res.File = fileList;
+        if (window.location.pathname.includes('request-detail')) {
+          res.UpdateFile = fileList ? true : null;
+        }
+
+        console.log(res);
+
         createData(res);
       })
       .catch(() => {
@@ -72,28 +79,6 @@ export function InputSelection({ form, actionStatus, setActionStatus, disable, s
       method: 'GET',
     },
   });
-
-  useEffect(() => {
-    if (actionStatus && actionStatus.type == 'VIEW') {
-      form.setFieldsValue({
-        ...actionStatus.request,
-        requestStatusId: actionStatus?.request?.requestStatus?.id,
-      });
-    } else if (window.location.pathname.includes('add-requests')) {
-      setActionStatus((prev) => ({
-        ...prev,
-        type: 'ADD',
-      }));
-    }
-  }, []);
-
-  const handleDeleteRequest = () => {
-    // if (actionStatus && actionStatus.request?.isDeleted === 0) {
-    //   handleDelete && handleDelete(actionStatus && actionStatus?.request?.id, 'DELETE');
-    // } else {
-    //   handleDelete && handleDelete(actionStatus?.request?.id || 0, 'RECOVER');
-    // }
-  };
 
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
@@ -246,7 +231,7 @@ export function InputSelection({ form, actionStatus, setActionStatus, disable, s
           )}
           {!disable && (
             <Button
-              label={actionStatus && actionStatus.type === 'ADD' ? t('create_request') : t('save_changes')}
+              label={!window.location.pathname.includes('request-detail') ? t('create_request') : t('save_changes')}
               type="primary"
               htmlType="button"
               onClick={handleSubmit}

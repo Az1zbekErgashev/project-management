@@ -10,9 +10,10 @@ export interface TabsProps {
   items?: any;
   children?: React.ReactNode;
   className?: string;
+  animated?: any;
 }
 
-export const Tabs = ({ type, activeKey, onChange, defaultActiveKey, items, className }: TabsProps) => {
+export const Tabs = ({ type, activeKey, onChange, defaultActiveKey, items, className, animated }: TabsProps) => {
   return (
     <StyledTabs className={className}>
       <AntdTabs
@@ -21,6 +22,7 @@ export const Tabs = ({ type, activeKey, onChange, defaultActiveKey, items, class
         onChange={onChange}
         defaultActiveKey={defaultActiveKey}
         items={items}
+        animated={animated}
       />
     </StyledTabs>
   );

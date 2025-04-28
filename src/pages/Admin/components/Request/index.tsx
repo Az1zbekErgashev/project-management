@@ -27,20 +27,9 @@ export function Request() {
   const { t } = useTranslation();
   const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
   const [isFileLoading, setIsFileLoading] = useState(false);
-  const [coniformModal, setConiformModal] = useState<any>(null);
-  const [requestId, setRequestId] = useState<{ type: 'DELETE' | 'RECOVER'; id: number } | null>(null);
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
-  const [searchParams] = useSearchParams();
-  const categoryId: string | null = searchParams.get('Category');
   const navigate = useNavigate();
-  const [drawerStatus, setDrawerStatus] = useState<{
-    status: boolean;
-    type: 'VIEW' | 'EDIT' | 'ADD';
-    request?: RequestModel;
-    sequence?: number;
-  }>({ status: false, type: 'ADD' });
   const [showUpload, setShowUpload] = useState(false);
-  const [form] = Form.useForm();
 
   const {
     data: requests,
@@ -70,9 +59,6 @@ export function Request() {
   useEffect(() => {
     postRequest({
       ...queryparams,
-      Category: categoryId != null ? parseInt(categoryId) : queryparams.Category,
-      Status: searchParams.get('Status'),
-      Priority: searchParams.get('Priority'),
     });
   }, [queryparams]);
 
@@ -99,38 +85,12 @@ export function Request() {
     }
   };
 
-  const onClose = async () => {
-    setDrawerStatus({ status: false, type: 'ADD' });
-    form.resetFields();
-  };
-
   const { data: categories } = useQueryApiClient({
     request: {
       url: '/api/request/category',
       method: 'GET',
     },
   });
-
-  const { refetch: requestDelete } = useQueryApiClient({
-    request: {
-      url: `${
-        requestId?.type == 'RECOVER' ? '/api/request/recover-request' : '/api/request/delete-request'
-      }?id=${requestId?.id}`,
-      method: requestId?.type == 'RECOVER' ? 'PUT' : 'DELETE',
-    },
-    onSuccess() {
-      Notification({ text: t('requestDeleted'), type: 'success' });
-      getRequests();
-      onClose();
-      setConiformModal(null);
-    },
-  });
-
-  useEffect(() => {
-    if (requestId?.id) {
-      requestDelete();
-    }
-  }, [requestId]);
 
   const { data: filterValue } = useQueryApiClient({
     request: {
@@ -184,7 +144,6 @@ export function Request() {
             requests={requests?.data || []}
             categories={categories?.data || []}
             isRequestsLoading={isRequestsLoading}
-            setDrawerStatus={setDrawerStatus}
           />
 
           <Pagination
@@ -196,8 +155,6 @@ export function Request() {
           />
         </React.Fragment>
       )}
-
-      {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledRequests>
   );
 }

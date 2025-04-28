@@ -8,24 +8,15 @@ import dayjs from 'dayjs';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
-import { DeleteOutlined } from '@ant-design/icons';
 
 interface Props {
   isRequestsLoading: boolean;
   requests: RequestItems;
   setQueryParams: any;
   categories: { id: number; title: string }[];
-  setDrawerStatus: React.Dispatch<
-    React.SetStateAction<{
-      status: boolean;
-      type: 'VIEW' | 'EDIT' | 'ADD';
-      request?: RequestModel;
-      sequence?: number;
-    }>
-  >;
 }
 
-export function RequestList({ isRequestsLoading, requests, categories, setQueryParams, setDrawerStatus }: Props) {
+export function RequestList({ isRequestsLoading, requests, categories, setQueryParams }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 

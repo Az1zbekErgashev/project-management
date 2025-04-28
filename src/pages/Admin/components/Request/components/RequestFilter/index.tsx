@@ -4,7 +4,6 @@ import { AutoComplete, Form } from 'antd';
 import { Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import { useSearchParams } from 'react-router-dom';
 import { useForm } from 'antd/es/form/Form';
 import { PROJECT_STATUS } from 'utils/consts';
 
@@ -20,10 +19,6 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
   const [value, setValue] = useState('');
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [form] = useForm();
-  const [searchParams] = useSearchParams();
-  const categoryId: string | null = searchParams.get('Category');
-  const statusQuery: string | null = searchParams.get('Status');
-  const priorty: string | null = searchParams.get('Priority');
 
   const handleSearch = (searchText: string) => {
     const filtered = options?.data?.filter((option: { text: string }) =>
@@ -44,21 +39,12 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
       disableOnMount: true,
     },
     onSuccess(response) {
-      console.log('API Response:', response?.data);
       setFilteredOptions(response?.data.slice(0, 5));
     },
   });
   useEffect(() => {
     refetch();
   }, [window.location.pathname]);
-
-  useEffect(() => {
-    form.setFieldsValue({
-      Category: categoryId ? parseInt(categoryId) : null,
-      Status: statusQuery ? parseInt(statusQuery) : null,
-      // Priority: priorty ? parseInt(priorty) : null,
-    });
-  }, [categoryId, statusQuery, priorty]);
 
   return (
     <StyledRequestFilter>
@@ -78,7 +64,7 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
 
         <div className="priory">
           {!isPendingRequests && (
-            <Select className="input-selection-select" name="Category" modeType="FILTER" label={t('category')}>
+            <Select className="input-selection-select" name="Category" label={t('category')}>
               {filterValue?.data?.map((item: any, index: number) => (
                 <SelectOption key={index} value={item.id}>
                   {item.title}
@@ -87,20 +73,10 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
               <SelectOption value={null}>{t('all')}</SelectOption>
             </Select>
           )}
-          {/* {!isPendingRequests && (
-            <Select className="input-selection-select" name="Priority" modeType="FILTER" label={t('priority')}>
-              {PRIORITY?.map((item: any, index: number) => (
-                <SelectOption key={index} value={item.id}>
-                  {item.text}
-                </SelectOption>
-              ))}
-              <SelectOption value={null}>{t('all')}</SelectOption>
-            </Select>
-          )} */}
           {!isPendingRequests && (
-            <Select className="input-selection-select" name="Status" modeType="FILTER" label={t('status')}>
+            <Select className="input-selection-select" name="Status" label={t('status')}>
               {PROJECT_STATUS?.map((item: any, index: number) => (
-                <SelectOption key={index} value={item.id}>
+                <SelectOption value={item.text} key={index}>
                   {item.text}
                 </SelectOption>
               ))}
