@@ -94,124 +94,93 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
     return `${(size / 1024 / 1024).toFixed(1)} MB`;
   };
 
-  console.log(request?.data?.file?.path);
 
   return (
     <StyledInputSelection>
-      <div className="fields">
-        <div className="rows">
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('dates')}</h3>
-            </div>
-            <div className="inputs">
-              <Input disabled={disable} name="date" label={t('date_created')} />
-            </div>
+      <div className="form-div">
+        <div className="form-content">
+          {/* Submission Info */}
+          <div className="form-group">
+            <h3>{t('submission_info')}</h3>
+            <Input disabled={disable} name="date" label={t('date_created')} />
+            {/* <div className="date-picker">
+              <DatePicker disabled={disable} name="deadline" label={t('deadline')} />
+            </div> */}
           </div>
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('inquiry_details')}</h3>
-            </div>
-            <div className="inputs">
-              <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
-              <Input name="projectDetails" disabled={disable} label={t('project_details')} />
-              <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
-            </div>
+
+          {/* Inquiry Details */}
+          <div className="form-group">
+            <h3>{t('inquiry_details')}</h3>
+            <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
+            <Input name="projectDetails" disabled={disable} label={t('project_details')} />
+            <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
           </div>
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('notes_and_status')}</h3>
-            </div>
-            <div className="inputs">
+
+          {/* Client Information */}
+          <div className="form-group">
+            <h3>{t('client_information')}</h3>
+            <Input name="clientCompany" disabled={disable} label={t('client_company')} />
+            <Input name="client" disabled={disable} label={t('client')} />
+            <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
+            <Input name="email" disabled={disable} label={t('email')} />
+          </div>
+        </div>
+
+        <div className="form-content">
+          {/* Internal Assignment */}
+          <div className="form-group">
+            <h3>{t('internal_assignment')}</h3>
+            <Input name="companyName" disabled={disable} label={t('company_name')} />
+            <Input name="department" disabled={disable} label={t('department')} />
+            <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
+          </div>
+
+          {/* Notes & Status */}
+          <div className="form-group">
+            <h3>{t('notes_and_status')}</h3>
+            <Input name="status" disabled={disable} label={t('processing_status')} />
+            <Input name="finalResult" disabled={disable} label={t('final_result')} />
+            <TextArea name="notes" disabled={disable} label={t('notes')} rows={3} />
+            {/* <Select
+              disabled={disable}
+              rules={[{ required: true, message: t('field_is_required') }]}
+              label={t('priority')}
+              name="priority"
+            >
+              {PRIORITY.map((item: any) => (
+                <SelectOption value={item.id} key={item.id}>
+                  {t(item.text)}
+                </SelectOption>
+              ))}
+            </Select> */}
+            <div className="category">
               <Select
-                name="requestStatusId"
-                rules={[{ required: true, message: t('this_field_required') }]}
+                disabled={disable}
+                rules={[{ required: true, message: t('field_is_required') }]}
+                label={t('status')}
+                name="projectStatus"
+              >
+                {PROJECT_STATUS.map((item: any) => (
+                  <SelectOption value={item.id} key={item.id}>
+                    {t(item.text)}
+                  </SelectOption>
+                ))}
+              </Select>
+            </div>
+            <div className="category">
+              <Select
+                rules={[{ required: true, message: t('field_is_required') }]}
                 label={t('category')}
+                name="requestStatusId"
                 disabled={disable}
               >
-                {categoryData?.data?.map((item: any, index: any) => (
-                  <SelectOption key={index} value={item.id}>
+                {categoryData?.data?.map((item: any) => (
+                  <SelectOption value={item.id} key={item.id}>
                     {item.title}
                   </SelectOption>
                 ))}
+                <SelectOption value="new">{t('new_category')}</SelectOption>
               </Select>
-              <Select
-                rules={[{ required: true, message: t('this_field_required') }]}
-                name="status"
-                label={t('status')}
-                disabled={disable}
-              >
-                {PROJECT_STATUS.map((item, index) => (
-                  <SelectOption key={index} value={item.text}>
-                    {item.text}
-                  </SelectOption>
-                ))}
-              </Select>
-
-              <TextArea allowClear name="notes" disabled={disable} label={t('notes')} rows={3} />
-            </div>
-          </div>
-        </div>
-        <div className="rows">
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('internal_assignment')}</h3>
-            </div>
-            <div className="inputs">
-              <Input name="companyName" disabled={disable} label={t('company_name')} />
-              <Input name="department" disabled={disable} label={t('department')} />
-              <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
-            </div>
-          </div>
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('client_information')}</h3>
-            </div>
-            <div className="inputs">
-              <Input name="clientCompany" disabled={disable} label={t('client_company')} />
-              <Input name="client" disabled={disable} label={t('client')} />
-              <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-              <Input name="email" disabled={disable} label={t('email')} />
-            </div>
-          </div>
-
-          <div className="cards">
-            <div className="card_header">
-              <h3>{t('client_information')}</h3>
-            </div>
-            <div className="inputs">
-              <Upload
-                disabled={disable}
-                fileList={fileList}
-                onChange={handleChange}
-                maxCount={1}
-                className="upload-box"
-              >
-                <div className="centeredFileName">
-                  {request?.data?.file?.path === null && fileList == null ? (
-                    uploadButton
-                  ) : (
-                    <div className="uploaded-file">
-                      <div className="flex">
-                        <div className="upload-card-header">
-                          <div>
-                            <span>{t('file_name')}</span>
-                            <div>{fileList?.name || <span  className="link">{request?.data?.file?.path}</span>}</div>
-                          </div>
-                          <div>
-                            <CloseCircleOutlined />
-                          </div>
-                        </div>
-                        <div>
-                          <span>{t('size')}</span>
-                          <span>{formatSize(fileList?.size || 0)}</span>
-                        </div>
-                        <br />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </Upload>
             </div>
           </div>
         </div>

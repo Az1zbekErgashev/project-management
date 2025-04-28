@@ -11,71 +11,65 @@ export const StyledInputSelection = styled.div`
     }
   }
 
-  .fields {
+  .form-div {
     display: flex;
-    gap: 20px;
-    .rows {
-      width: 100%;
+    justify-content: space-around;
+    gap: 10px;
+    padding-top: 20px;
+  }
 
+  .form-content {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 15px;
+  }
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    row-gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+    background-color: #fff;
+
+    h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: #1a1a1a;
+      margin-bottom: 12px;
+      background-color: rgb(214, 207, 207);
+      padding: 10px;
+      border-radius: 8px;
+    }
+  }
+
+  .action-btns {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 30px !important;
+  }
+
+  .category {
+    width: 100%;
+    margin-top: 0 !important;
+
+    .category_input {
+      margin-top: 20px !important;
       display: flex;
-      flex-direction: column;
-      row-gap: 20px;
-      .cards {
-        min-height: 380px;
+      gap: 10px;
 
-        border: 1px solid var(--gray-300);
-        border-radius: 10px;
-        overflow: hidden;
-
-        .card_header {
-          height: 50px;
-          display: flex;
-          align-items: center;
-          padding-left: 50px;
-          background: #f9f9fa;
-
-          h3 {
-            font-weight: 600;
-          }
-        }
-
-        .inputs {
-          display: flex;
-          flex-direction: column;
-          row-gap: 12px;
-          padding: 20px 50px 30px 50px;
-        }
+      .ant-form-item {
+        width: 100%;
       }
-    }
 
-    .ant-upload {
-      width: 100%;
-    }
-
-    .upload-box {
-      margin-top: 30px;
-      background-color: #f4f4f4;
-      border: 2px dashed #ccc;
-      height: 150px;
-      width: 400px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-    }
-    .centeredFileName {
-      text-align: center;
-      margin: 10px 0;
-      color: #333;
-      font-size: 14px;
-      word-break: break-all;
-      height: 150px;
-      padding: 20px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background-color: #f4f4f4;
-      border: 2px dashed #ccc;
+      button {
+        margin-top: 30px !important;
+      }
     }
   }
 
@@ -86,62 +80,6 @@ export const StyledInputSelection = styled.div`
 
     .ant-form-item {
       width: 100%;
-    }
-  }
-
-  .action-btns {
-    margin-top: 20px !important;
-    display: flex;
-    gap: 12px;
-  }
-
-  .uploaded-file {
-    background: red;
-    width: 100%;
-    height: 100%;
-    background: var(--white);
-    border: 1px solid var(--gray-300);
-    border-radius: 10px;
-
-    .flex {
-      text-align: start;
-      padding: 20px;
-
-      display: flex;
-      flex-direction: column;
-      row-gap: 12px;
-
-      div {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 0.88888rem;
-        font-weight: 600;
-      }
-    }
-  }
-
-  .link {
-    transition: 0.3s;
-    cursor: pointer;
-    &:hover {
-      color: var(--base-color);
-    }
-  }
-
-  .upload-card-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    svg {
-      cursor: pointer;
-      width: 20px;
-      height: 20px;
-      transition: 0.3s;
-      &:hover {
-        color: var(--base-color);
-      }
     }
   }
 `;
