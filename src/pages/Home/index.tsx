@@ -1,15 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyledHomePage } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { useTranslation } from 'react-i18next';
+import { Select } from 'antd';
+import MonthlyStatusChart from 'components/Bar';
 
 export function Dashboard() {
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState('월별 상태 비교');
-  const [activeChartType, setActiveChartType] = useState('bar');
-
+  const [activeTab, setActiveTab] = useState('first_step_dashboard');
+  const [selectedYear, setSelectedYear] = useState();
   const tabs = [t('first_step_dashboard'), t('second_step_dashboard'), t('last_step_dashboard')];
 
   const { data: procentData } = useQueryApiClient({
@@ -25,6 +26,32 @@ export function Dashboard() {
       method: 'GET',
     },
   });
+
+  const { data: years } = useQueryApiClient({
+    request: {
+      url: '/api/request/request-status-years',
+    },
+    onSuccess(response) {
+      if (response.data) {
+        setSelectedYear(response?.data?.[0]);
+      }
+    },
+  });
+
+  const { refetch: getYearsCount, data: requestByYears } = useQueryApiClient({
+    request: {
+      url: `/api/request/request-request-by-years?year=${selectedYear}`,
+      disableOnMount: true,
+    },
+  });
+
+  useEffect(() => {
+    if (selectedYear) {
+      getYearsCount();
+    }
+  }, [selectedYear]);
+
+  console.log(requestByYears?.data);
 
   return (
     <StyledHomePage>
@@ -73,18 +100,33 @@ export function Dashboard() {
         </div>
         <h2 className="section-title">{t('dashboards')}</h2>
         <div className="chart-tabs">
-          {tabs.map((tab) => (
-            <button
-              key={tab}
-              className={`chart-tab ${activeTab === tab ? 'active' : ''}`}
-              onClick={() => setActiveTab(tab)}
-            >
-              {tab}
-            </button>
-          ))}
+          <div>
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                className={`chart-tab ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+          {selectedYear && (
+            <Select value={selectedYear} onChange={(x: any) => setSelectedYear(x)}>
+              {years?.data?.map((item: number, index: number) => (
+                <Select.Option value={item} key={index}>
+                  {item}
+                </Select.Option>
+              ))}
+            </Select>
+          )}
         </div>
 
-        {activeTab === 'first_step_dashboard' && <div className="chart-container"></div>}
+        {activeTab === 'first_step_dashboard' && (
+          <div className="chart-container">
+            <MonthlyStatusChart data={requestByYears?.data}/>
+          </div>
+        )}
 
         {activeTab === 'second_step_dashboard' && <div className="chart-container"></div>}
 

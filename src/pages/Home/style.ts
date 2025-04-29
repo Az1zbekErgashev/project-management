@@ -141,8 +141,9 @@ export const StyledHomePage = styled.div`
   /* Chart tabs */
   .chart-tabs {
     display: flex;
+    justify-content: space-between;
     gap: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 15px !important;
     overflow-x: auto;
     border-bottom: 1px solid #eee;
     padding-bottom: 5px;
