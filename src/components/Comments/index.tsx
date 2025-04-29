@@ -48,7 +48,7 @@ export function CommentsSection({ requestId }: any) {
 
   const formatDate = (dateString: string) => {
     try {
-      return `about ${dayjs(dateString).format('YYYY.MM.DD HH:mm:ss')}`;
+      return `${t('about')} ${dayjs(dateString).format('YYYY.MM.DD HH:mm:ss')}`;
     } catch (error) {
       return 'recently';
     }
