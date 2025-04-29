@@ -10,6 +10,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import { TFunction } from 'i18next';
 import { CommentsSection } from 'components/Comments';
 import { HistorySection } from 'components';
+import dayjs from 'dayjs';
 
 const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
   cancelText: t('cancel'),
@@ -26,7 +27,7 @@ export function TableDetail() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const { id } = useParams<{ id: string }>();
-
+  const [filePath, setFilePath] = useState<string | null>(null);
   const [disable, setDisable] = useState<boolean>(true);
   const [actionModal, setActionModal] = useState<any>();
 
@@ -40,12 +41,11 @@ export function TableDetail() {
       form.setFieldsValue({
         ...response.data,
         requestStatusId: response?.data?.requestStatus?.id,
+        date: response?.data?.date ? dayjs(response.data.date) : null,
       });
+      setFilePath(response?.data?.file?.path);
     },
   });
-
-  console.log("requestlar:", request);
-  console.log("requestlar:", request?.data?.requestStatus?.id);
 
   useEffect(() => {
     if (window.location.pathname.includes('request-detail')) {
@@ -126,7 +126,7 @@ export function TableDetail() {
         </div>
 
         <Form form={form} layout="vertical" className="form">
-          <InputSelection request={request} setDisable={setDisable} disable={disable} form={form} />
+          <InputSelection setFilePath={setFilePath} filePath={filePath} request={request} setDisable={setDisable} disable={disable} form={form} />
         </Form>
         <br />
         {!window.location.pathname.includes('/add-requests') && (

@@ -36,8 +36,7 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       fixed: 'left',
       render: (date: string) => {
         if (!date) return '-';
-        const parsedDate = dayjs(date, 'DD/MM/YYYY');
-        return parsedDate.isValid() ? parsedDate.format('YYYY-MM-DD') : date;
+        return dayjs(date).format('YYYY-MM-DD');
       },
     },
     {
@@ -115,15 +114,15 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
           mouseLeaveDelay={0.1}
           destroyTooltipOnHide={{ keepParent: false }}
           overlayStyle={{
-            backgroundColor: '#000000', 
-            color: '#ffffff', 
-            borderRadius: '4px', 
+            backgroundColor: '#000000',
+            color: '#ffffff',
+            borderRadius: '4px',
             padding: '8px',
             width: 'auto',
             maxWidth: '200px',
           }}
         >
-          <Button type="primary" size="small" style={{padding: '15px', borderRadius: '12px', fontSize: '12px'}}>
+          <Button type="primary" size="small" style={{ padding: '15px', borderRadius: '12px', fontSize: '12px' }}>
             {t('view_notes')}
           </Button>
         </Tooltip>
@@ -133,22 +132,16 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       title: t('status'),
       dataIndex: 'status',
       key: 'status',
+      width: '120px',
       render: (_, record) => {
-        const status = PROJECT_STATUS.find(
-          (item) => item?.text?.toLowerCase() === record?.status?.toLowerCase()
-        );
+        const status = PROJECT_STATUS.find((item) => item?.text?.toLowerCase() === record?.status?.toLowerCase());
         return status ? (
           <span
             key={status.id}
             style={{
-              backgroundColor: status.backgroundColor,
               color: status.color,
-              padding: '8px',
-              borderRadius: '12px',
-              fontSize: '12px',
-              display: 'inline-block', 
-              width: '80px',
-              alignItems: 'center',
+              fontSize: '14px',
+              fontWeight: '600',
               textAlign: 'center',
             }}
           >
@@ -162,9 +155,8 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'action',
       key: 'action',
       render: (_, record, index) => (
-        <Button style={{fontSize: '12x', padding: '8px',
-          borderRadius: "12px",
-        }}
+        <Button
+          style={{ fontSize: '12x', padding: '8px', borderRadius: '12px' }}
           type="primary"
           onClick={() => {
             navigate(`/request-detail/${record.id}`);

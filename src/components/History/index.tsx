@@ -43,7 +43,7 @@ export function HistorySection({ requestId }: HistorySectionProps) {
                       </span>
                     </div>
                   </div>
-                  <div className="action-badge">{entry.type || 'Update'}</div>
+                  <div className="action-badge">{t(entry.type)}</div>
                 </div>
 
                 <div className="timeline-message">
@@ -53,7 +53,7 @@ export function HistorySection({ requestId }: HistorySectionProps) {
             </div>
           ))}
         </div>
-        <div className='center'>
+        <div className="center">
           {history?.totalPages > 1 && (
             <Pagination
               total={history?.totalItems}

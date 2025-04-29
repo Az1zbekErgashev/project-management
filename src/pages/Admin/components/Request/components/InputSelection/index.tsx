@@ -1,21 +1,25 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, Input, Notification, Select, SelectOption, TextArea, Upload } from 'ui';
+import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea, Upload } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
-import { PlusOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, FileDoneOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
+import { routes } from 'config/config';
+import Tooltip from 'antd/lib/tooltip';
 
 interface Props {
   form: FormInstance;
   disable: boolean;
   setDisable: any;
   request: any;
+  filePath: string | null;
+  setFilePath: (value: string | null) => void;
 }
 
-export function InputSelection({ form, disable, setDisable, request }: Props) {
+export function InputSelection({ form, disable, setDisable, request, filePath, setFilePath }: Props) {
   const [fileList, setFileList] = useState<File | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -49,12 +53,10 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
     form
       .validateFields()
       .then((res) => {
-        console.log(fileList);
-        console.log(res);
-
         res.File = fileList;
         if (window.location.pathname.includes('request-detail')) {
-          res.UpdateFile = fileList ? true : null;
+          res.UpdateFile = fileList ? true : false;
+          res.RemoveFile = !fileList && !filePath ? true : false;
         }
         createData(res);
       })
@@ -69,15 +71,6 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
       method: 'GET',
     },
   });
-
-  console.log('This is categoryData:', categoryData);
-
-  const uploadButton = (
-    <button style={{ border: 0, background: 'none' }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
 
   const handleChange = (file: any) => {
     const realFile =
@@ -99,81 +92,131 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
   return (
     <StyledInputSelection>
       <div className="form-div">
-        <div className="form-content">
-          {/* Submission Info */}
-          <div className="form-group">
-            <h3>{t('submission_info')}</h3>
-            <Input disabled={disable} name="date" label={t('date_created')} />
+        <div className="form">
+          <div className="form-content">
+            <div className="form-group">
+              <h3>{t('submission_info')}</h3>
+              <DatePicker disabled={disable} name="date" label={t('date_created')} />
+            </div>
+
+            {/* Inquiry Details */}
+            <div className="form-group">
+              <h3>{t('inquiry_details')}</h3>
+              <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
+              <Input name="projectDetails" disabled={disable} label={t('project_details')} />
+              <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
+            </div>
+
+            {/* Client Information */}
+            <div className="form-group">
+              <h3>{t('client_information')}</h3>
+              <Input name="clientCompany" disabled={disable} label={t('client_company')} />
+              <Input name="client" disabled={disable} label={t('client')} />
+              <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
+              <Input name="email" disabled={disable} label={t('email')} />
+            </div>
           </div>
 
-          {/* Inquiry Details */}
-          <div className="form-group">
-            <h3>{t('inquiry_details')}</h3>
-            <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />
-            <Input name="projectDetails" disabled={disable} label={t('project_details')} />
-            <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
-          </div>
+          <div className="form-content">
+            <div className="form-group">
+              <h3>{t('internal_assignment')}</h3>
+              <Input name="companyName" disabled={disable} label={t('company_name')} />
+              <Input name="department" disabled={disable} label={t('department')} />
+              <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
+            </div>
 
-          {/* Client Information */}
-          <div className="form-group">
-            <h3>{t('client_information')}</h3>
-            <Input name="clientCompany" disabled={disable} label={t('client_company')} />
-            <Input name="client" disabled={disable} label={t('client')} />
-            <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-            <Input name="email" disabled={disable} label={t('email')} />
+            {/* Status */}
+            <div className="form-group">
+              <h3>{t('status')}</h3>
+              <Input name="processingStatus" disabled={disable} label={t('processing_status')} />
+              <div className="category">
+                <Select
+                  disabled={disable}
+                  rules={[{ required: true, message: t('field_is_required') }]}
+                  label={t('status')}
+                  name="status"
+                >
+                  {PROJECT_STATUS.map((item: any) => (
+                    <SelectOption value={item.text} key={item.id}>
+                      {t(item.text)}
+                    </SelectOption>
+                  ))}
+                </Select>
+              </div>
+              <div className="category">
+                <Select
+                  rules={[{ required: true, message: t('field_is_required') }]}
+                  label={t('category')}
+                  name="requestStatusId"
+                  disabled={disable}
+                >
+                  {categoryData?.data?.map((item: any) => (
+                    <SelectOption value={item.id} key={item.id}>
+                      {item.title}
+                    </SelectOption>
+                  ))}
+                  <SelectOption value="new">{t('new_category')}</SelectOption>
+                </Select>
+              </div>
+            </div>
+
+            <div className="form-group upload-group">
+              <div className="upload-container">
+                {(fileList || filePath) && (
+                  <Tooltip
+                    color="#ffffff"
+                    style={{ color: 'black' }}
+                    placement="top"
+                    title={<span style={{ color: 'var(--black)' }}>{t('delete_attachment')}</span>}
+                    trigger={'hover'}
+                  >
+                    <button
+                      disabled={disable}
+                      onClick={() => {
+                        setFileList(null);
+                        setFilePath(null);
+                      }}
+                      className="delete-svg"
+                    >
+                      <CloseCircleOutlined />
+                    </button>
+                  </Tooltip>
+                )}
+                <Upload disabled={disable || !!filePath} onChange={handleChange}>
+                  <div className={!fileList && !filePath ? 'upload-form big' : 'upload-form small'}>
+                    <FileDoneOutlined />
+                    {(fileList || filePath) && (
+                      <div className="file_name">
+                        {fileList ? (
+                          <>
+                            <div>
+                              <span>{fileList?.name}</span>
+                            </div>
+                            <div>
+                              <span>{formatSize(fileList?.size || 0)}</span>
+                            </div>
+                          </>
+                        ) : (
+                          <Button
+                            type="link"
+                            onClick={() => window.open(`${routes.api.baseUrl}/${filePath}`, '_blank')}
+                            label={t('view_file')}
+                          />
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </Upload>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="form-content">
-          {/* Internal Assignment */}
-          <div className="form-group">
-            <h3>{t('internal_assignment')}</h3>
-            <Input name="companyName" disabled={disable} label={t('company_name')} />
-            <Input name="department" disabled={disable} label={t('department')} />
-            <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
-          </div>
-
-          {/* Status */}
-          <div className="form-group">
-            <h3>{t('status')}</h3>
-            <Input name="processingStatus" disabled={disable} label={t('processing_status')} />
-            <div className="category">
-              <Select
-                disabled={disable}
-                rules={[{ required: true, message: t('field_is_required') }]}
-                label={t('status')}
-                name="status"
-              >
-                {PROJECT_STATUS.map((item: any) => (
-                  <SelectOption value={item.text} key={item.id}>
-                    {t(item.text)}
-                  </SelectOption>
-                ))}
-              </Select>
-            </div>
-            <div className="category">
-              <Select
-                rules={[{ required: true, message: t('field_is_required') }]}
-                label={t('category')}
-                name="requestStatusId"
-                disabled={disable}
-              >
-                {categoryData?.data?.map((item: any) => (
-                  <SelectOption value={item.id} key={item.id}>
-                    {item.title}
-                  </SelectOption>
-                ))}
-                <SelectOption value="new">{t('new_category')}</SelectOption>
-              </Select>
-            </div>
-          </div>
-
-          {/* Notes */}
+        <div className="text-area">
           <div className="form-group">
             <h3>{t('notes')}</h3>
             <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} />
           </div>
-
           <div>
             {!isDeletedRequesdts && (
               <div className="action-btns">

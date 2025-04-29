@@ -21,6 +21,8 @@ html {
   color: var(--text-color);
   line-height: 28px;
   height: 100%;
+  background-color: #f5f7fa;
+
   &::-webkit-scrollbar {
     width: 8px;
   }

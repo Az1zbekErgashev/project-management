@@ -14,8 +14,79 @@ export const StyledInputSelection = styled.div`
   .form-div {
     display: flex;
     justify-content: center;
+    flex-direction: column;
+    align-items: center;
     gap: 50px;
     padding-top: 20px;
+  }
+
+  .form {
+    display: flex;
+    gap: 50px;
+  }
+  .text-area {
+    width: 100%;
+    max-width: 850px;
+  }
+
+  .upload-group {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none !important;
+
+    .file_name {
+      display: flex;
+      flex-direction: column;
+      row-gap: 8px;
+      font-size: 10px;
+      text-align: center;
+    }
+  }
+  .upload-form {
+    width: 90px;
+    height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+    position: relative;
+    &.big {
+      svg {
+        width: 80px;
+        height: 130px;
+        color: var(--base-color);
+      }
+    }
+    &.small {
+      svg {
+        width: 30px;
+        height: 60px;
+        color: var(--base-color);
+      }
+    }
+  }
+
+  .upload-container {
+    position: relative;
+  }
+
+  .delete-svg {
+    position: absolute;
+    right: -20px;
+
+    cursor: pointer;
+    box-shadow:
+      0 4px 6px rgba(0, 0, 0, 0.1),
+      0 1px 3px rgba(0, 0, 0, 0.08);
+    svg {
+      height: 20px !important;
+      width: 20px !important;
+      color: var(--base-color);
+    }
   }
 
   .form-content {

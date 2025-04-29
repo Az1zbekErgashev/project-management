@@ -241,11 +241,6 @@ export function CommentsSection({ requestId }: any) {
             </div>
           </div>
         ))}
-
-        <div className="show-more" onClick={() => setParams((res) => ({ ...res, pageSize: res.pageSize + 10 }))}>
-          {t('show_more')}
-        </div>
-
         {replyingTo ? (
           <div className="reply-form-container">
             <div className="reply-form-content">

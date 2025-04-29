@@ -6,7 +6,7 @@ import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import dayjs from 'dayjs';
-import { PRIORITY, PROJECT_STATUS } from 'utils/consts';
+import { PROJECT_STATUS } from 'utils/consts';
 import { RequestFilter } from '../RequestFilter';
 import { InputSelection } from '../InputSelection';
 import { Modal } from 'ui';

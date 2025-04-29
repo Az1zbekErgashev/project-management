@@ -3,7 +3,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 
 export function useComments(requestId?: number) {
   const [commentId, setCommentId] = useState<number | null>();
-  const [params, setParams] = useState<{ pageSize: number }>({ pageSize: 10 });
+  const [params, setParams] = useState<{ pageSize: number }>({ pageSize: 1000 });
   const [historyParams, setHistoryParams] = useState<{ pageSize: number; pageIndex: number }>({
     pageIndex: 1,
     pageSize: 10,
