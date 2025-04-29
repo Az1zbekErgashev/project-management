@@ -147,6 +147,9 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
               borderRadius: '12px',
               fontSize: '12px',
               display: 'inline-block', 
+              width: '80px',
+              alignItems: 'center',
+              textAlign: 'center',
             }}
           >
             {t(status.text)}
