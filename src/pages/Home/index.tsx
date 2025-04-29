@@ -272,7 +272,9 @@ export function Dashboard() {
         
         {/* Project Request Summary */}
         <div className="section">
+          <div className='tab-header'>
           <h2>각 번안별 연도별 신규 프로젝트 의뢰 건 수 파악</h2>
+          </div>
           <div className="project-request-summary">
             {departmentData.map((dept, index) => (
               <div key={index} className="request-item">
@@ -286,7 +288,10 @@ export function Dashboard() {
 
         {/* Department Status Summary */}
         <div className="section">
+          <div className='tab-header'>
           <h2>부서별 상태 요약</h2>
+
+          </div>
           <div className="department-status">
             {departmentData.map((dept, index) => (
               <Card key={index} className="department-card">

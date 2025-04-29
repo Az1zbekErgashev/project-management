@@ -2,7 +2,6 @@ import styled from 'styled-components';
 
 export const StyledHomePage = styled.div`
   padding: 20px;
-  background-color: #f5f5f5;
   min-height: 100vh;
 
   .loading-container {
@@ -13,12 +12,12 @@ export const StyledHomePage = styled.div`
   }
 
   .dashboard-container {
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     background: white;
     padding: 24px;
     border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);    
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
 
   h1 {
@@ -51,6 +50,10 @@ export const StyledHomePage = styled.div`
   .section {
     margin-bottom: 32px;
     padding: 8px;
+  }
+
+  .tab-header {
+    padding: 16px 0;
   }
 
   .project-request-summary {
