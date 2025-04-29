@@ -7,17 +7,24 @@ import { useTranslation } from 'react-i18next';
 interface CommentInputProps {
   onSubmit: any;
   requestId: string;
+  replyTo?: { email: string; id: number } | null;
+  clearReply?: () => void;
 }
 
-export function CommentInput({ onSubmit, requestId }: CommentInputProps) {
+export function CommentInput({ onSubmit, requestId, replyTo, clearReply }: CommentInputProps) {
   const [text, setText] = useState('');
   const { t } = useTranslation();
   const { user } = useUser();
 
   const handleSubmit = () => {
     if (text.trim()) {
-      onSubmit({ requestId: Number.parseInt(requestId), text });
+      onSubmit({
+        requestId: Number.parseInt(requestId),
+        text,
+        parentCommentId: replyTo?.id || null,
+      });
       setText('');
+      clearReply?.();
       const textarea = document.querySelector('.comment-textarea') as HTMLTextAreaElement;
       if (textarea) textarea.value = '';
     }
@@ -39,10 +46,20 @@ export function CommentInput({ onSubmit, requestId }: CommentInputProps) {
         <div className="input-label">{t('write_a_comment')}</div>
       </div>
 
+      {replyTo && (
+        <div className="replying-to">
+          Replying to <strong>{replyTo.email}</strong>
+          <button onClick={clearReply} className="clear-reply-btn">
+            ×
+          </button>
+        </div>
+      )}
+
       <textarea
         className="comment-textarea"
         placeholder={t('write_a_comment')}
         onChange={(e) => setText(e.target.value)}
+        value={text}
       />
 
       <div className="input-actions">

@@ -77,7 +77,6 @@ function App() {
     >
       <ThemeProvider theme={{ antd: token }}>
         <RouterProvider router={router} />
-        <FixedScrollUpButton />
       </ThemeProvider>
     </ConfigProvider>
   );
