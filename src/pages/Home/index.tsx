@@ -10,7 +10,7 @@ export function Dashboard() {
   const [activeTab, setActiveTab] = useState('월별 상태 비교');
   const [activeChartType, setActiveChartType] = useState('bar');
 
-  const tabs = [t('first_step_dashboard'), 'second_step_dashboard', 'last_step_dashboard'];
+  const tabs = [t('first_step_dashboard'), t('second_step_dashboard'), t('last_step_dashboard')];
 
   const { data: procentData } = useQueryApiClient({
     request: {
