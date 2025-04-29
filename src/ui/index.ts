@@ -8,8 +8,6 @@ export { FixedScrollUpButton } from './FixedScrollUpButton';
 export { Notification } from './Notification';
 export { RedirectModal } from './RedirectModal';
 export { Tabs } from './Tabs';
-export { Comment } from './Comment';
-export { CommentInput } from './CommentInput';
 export * from './Radio';
 export * from './RadioGroup';
 export * from './Select';

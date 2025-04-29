@@ -1,4 +1,4 @@
-import { Avatar, Timeline } from 'antd';
+import { Avatar, Pagination, Timeline } from 'antd';
 import { useComments } from 'hooks/useComments';
 import { StyledHistorySection } from './style';
 import { useTranslation } from 'react-i18next';
@@ -11,8 +11,11 @@ interface HistorySectionProps {
 
 export function HistorySection({ requestId }: HistorySectionProps) {
   const { t } = useTranslation();
-  const { history } = useComments(parseInt(requestId));
+  const { history, setHistoryParams } = useComments(parseInt(requestId));
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    setHistoryParams((res) => ({ ...res, pageIndex: page, pageSize: pageSize }));
+  };
   return (
     <StyledHistorySection>
       <div className="history-section">
@@ -49,6 +52,17 @@ export function HistorySection({ requestId }: HistorySectionProps) {
               </div>
             </div>
           ))}
+        </div>
+        <div className='center'>
+          {history?.totalPages > 1 && (
+            <Pagination
+              total={history?.totalItems}
+              pageSize={history?.itemsPerPage}
+              onChange={handlePaginationChange}
+              hideOnSinglePage={true}
+              current={history?.PageIndex}
+            />
+          )}
         </div>
       </div>
     </StyledHistorySection>

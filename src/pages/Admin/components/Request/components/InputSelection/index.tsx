@@ -70,7 +70,7 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
     },
   });
 
-  console.log("This is categoryData:", categoryData);
+  console.log('This is categoryData:', categoryData);
 
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
@@ -104,9 +104,6 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
           <div className="form-group">
             <h3>{t('submission_info')}</h3>
             <Input disabled={disable} name="date" label={t('date_created')} />
-            {/* <div className="date-picker">
-              <DatePicker disabled={disable} name="deadline" label={t('deadline')} />
-            </div> */}
           </div>
 
           {/* Inquiry Details */}
@@ -139,17 +136,16 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
           {/* Status */}
           <div className="form-group">
             <h3>{t('status')}</h3>
-            <Input name="status" disabled={disable} label={t('processing_status')} />
-            <Input name="finalResult" disabled={disable} label={t('final_result')} />
+            <Input name="processingStatus" disabled={disable} label={t('processing_status')} />
             <div className="category">
               <Select
                 disabled={disable}
                 rules={[{ required: true, message: t('field_is_required') }]}
                 label={t('status')}
-                name="projectStatus"
+                name="status"
               >
                 {PROJECT_STATUS.map((item: any) => (
-                  <SelectOption value={item.id} key={item.id}>
+                  <SelectOption value={item.text} key={item.id}>
                     {t(item.text)}
                   </SelectOption>
                 ))}
@@ -177,29 +173,34 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
             <h3>{t('notes')}</h3>
             <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} />
           </div>
+
+          <div>
+            {!isDeletedRequesdts && (
+              <div className="action-btns">
+                {window.location.pathname.includes('request-detail') && !disable && (
+                  <Button
+                    onClick={() => setDisable(true)}
+                    label={t('cancel_to_view_mode')}
+                    htmlType="button"
+                    loading={isLoading}
+                  />
+                )}
+                {!disable && (
+                  <Button
+                    label={
+                      !window.location.pathname.includes('request-detail') ? t('create_request') : t('save_changes')
+                    }
+                    type="primary"
+                    htmlType="button"
+                    onClick={handleSubmit}
+                    loading={isLoading}
+                  />
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
-      {!isDeletedRequesdts && (
-        <div className="action-btns">
-          {window.location.pathname.includes('request-detail') && !disable && (
-            <Button
-              onClick={() => setDisable(true)}
-              label={t('cancel_to_view_mode')}
-              htmlType="button"
-              loading={isLoading}
-            />
-          )}
-          {!disable && (
-            <Button
-              label={!window.location.pathname.includes('request-detail') ? t('create_request') : t('save_changes')}
-              type="primary"
-              htmlType="button"
-              onClick={handleSubmit}
-              loading={isLoading}
-            />
-          )}
-        </div>
-      )}
     </StyledInputSelection>
   );
 }
