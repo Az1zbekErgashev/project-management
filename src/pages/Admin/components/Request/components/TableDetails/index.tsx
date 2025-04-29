@@ -44,6 +44,9 @@ export function TableDetail() {
     },
   });
 
+  console.log("requestlar:", request);
+  console.log("requestlar:", request?.data?.requestStatus?.id);
+
   useEffect(() => {
     if (window.location.pathname.includes('request-detail')) {
       handleFetchClick();

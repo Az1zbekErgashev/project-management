@@ -70,6 +70,8 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
     },
   });
 
+  console.log("This is categoryData:", categoryData);
+
   const uploadButton = (
     <button style={{ border: 0, background: 'none' }} type="button">
       <PlusOutlined />
@@ -93,7 +95,6 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
     if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
     return `${(size / 1024 / 1024).toFixed(1)} MB`;
   };
-
 
   return (
     <StyledInputSelection>
@@ -135,24 +136,11 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
             <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
           </div>
 
-          {/* Notes & Status */}
+          {/* Status */}
           <div className="form-group">
-            <h3>{t('notes_and_status')}</h3>
+            <h3>{t('status')}</h3>
             <Input name="status" disabled={disable} label={t('processing_status')} />
             <Input name="finalResult" disabled={disable} label={t('final_result')} />
-            <TextArea name="notes" disabled={disable} label={t('notes')} rows={3} />
-            {/* <Select
-              disabled={disable}
-              rules={[{ required: true, message: t('field_is_required') }]}
-              label={t('priority')}
-              name="priority"
-            >
-              {PRIORITY.map((item: any) => (
-                <SelectOption value={item.id} key={item.id}>
-                  {t(item.text)}
-                </SelectOption>
-              ))}
-            </Select> */}
             <div className="category">
               <Select
                 disabled={disable}
@@ -182,6 +170,12 @@ export function InputSelection({ form, disable, setDisable, request }: Props) {
                 <SelectOption value="new">{t('new_category')}</SelectOption>
               </Select>
             </div>
+          </div>
+
+          {/* Notes */}
+          <div className="form-group">
+            <h3>{t('notes')}</h3>
+            <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} />
           </div>
         </div>
       </div>

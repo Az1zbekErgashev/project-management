@@ -2,12 +2,16 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'antd';
+import { Button, Tooltip } from 'antd';
 import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface Props {
   isRequestsLoading: boolean;
@@ -41,6 +45,10 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'updatedAt',
       key: 'updatedAt',
       fixed: 'left',
+      render: (updatedAt: string) => {
+        if (!updatedAt) return '-';
+        return dayjs.utc(updatedAt).tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm:ss');
+      },
     },
     {
       title: t('inquiry_type'),
@@ -100,24 +108,60 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       dataIndex: 'notes',
       key: 'notes',
       width: 120,
+      render: (notes: string) => (
+        <Tooltip
+          title={notes || t('no_notes')}
+          placement="top"
+          mouseLeaveDelay={0.1}
+          destroyTooltipOnHide={{ keepParent: false }}
+          overlayStyle={{
+            backgroundColor: '#000000', 
+            color: '#ffffff', 
+            borderRadius: '4px', 
+            padding: '8px',
+            width: 'auto',
+            maxWidth: '200px',
+          }}
+        >
+          <Button type="primary" size="small" style={{padding: '15px', borderRadius: '12px', fontSize: '12px'}}>
+            {t('view_notes')}
+          </Button>
+        </Tooltip>
+      ),
     },
     {
       title: t('status'),
       dataIndex: 'status',
       key: 'status',
-      render: (_, record) =>
-        PROJECT_STATUS?.map((item, index) => {
-          if (item?.text?.toLowerCase() === record?.status?.toLowerCase())
-            return <React.Fragment key={index}>{t(item.text)}</React.Fragment>;
-          return null;
-        }),
+      render: (_, record) => {
+        const status = PROJECT_STATUS.find(
+          (item) => item?.text?.toLowerCase() === record?.status?.toLowerCase()
+        );
+        return status ? (
+          <span
+            key={status.id}
+            style={{
+              backgroundColor: status.backgroundColor,
+              color: status.color,
+              padding: '8px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              display: 'inline-block', 
+            }}
+          >
+            {t(status.text)}
+          </span>
+        ) : null;
+      },
     },
     {
       title: t('action'),
       dataIndex: 'action',
       key: 'action',
       render: (_, record, index) => (
-        <Button
+        <Button style={{fontSize: '12x', padding: '8px',
+          borderRadius: "12px",
+        }}
           type="primary"
           onClick={() => {
             navigate(`/request-detail/${record.id}`);

@@ -65,11 +65,36 @@ export const PRIORITY = [
 ];
 
 export const PROJECT_STATUS = [
-  { id: 0, text: 'Failed' },
-  { id: 1, text: 'Made' },
-  { id: 2, text: 'On-going' },
-  { id: 3, text: 'On-hold' },
-  { id: 4, text: 'Dropped' },
+  {
+    id: 0,
+    text: 'Failed',
+    backgroundColor: '#ff4d4f', 
+    color: '#ffffff', 
+  },
+  {
+    id: 1,
+    text: 'Made',
+    backgroundColor: '#52c41a',
+    color: '#ffffff', 
+  },
+  {
+    id: 2,
+    text: 'On-going',
+    backgroundColor: '#1890ff',
+    color: '#ffffff', 
+  },
+  {
+    id: 3,
+    text: 'On-hold',
+    backgroundColor: '#fa8c16',
+    color: '#ffffff', 
+  },
+  {
+    id: 4,
+    text: 'Dropped',
+    backgroundColor: '#bfbfbf', 
+    color: '#000000', 
+  },
 ];
 
 export const defaultImageUrl =
