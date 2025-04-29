@@ -16,7 +16,6 @@ export const checkEmail = async (email: string) => {
   }
 };
 
-
 export const updateSearchParams = (
   navigate: NavigateFunction,
   pathname: string,
@@ -77,7 +76,7 @@ export const smoothScroll = (
       scrollOptions.left = value;
       break;
     case 'bottom':
-      scrollOptions.top = value;
+      scrollOptions.top = document.documentElement.scrollHeight - window.innerHeight;
       break;
     default:
       throw new Error('Invalid scroll type');

@@ -3,6 +3,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 
 export function useComments(requestId?: number) {
   const [commentId, setCommentId] = useState<number | null>();
+  const [params, setParams] = useState<{ pageSize: number }>({ pageSize: 10 });
   const { appendData: createComment } = useQueryApiClient({
     request: {
       url: `/api/comment/create/comment`,
@@ -38,6 +39,8 @@ export function useComments(requestId?: number) {
     request: {
       url: `/api/comment/comments?RequestId=${requestId}`,
       method: 'GET',
+      data: { pageSize: params.pageSize },
+      disableOnMount: true,
     },
   });
 
@@ -58,12 +61,17 @@ export function useComments(requestId?: number) {
     }
   }, [commentId]);
 
+  useEffect(() => {
+    refetchRequest();
+  }, [params]);
+
   return {
     createComment,
     handleDelete,
     updateComment,
-    comments: comments.data,
+    comments: comments?.data || [],
     history: history.data,
     refetchHistory,
+    setParams,
   };
 }

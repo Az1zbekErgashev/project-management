@@ -13,8 +13,8 @@ export const StyledInputSelection = styled.div`
 
   .form-div {
     display: flex;
-    justify-content: space-around;
-    gap: 10px;
+    justify-content: center;
+    gap: 50px;
     padding-top: 20px;
   }
 
@@ -52,6 +52,7 @@ export const StyledInputSelection = styled.div`
     align-items: center;
     gap: 12px;
     margin-top: 30px !important;
+    justify-content: end;
   }
 
   .category {
