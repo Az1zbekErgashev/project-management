@@ -10,7 +10,7 @@ export function Dashboard() {
   const [activeTab, setActiveTab] = useState('월별 상태 비교');
   const [activeChartType, setActiveChartType] = useState('bar');
 
-  const tabs = ['월별 상태 비교', '연도별 비교', 'Drop 사유 분석'];
+  const tabs = [t('first_step_dashboard'), 'second_step_dashboard', 'last_step_dashboard'];
 
   const { data: procentData } = useQueryApiClient({
     request: {
@@ -43,7 +43,7 @@ export function Dashboard() {
             </div>
           ))}
         </div>
-        <h2 className="section-title">부서별 처리 상태 요약</h2>
+        <h2 className="section-title">{t('category_title_count')}</h2>
         <div className="status-tables">
           {countsData?.data?.map((table: any, index: number) => (
             <div className="status-table" key={index}>
@@ -71,7 +71,7 @@ export function Dashboard() {
             </div>
           ))}
         </div>
-        <h2 className="section-title">상태 데이터 그래프</h2>
+        <h2 className="section-title">{t('dashboards')}</h2>
         <div className="chart-tabs">
           {tabs.map((tab) => (
             <button
@@ -84,19 +84,11 @@ export function Dashboard() {
           ))}
         </div>
 
-        {activeTab === '월별 상태 비교' && (
-          <div className="chart-container">
-         
-          </div>
-        )}
+        {activeTab === 'first_step_dashboard' && <div className="chart-container"></div>}
 
-        {activeTab === 'Drop 사유 분석' && (
-          <div className="chart-container"></div>
-        )}
+        {activeTab === 'second_step_dashboard' && <div className="chart-container"></div>}
 
-        {activeTab === '연도별 비교' && (
-          <div className="chart-container">{/* <YearlyComparisonChart data={yearlyComparisonData} /> */}</div>
-        )}
+        {activeTab === 'last_step_dashboard' && <div className="chart-container"></div>}
       </div>
     </StyledHomePage>
   );
