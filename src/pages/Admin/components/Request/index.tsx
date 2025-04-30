@@ -4,16 +4,15 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
-import { Button, ConfirmModal, Spinner, Notification, Modal } from 'ui';
+import { Button, Spinner, Modal } from 'ui';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
-import { Form } from 'antd';
 import { RequestFilter } from './components/RequestFilter';
 import UploadModal from './components/Upload/upload';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { TFunction } from 'i18next';
-import { RequestModel } from './components/RequestList/type';
+import { useNavigate } from 'react-router-dom';
+import useJwt from 'utils/useJwt';
+import { useLanguage } from 'contexts/LanguageContext';
 
 interface queryParamsType {
   PageSize: number;
@@ -30,7 +29,9 @@ export function Request() {
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
   const navigate = useNavigate();
   const [showUpload, setShowUpload] = useState(false);
-
+  const { getHeader } = useJwt();
+  const { language } = useLanguage();
+  const getToken = getHeader();
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -65,9 +66,12 @@ export function Request() {
   const handleDownload = async () => {
     setIsFileLoading(true);
     try {
-      const response = await axios.get(`${routes.api.baseUrl}/api/request/export-excel`, {
+      const response = await axios.get(`${routes.api.baseUrl}/api/request/export-excel?languageId=${language}`, {
         params: { requestCategoryId: queryparams.Category },
         responseType: 'blob',
+        headers: {
+          Authorization: getToken,
+        },
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
@@ -86,13 +90,6 @@ export function Request() {
   };
 
   const { data: categories } = useQueryApiClient({
-    request: {
-      url: '/api/request/category',
-      method: 'GET',
-    },
-  });
-
-  const { data: filterValue } = useQueryApiClient({
     request: {
       url: '/api/request/category',
       method: 'GET',
@@ -137,7 +134,7 @@ export function Request() {
               />
             </div>
           </div>
-          <RequestFilter filterValue={filterValue} handleFilterChange={handleFilterChange} isDeleted={0} />
+          <RequestFilter categories={categories} handleFilterChange={handleFilterChange} isDeleted={0} />
 
           <RequestList
             setQueryParams={setQueryParams}

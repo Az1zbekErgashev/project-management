@@ -5,6 +5,7 @@ import { PROJECT_STATUS } from 'utils/consts';
 import { useTranslation } from 'react-i18next';
 import { Select } from 'antd';
 import MonthlyStatusChart from 'components/Bar';
+import YearlyStatusPieChart from 'components/Pie';
 
 export function Dashboard() {
   const { t } = useTranslation();
@@ -49,13 +50,19 @@ export function Dashboard() {
     },
   });
 
+  const { refetch: getPieChartData, data: pieChartData } = useQueryApiClient({
+    request: {
+      url: `/api/request/request-pie-chart?year=${selectedYear}`,
+      disableOnMount: true,
+    },
+  });
+
   useEffect(() => {
     if (selectedYear) {
       getYearsCount();
+      getPieChartData();
     }
   }, [selectedYear]);
-
-  console.log(activeTab);
 
   return (
     <StyledHomePage>
@@ -132,7 +139,11 @@ export function Dashboard() {
           </div>
         )}
 
-        {activeTab === '2' && <div className="chart-container"></div>}
+        {activeTab === '2' && (
+          <div className="chart-container pie-chart">
+            <YearlyStatusPieChart year={selectedYear} data={pieChartData?.data} />
+          </div>
+        )}
 
         {activeTab === '3' && <div className="chart-container"></div>}
       </div>

@@ -155,7 +155,6 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
                       {item.title}
                     </SelectOption>
                   ))}
-                  <SelectOption value="new">{t('new_category')}</SelectOption>
                 </Select>
               </div>
             </div>

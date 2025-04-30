@@ -69,7 +69,16 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
         request.baseUrl
       );
     }
-  }, [enabled, disableOnMount, enableOnMount, request.url, request.method, request.mustRetry, request.multipart, request.baseUrl]); // Added dependencies to prevent stale closures
+  }, [
+    enabled,
+    disableOnMount,
+    enableOnMount,
+    request.url,
+    request.method,
+    request.mustRetry,
+    request.multipart,
+    request.baseUrl,
+  ]); // Added dependencies to prevent stale closures
 
   useEffect(() => {
     let timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
@@ -80,15 +89,7 @@ function useQueryApiClient({ request, onSuccess, onError, onFinally, enabled = t
 
   const refetch = () => {
     setIsRefetching(true);
-    actualCall(
-      request.url,
-      request?.data,
-      method,
-      request?.mustRetry,
-      request?.multipart,
-      {},
-      request.baseUrl
-    );
+    actualCall(request.url, request?.data, method, request?.mustRetry, request?.multipart, {}, request.baseUrl);
   };
 
   const parsedError = (response: InvalidRequestResponse) => {

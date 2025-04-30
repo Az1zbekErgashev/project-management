@@ -2,14 +2,15 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Button, Tooltip } from 'antd';
+import { Button } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-
+import Tooltip from 'antd/lib/tooltip';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
+
 dayjs.extend(utc);
 dayjs.extend(timezone);
 

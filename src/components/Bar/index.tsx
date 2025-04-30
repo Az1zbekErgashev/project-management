@@ -30,7 +30,7 @@ const STATUS_COLORS: Record<string, string> = {
 const MonthlyStatusChart = ({ data }: any) => {
   const labels = data?.map((d: any) => monthNames[d.month]);
   const { t } = useTranslation();
-  const statusKeys = ['Made', 'Failed', 'On-going', 'OnHold', 'Dropped'];
+  const statusKeys = ['Made', 'Failed', 'On-going', 'On-Hold', 'Dropped'];
 
   const datasets = statusKeys.map((status) => ({
     label: status,

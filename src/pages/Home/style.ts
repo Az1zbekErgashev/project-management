@@ -208,4 +208,11 @@ export const StyledHomePage = styled.div`
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     margin-bottom: 30px !important;
   }
+
+  .pie-chart {
+    width: 100%;
+    height: 700px;
+    display: flex;
+    justify-content: center;
+  }
 `;

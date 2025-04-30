@@ -5,15 +5,14 @@ import { Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { useForm } from 'antd/es/form/Form';
-import { PROJECT_STATUS } from 'utils/consts';
 
 interface props {
   handleFilterChange: (value: any) => void;
   isDeleted: number;
-  filterValue: any;
   status?: number | null;
+  categories: any;
 }
-export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, status = null }: props) {
+export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null, categories }: props) {
   const { t } = useTranslation();
   const isPendingRequests = window.location.pathname.includes('pending-request');
   const [value, setValue] = useState('');
@@ -65,19 +64,9 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, filterValue, 
         <div className="priory">
           {!isPendingRequests && (
             <Select className="input-selection-select" name="Category" label={t('category')}>
-              {filterValue?.data?.map((item: any, index: number) => (
+              {categories?.data?.map((item: any, index: number) => (
                 <SelectOption key={index} value={item.id}>
                   {item.title}
-                </SelectOption>
-              ))}
-              <SelectOption value={null}>{t('all')}</SelectOption>
-            </Select>
-          )}
-          {!isPendingRequests && (
-            <Select className="input-selection-select" name="Status" label={t('status')}>
-              {PROJECT_STATUS?.map((item: any, index: number) => (
-                <SelectOption value={item.text} key={index}>
-                  {item.text}
                 </SelectOption>
               ))}
               <SelectOption value={null}>{t('all')}</SelectOption>
