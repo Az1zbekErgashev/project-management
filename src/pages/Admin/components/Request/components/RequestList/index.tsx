@@ -2,12 +2,11 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Button } from 'antd';
+import { Button, Popover, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import Tooltip from 'antd/lib/tooltip';
-import { PROJECT_STATUS } from 'utils/consts';
+import { PROCESSING_STATUS, PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
 
@@ -109,24 +108,44 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
       key: 'notes',
       width: 120,
       render: (notes: string) => (
-        <Tooltip
-          title={notes || t('no_notes')}
-          placement="top"
-          mouseLeaveDelay={0.1}
-          destroyTooltipOnHide={{ keepParent: false }}
+        <Popover
+          content={
+            <div
+              style={{
+                padding: '12px 16px',
+                maxHeight: '300px',
+                overflowY: 'auto',
+                width: '250px',
+                wordBreak: 'break-word',
+                whiteSpace: 'pre-wrap',
+                borderRadius: '8px',
+              }}
+            >
+              {notes?.trim() || <span style={{ color: '#999' }}>{t('no_notes')}</span>}
+            </div>
+          }
+          trigger="click"
           overlayStyle={{
-            backgroundColor: '#000000',
-            color: '#ffffff',
-            borderRadius: '4px',
-            padding: '8px',
-            width: 'auto',
-            maxWidth: '200px',
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            boxShadow: '0 3px 6px rgba(0,0,0,0.16)',
+          }}
+          overlayInnerStyle={{
+            padding: 0,
           }}
         >
-          <Button type="primary" size="small" style={{ padding: '15px', borderRadius: '12px', fontSize: '12px' }}>
+          <Button
+            type="primary"
+            size="small"
+            style={{
+              padding: '15px',
+              borderRadius: '12px',
+              fontSize: '12px',
+            }}
+          >
             {t('view_notes')}
           </Button>
-        </Tooltip>
+        </Popover>
       ),
     },
     {
@@ -149,6 +168,18 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
             {t(status.text)}
           </span>
         ) : null;
+      },
+    },
+    {
+      title: t('processing_status'),
+      dataIndex: 'processingStatus',
+      key: 'processingStatus',
+      width: '200px',
+      render: (_, record) => {
+        const processingStatus = PROCESSING_STATUS.find(
+          (item) => item?.text?.toLowerCase() === record?.processingStatus?.toLowerCase()
+        );
+        return processingStatus ? <span key={processingStatus.id}>{t(processingStatus.text)}</span> : null;
       },
     },
     {
