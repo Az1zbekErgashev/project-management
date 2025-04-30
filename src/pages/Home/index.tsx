@@ -9,9 +9,13 @@ import MonthlyStatusChart from 'components/Bar';
 export function Dashboard() {
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState('first_step_dashboard');
+  const [activeTab, setActiveTab] = useState('1');
   const [selectedYear, setSelectedYear] = useState();
-  const tabs = [t('first_step_dashboard'), t('second_step_dashboard'), t('last_step_dashboard')];
+  const tabs = [
+    { key: '1', label: t('first_step_dashboard') },
+    { key: '2', label: t('second_step_dashboard') },
+    { key: '3', label: t('last_step_dashboard') },
+  ];
 
   const { data: procentData } = useQueryApiClient({
     request: {
@@ -51,7 +55,7 @@ export function Dashboard() {
     }
   }, [selectedYear]);
 
-  console.log(requestByYears?.data);
+  console.log(activeTab);
 
   return (
     <StyledHomePage>
@@ -103,11 +107,11 @@ export function Dashboard() {
           <div>
             {tabs.map((tab) => (
               <button
-                key={tab}
-                className={`chart-tab ${activeTab === tab ? 'active' : ''}`}
-                onClick={() => setActiveTab(tab)}
+                key={tab.key}
+                className={`chart-tab ${activeTab === tab.key ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab.key)}
               >
-                {tab}
+                {tab.label}
               </button>
             ))}
           </div>
@@ -122,15 +126,15 @@ export function Dashboard() {
           )}
         </div>
 
-        {activeTab === 'first_step_dashboard' && (
+        {activeTab === '1' && (
           <div className="chart-container">
-            <MonthlyStatusChart data={requestByYears?.data}/>
+            <MonthlyStatusChart data={requestByYears?.data} />
           </div>
         )}
 
-        {activeTab === 'second_step_dashboard' && <div className="chart-container"></div>}
+        {activeTab === '2' && <div className="chart-container"></div>}
 
-        {activeTab === 'last_step_dashboard' && <div className="chart-container"></div>}
+        {activeTab === '3' && <div className="chart-container"></div>}
       </div>
     </StyledHomePage>
   );
