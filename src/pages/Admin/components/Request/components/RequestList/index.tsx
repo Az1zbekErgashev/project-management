@@ -7,7 +7,7 @@ import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
-import { PROJECT_STATUS } from 'utils/consts';
+import { PROCESSING_STATUS, PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
 dayjs.extend(utc);
@@ -164,6 +164,22 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
             }}
           >
             {t(status.text)}
+          </span>
+        ) : null;
+      },
+    },
+    {
+      title: t('processing_status'),
+      dataIndex: 'processingStatus',
+      key: 'processingStatus',
+      width: '200px',
+      render: (_, record) => {
+        const processingStatus = PROCESSING_STATUS.find((item) => item?.text?.toLowerCase() === record?.processingStatus?.toLowerCase());
+        return processingStatus ? (
+          <span
+            key={processingStatus.id}
+          >
+            {t(processingStatus.text)}
           </span>
         ) : null;
       },

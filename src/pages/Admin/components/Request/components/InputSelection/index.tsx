@@ -4,7 +4,7 @@ import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import { PROJECT_STATUS } from 'utils/consts';
+import { PROCESSING_STATUS, PROJECT_STATUS } from 'utils/consts';
 import { CloseCircleOutlined, FileDoneOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from 'config/config';
@@ -128,7 +128,21 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
             {/* Status */}
             <div className="form-group">
               <h3>{t('status')}</h3>
-              <Input name="processingStatus" disabled={disable} label={t('processing_status')} />
+
+                <div className="category">
+                <Select
+                  disabled={disable}
+                  rules={[{ required: true, message: t('field_is_required') }]}
+                  label={t('processing_status')}
+                  name="processingStatus"
+                >
+                  {PROCESSING_STATUS.map((item: any) => (
+                    <SelectOption value={item.text} key={item.id}>
+                      {t(item.text)}
+                    </SelectOption>
+                  ))}
+                </Select>
+              </div>              
               <div className="category">
                 <Select
                   disabled={disable}
