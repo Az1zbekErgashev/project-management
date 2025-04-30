@@ -117,7 +117,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
             </div>
           </div>
 
-          <div className="form-content">
+          <div className="form-cont">
             <div className="form-group">
               <h3>{t('internal_assignment')}</h3>
               <Input name="companyName" disabled={disable} label={t('company_name')} />
@@ -159,8 +159,45 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
                 </Select>
               </div>
             </div>
+  
+          </div>
+        </div>
 
-            <div className="form-group upload-group">
+        <div className="text-area">
+          <div className="form-group">
+            <h3>{t('notes')}</h3>
+            <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} />
+          </div>
+          <div>
+            {!isDeletedRequesdts && (
+              <div className="action-btns">
+                {window.location.pathname.includes('request-detail') && !disable && (
+                  <Button
+                    onClick={() => setDisable(true)}
+                    label={t('cancel_to_view_mode')}
+                    htmlType="button"
+                    loading={isLoading}
+                  />
+                )}
+                {!disable && (
+                  <Button
+                    label={
+                      !window.location.pathname.includes('request-detail') ? t('create_request') : t('save_changes')
+                    }
+                    type="primary"
+                    htmlType="button"
+                    onClick={handleSubmit}
+                    loading={isLoading}
+                  />
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+        
+      </div>
+      <div className='upload-container'>
+      <div className="form-group upload-group">
               <div className="upload-container">
                 {(fileList || filePath) && (
                   <Tooltip
@@ -208,40 +245,6 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
                   </div>
                 </Upload>
               </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-area">
-          <div className="form-group">
-            <h3>{t('notes')}</h3>
-            <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} />
-          </div>
-          <div>
-            {!isDeletedRequesdts && (
-              <div className="action-btns">
-                {window.location.pathname.includes('request-detail') && !disable && (
-                  <Button
-                    onClick={() => setDisable(true)}
-                    label={t('cancel_to_view_mode')}
-                    htmlType="button"
-                    loading={isLoading}
-                  />
-                )}
-                {!disable && (
-                  <Button
-                    label={
-                      !window.location.pathname.includes('request-detail') ? t('create_request') : t('save_changes')
-                    }
-                    type="primary"
-                    htmlType="button"
-                    onClick={handleSubmit}
-                    loading={isLoading}
-                  />
-                )}
-              </div>
-            )}
-          </div>
         </div>
       </div>
     </StyledInputSelection>

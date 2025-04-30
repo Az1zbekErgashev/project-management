@@ -13,11 +13,12 @@ export const StyledInputSelection = styled.div`
 
   .form-div {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction: column;
     align-items: center;
     gap: 50px;
-    padding-top: 20px;
+    padding-top: 2px;
+    /* padding-left: 80px; */
   }
 
   .form {
@@ -31,8 +32,8 @@ export const StyledInputSelection = styled.div`
 
   .upload-group {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    align-items: flex-start;
+    justify-content: flex-start;
     box-shadow: none !important;
 
     .file_name {
@@ -48,7 +49,6 @@ export const StyledInputSelection = styled.div`
     height: 140px;
     display: flex;
     flex-direction: column;
-    align-items: center;
     justify-content: center;
     box-shadow:
       0 4px 6px rgba(0, 0, 0, 0.1),
@@ -94,6 +94,15 @@ export const StyledInputSelection = styled.div`
     display: flex;
     flex-direction: column;
     row-gap: 15px;
+  }
+
+  .form-cont {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 100px;
+    justify-content: flex-end;
+    margin-bottom: 50px;
   }
 
   .form-group {
