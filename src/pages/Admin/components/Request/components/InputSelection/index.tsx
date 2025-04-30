@@ -132,7 +132,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
                 <div className="category">
                 <Select
                   disabled={disable}
-                  rules={[{ required: true, message: t('field_is_required') }]}
+                  rules={[{ message: t('field_is_required') }]}
                   label={t('processing_status')}
                   name="processingStatus"
                 >
