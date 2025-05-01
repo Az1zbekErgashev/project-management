@@ -11,6 +11,7 @@ import { smoothScroll } from 'utils/globalFunctions';
 import { TFunction } from 'i18next';
 import { Drawer, Form } from 'antd';
 import { UserInformation } from './components/UserInformation';
+import { useSearchParams } from 'react-router-dom';
 
 interface initalQuery {
   PageIndex: number;
@@ -40,7 +41,11 @@ const createModalConfig = (
 
 export function AdminUsers() {
   const { t } = useTranslation();
-  const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
+  const [searchParams, _] = useSearchParams();
+  const [queryParams, setQueryParams] = useState<initalQuery>({
+    PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+  });
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [userId, setUserId] = useState<number | null>(null);
   const [open, setOpen] = useState<{ type: 'VIEW' | 'ADD' | 'EDIT'; user: any }>({
@@ -198,15 +203,14 @@ export function AdminUsers() {
       </div>
       <UsersFilter handleFilterChange={handleFilterChange} />
       <Table columns={column} dataSource={users?.data?.items ?? []} />
-      {users?.data?.totalPages > 1 && (
-        <Pagination
-          total={users?.data?.totalItems}
-          pageSize={users?.data?.itemsPerPage}
-          onChange={handlePaginationChange}
-          hideOnSinglePage={true}
-          current={users?.data?.PageIndex}
-        />
-      )}
+
+      <Pagination
+        total={users?.data?.totalItems}
+        pageSize={users?.data?.itemsPerPage}
+        onChange={handlePaginationChange}
+        hideOnSinglePage={true}
+        current={users?.data?.PageIndex}
+      />
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
       <Modal footer={null} width={600} onCancel={onClose} centered={true} open={drawerStatus}>

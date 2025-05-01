@@ -9,6 +9,9 @@ import dayjs from 'dayjs';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestFilter } from '../RequestFilter';
 import Tooltip from 'antd/lib/tooltip';
+import { smoothScroll } from 'utils/globalFunctions';
+import Pagination from 'ui/Pagination/Pagination';
+import { useSearchParams } from 'react-router-dom';
 interface queryParamsType {
   PageSize: number;
   PageIndex: number;
@@ -21,8 +24,12 @@ interface queryParamsType {
 
 export function DeletedRequests() {
   const { t } = useTranslation();
-  const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10, IsDeleted: 1 });
-
+  const [searchParams, _] = useSearchParams();
+  const [queryparams, setQueryParams] = useState<queryParamsType>({
+    PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+    IsDeleted: 1,
+  });
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
   };
@@ -193,6 +200,11 @@ export function DeletedRequests() {
     },
   });
 
+  const handlePaginationChange = (page: number, pageSize: number) => {
+    smoothScroll('top', 0);
+    setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
+  };
+
   return (
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
@@ -207,6 +219,13 @@ export function DeletedRequests() {
         pagination={false}
         showSorterTooltip={false}
         loading={isRequestsLoading}
+      />
+      <Pagination
+        total={requests?.data?.totalItems}
+        pageSize={requests?.data?.itemsPerPage}
+        onChange={handlePaginationChange}
+        hideOnSinglePage={true}
+        current={requests?.data?.pageIndex}
       />
     </StyledRequestList>
   );

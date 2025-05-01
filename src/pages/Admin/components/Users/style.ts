@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledAdminUsers = styled.div`
+  margin-bottom: 70px !important;
   .action {
     display: flex;
     align-items: center;

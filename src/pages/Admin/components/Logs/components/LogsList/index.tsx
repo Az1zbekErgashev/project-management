@@ -36,10 +36,7 @@ export function LogsList({ logs }: props) {
       title: t('action'),
       dataIndex: 'action',
       key: 'action',
-      render: (action: number) => {
-        const foundAction = actions.find((item) => item.id === action);
-        return foundAction ? t(foundAction.text) : '-';
-      },
+      render: (action: string) => <div>{t(action)}</div>,
     },
   ];
 

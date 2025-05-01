@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const StyledRequests = styled.div`
   position: relative;
+  margin-bottom: 70px !important;
   .header-line {
     display: flex;
     justify-content: space-between;

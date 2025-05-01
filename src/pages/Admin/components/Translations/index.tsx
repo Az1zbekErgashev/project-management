@@ -10,6 +10,7 @@ import Pagination from 'ui/Pagination/Pagination';
 import { TFunction } from 'i18next';
 import { Form } from 'antd';
 import { TranslationActionForm } from './components/TranslationsActionForm';
+import { useSearchParams } from 'react-router-dom';
 
 interface initalQuery {
   PageIndex: number;
@@ -36,7 +37,11 @@ const createModalConfig = (
 
 export function Translations() {
   const { t } = useTranslation();
-  const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
+  const [searchParams, _] = useSearchParams();
+  const [queryParams, setQueryParams] = useState<initalQuery>({
+    PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+  });
   const [key, setKey] = useState<string | null>(null);
   const [coniformModal, setConiformModal] = useState<any>(null);
   const [open, setOpen] = useState<{ open: boolean; type: 'ADD' | 'EDIT'; translation: any }>({
@@ -168,15 +173,14 @@ export function Translations() {
         translations={translations?.data?.items}
         setOpen={setOpen}
       />
-      {translations?.data?.totalPages > 1 && (
-        <Pagination
-          total={translations?.data?.totalItems}
-          pageSize={translations?.data?.itemsPerPage}
-          onChange={handlePaginationChange}
-          hideOnSinglePage={true}
-          current={translations?.data?.PageIndex}
-        />
-      )}
+      <Pagination
+        total={translations?.data?.totalItems}
+        pageSize={translations?.data?.itemsPerPage}
+        onChange={handlePaginationChange}
+        hideOnSinglePage={true}
+        current={translations?.data?.PageIndex}
+      />
+
       <TranslationActionForm
         handleSubmitTranslation={handleSubmitTranslation}
         form={form}

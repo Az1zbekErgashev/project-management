@@ -11,7 +11,6 @@ import {
   TableDetail,
   Translations,
 } from 'pages';
-import StateManagement from 'pages/Admin/components/StateManagement';
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import ProtectedUserRoute from 'routes/ProtectedUserRoutes';
 
@@ -36,7 +35,6 @@ export const router = createBrowserRouter([
       { path: '/users', element: <AdminUsers /> },
       { path: '/requests', element: <Request /> },
       { path: '/deleted-requests', element: <DeletedRequests /> },
-      { path: '/state-management', element: <StateManagement /> },
       { path: '/translations', element: <Translations /> },
       { path: '/profile', element: <Profile /> },
       { path: '/logs', element: <Logs /> },

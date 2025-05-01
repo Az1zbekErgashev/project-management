@@ -2,6 +2,7 @@ import styled from 'styled-components';
 
 export const StyledRequestList = styled.div`
   &.deleted-requests {
+    margin-bottom: 70px !important;
     padding-top: 0px;
 
     .deleted-request-tab {
@@ -29,25 +30,6 @@ export const StyledRequestList = styled.div`
         background-color: rgba(15, 10, 10, 0.85) !important;
       }
     }
-  }
-
-  .ant-table-body::-webkit-scrollbar {
-    height: 8px;
-    width: 8px;
-  }
-
-  .ant-table-body::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-  }
-
-  .ant-table-body::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
-  }
-
-  .ant-table-body::-webkit-scrollbar-thumb:hover {
-    background: #555;
   }
 
   .header-line {

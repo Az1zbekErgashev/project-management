@@ -9,6 +9,7 @@ import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { ColorPicker, Form, Modal } from 'antd';
 import { StyledTranslation } from '../Translations/styled';
+import { useSearchParams } from 'react-router-dom';
 
 const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
   cancelText: t('cancel'),
@@ -21,14 +22,15 @@ const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => 
 });
 
 export function RequestStatusPage() {
-  const [open, setOpen] = useState<{ open: boolean; type: 'ADD' | 'EDIT'; translation: any }>({
+  const [open, setOpen] = useState<{ open: boolean; type: 'ADD' | 'EDIT'; status: any }>({
     open: false,
     type: 'ADD',
-    translation: null,
+    status: null,
   });
+  const [searchParams, _] = useSearchParams();
   const [queryParams, setQueryParams] = useState<{ pageIndex: number; pageSize: number }>({
-    pageIndex: 1,
-    pageSize: 10,
+    pageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
   });
   const [color, setColor] = useState<string>('#1677ff');
   const [coniformModal, setConiformModal] = useState<any>(null);
@@ -64,7 +66,7 @@ export function RequestStatusPage() {
             type="primary"
             label={t('edit')}
             icon={<SvgSelector id="edit" />}
-            onClick={() => setOpen({ type: 'EDIT', open: true, translation: record })}
+            onClick={() => setOpen({ type: 'EDIT', open: true, status: record })}
           />
         </div>
       ),
@@ -98,12 +100,49 @@ export function RequestStatusPage() {
     },
   });
 
+  const { refetch: deleteRequest } = useQueryApiClient({
+    request: {
+      url: `/api/processingstatus?id=${id}`,
+      method: 'DELETE',
+    },
+    onSuccess() {
+      refetch();
+    },
+  });
+
+  const { appendData: createData } = useQueryApiClient({
+    request: {
+      url: '/api/processingstatus',
+      method: 'POST',
+    },
+    onSuccess() {
+      refetch();
+    },
+  });
+  const { appendData: updateData } = useQueryApiClient({
+    request: {
+      url: '/api/processingstatus',
+      method: 'PUT',
+    },
+    onSuccess() {
+      refetch();
+    },
+  });
+
   useEffect(() => {
     refetch();
   }, [queryParams]);
 
+  useEffect(() => {
+    if (id) {
+      deleteRequest();
+      setId(null);
+      setConiformModal(null);
+    }
+  }, [id]);
+
   const handleClose = () => {
-    setOpen({ open: false, type: 'ADD', translation: null });
+    setOpen({ open: false, type: 'ADD', status: null });
     form.resetFields();
     setColor('#1677ff');
   };
@@ -111,34 +150,46 @@ export function RequestStatusPage() {
   const handleSubmit = () => {
     form
       .validateFields()
-      .then((res) => {})
+      .then((res) => {
+        if (open.type == 'ADD') {
+          createData({ text: res.text, color: res.color.toHexString() });
+        } else {
+          updateData({ text: res.text, color: res.color.toHexString(), id: open?.status?.id });
+        }
+        handleClose();
+      })
       .catch((e) => {
         return;
       });
   };
 
+  useEffect(() => {
+    if (open.type === 'EDIT') {
+      form.setFieldsValue({ ...open.status });
+      setColor(open?.status?.color || '#1677ff');
+    }
+  }, [open]);
+
   return (
     <StyledRequestStatusPage>
       <div className="header-line">
-        <h1 className="global-title">{t('translations')}</h1>
+        <h1 className="global-title">{t('statuses')}</h1>
         <Button
           label={t('add_request_status')}
           type="primary"
-          onClick={() => setOpen({ type: 'ADD', open: true, translation: null })}
+          onClick={() => setOpen({ type: 'ADD', open: true, status: null })}
         />
       </div>
 
       <div className="table-div">
         <Table columns={columns} dataSource={requestStatus?.data?.items || null} />
-        {requestStatus?.data?.totalPages > 1 && (
-          <Pagination
-            total={requestStatus?.data?.totalItems}
-            pageSize={requestStatus?.data?.itemsPerPage}
-            onChange={handlePaginationChange}
-            hideOnSinglePage={true}
-            current={requestStatus?.data?.PageIndex}
-          />
-        )}
+        <Pagination
+          total={requestStatus?.data?.totalItems}
+          pageSize={requestStatus?.data?.itemsPerPage}
+          onChange={handlePaginationChange}
+          hideOnSinglePage={true}
+          current={requestStatus?.data?.PageIndex}
+        />
       </div>
 
       <Modal
@@ -149,8 +200,8 @@ export function RequestStatusPage() {
         footer={null}
         width={700}
       >
-        <StyledTranslation>
-          <Form className="action-form" form={form} layout="vertical">
+        <StyledTranslation className="statuses">
+          <Form className="action-form " form={form} layout="vertical">
             <div className="inputs">
               <Input
                 allowClear

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 export const StyledRequestStatusPage = styled.div`
+  margin-bottom: 70px !important;
   .header-line {
     display: flex;
     align-items: center;

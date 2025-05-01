@@ -1,6 +1,11 @@
 import styled from 'styled-components';
 
 export const StyledTranslation = styled.div`
+  margin-bottom: 70px !important;
+
+  &.statuses {
+    margin-bottom: 0px !important;
+  }
   .header-line {
     display: flex;
     align-items: center;

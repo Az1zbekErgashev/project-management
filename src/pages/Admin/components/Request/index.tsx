@@ -10,7 +10,7 @@ import axios from 'axios';
 import { routes } from 'config/config';
 import { RequestFilter } from './components/RequestFilter';
 import UploadModal from './components/Upload/upload';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import useJwt from 'utils/useJwt';
 import { useLanguage } from 'contexts/LanguageContext';
 
@@ -24,7 +24,11 @@ interface queryParamsType {
 
 export function Request() {
   const { t } = useTranslation();
-  const [queryparams, setQueryParams] = useState<queryParamsType>({ PageIndex: 1, PageSize: 10 });
+  const [searchParams, _] = useSearchParams();
+  const [queryparams, setQueryParams] = useState<queryParamsType>({
+    PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+  });
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
   const navigate = useNavigate();
@@ -139,7 +143,6 @@ export function Request() {
           <RequestList
             setQueryParams={setQueryParams}
             requests={requests?.data || []}
-            categories={categories?.data || []}
             isRequestsLoading={isRequestsLoading}
           />
 

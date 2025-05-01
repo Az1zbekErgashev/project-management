@@ -6,6 +6,7 @@ import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
 import { LogsFilter } from './components/LogsFilter';
 import dayjs, { Dayjs } from 'dayjs';
+import { useSearchParams } from 'react-router-dom';
 
 interface initalQuery {
   PageIndex: number;
@@ -18,7 +19,11 @@ interface initalQuery {
 }
 
 export function Logs() {
-  const [queryParams, setQueryParams] = useState<initalQuery>({ PageIndex: 1, PageSize: 10 });
+  const [searchParams, _] = useSearchParams();
+  const [queryParams, setQueryParams] = useState<initalQuery>({
+    PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+  });
   const { t } = useTranslation();
   const { refetch: getLogs, data: logs } = useQueryApiClient({
     request: {
@@ -55,15 +60,13 @@ export function Logs() {
       </div>
       <LogsFilter handleFilterChange={handleFilterChange} />
       <LogsList logs={logs} />
-      {logs?.data?.totalPages > 1 && (
-        <Pagination
-          total={logs?.data?.totalItems}
-          pageSize={logs?.data?.itemsPerPage}
-          onChange={handlePaginationChange}
-          hideOnSinglePage={true}
-          current={logs?.data?.PageIndex}
-        />
-      )}
+      <Pagination
+        total={logs?.data?.totalItems}
+        pageSize={logs?.data?.itemsPerPage}
+        onChange={handlePaginationChange}
+        hideOnSinglePage={true}
+        current={logs?.data?.PageIndex}
+      />
     </div>
   );
 }

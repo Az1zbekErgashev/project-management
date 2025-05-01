@@ -17,10 +17,9 @@ interface Props {
   isRequestsLoading: boolean;
   requests: RequestItems;
   setQueryParams: any;
-  categories: { id: number; title: string }[];
 }
 
-export function RequestList({ isRequestsLoading, requests, categories, setQueryParams }: Props) {
+export function RequestList({ isRequestsLoading, requests, setQueryParams }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
