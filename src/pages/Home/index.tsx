@@ -18,8 +18,6 @@ interface CategoryStatusData {
   [key: string]: string | number;
 }
 
-
-
 interface StatusChartData {
   name: string;
   value: number;
@@ -31,26 +29,61 @@ interface ComparisonChartData {
   [category: string]: string | number;
 }
 
+interface ReasonChartData {
+  name: string;
+  약이즈스본트: number;
+  대티스토: number;
+  약이즈스토: number;
+}
+
 interface TabData {
   key: string;
   label: string;
 }
 
+type ReasonKey =
+  | 'Failed(입찰실주)'
+  | 'Failed(높은견적)'
+  | 'Failed(인력부족)'
+  | '당사Dropped(인력부족)'
+  | '당사Dropped(1인요청)'
+  | '당사Dropped(저단가)'
+  | '고객Dropped(고객입찰실주)'
+  | '고객Dropped(고객내부사정)';
+
+const REASONS: ReasonKey[] = [
+  'Failed(입찰실주)',
+  'Failed(높은견적)',
+  'Failed(인력부족)',
+  '당사Dropped(인력부족)',
+  '당사Dropped(1인요청)',
+  '당사Dropped(저단가)',
+  '고객Dropped(고객입찰실주)',
+  '고객Dropped(고객내부사정)',
+];
+
+const CATEGORY_COLORS: Record<string, string> = {
+  약이즈스본트: '#4CAF50', // Green
+  대티스토: '#FF6B6B',     // Red
+  약이즈스토: '#2196F3',   // Blue
+};
+
 export function Dashboard(): JSX.Element {
   const { t } = useTranslation();
 
-  const [activeTab, setActiveTab] = useState<string>('2'); // Set to second tab by default
+  const [activeTab, setActiveTab] = useState<string>('2');
   const tabs: TabData[] = [
     { key: '1', label: t('first_step_dashboard') },
     { key: '2', label: t('second_step_dashboard') },
+    { key: '3', label: t('reason_analysis_dashboard') },
   ];
 
   const statusColors: Record<string, string> = {
-    Made: '#4CAF50', // Green
-    Failed: '#FF6B6B', // Red
-    'On-going': '#2196F3', // Blue
-    'On-Hold': '#FFA726', // Orange
-    Dropped: '#9C27B0', // Purple
+    Made: '#4CAF50',
+    Failed: '#FF6B6B',
+    'On-going': '#2196F3',
+    'On-Hold': '#FFA726',
+    Dropped: '#9C27B0',
   };
 
   const statusKeys = ['Made', 'Failed', 'On-going', 'On-Hold', 'Dropped'];
@@ -74,6 +107,42 @@ export function Dashboard(): JSX.Element {
       });
       return result;
     });
+  };
+
+  // Fetch reason analysis data from the API
+  const { data: reasonData } = useQueryApiClient({
+    request: {
+      url: '/api/request/reason-analysis',
+      method: 'GET',
+    },
+  });
+
+  console.log('Reason Data from API:', reasonData);
+
+  const getReasonsData = (): ReasonChartData[] => {
+    // If API data is not available, use mock data for testing
+    if (!reasonData?.data) {
+      console.log('No API data, using mock data for reasons chart');
+      return REASONS.map((reason, index) => ({
+        name: reason,
+        약이즈스본트: Math.floor(Math.random() * 5) + 1,
+        대티스토: Math.floor(Math.random() * 5) + 1,
+        약이즈스토: Math.floor(Math.random() * 5) + 1,
+      }));
+    }
+
+    const transformedData = REASONS.map((reason) => {
+      const reasonEntry = reasonData.data.find((item: any) => item.reason === reason);
+      return {
+        name: reason,
+        약이즈스본트: reasonEntry?.약이즈스본트 ?? 0,
+        대티스토: reasonEntry?.대티스토 ?? 0,
+        약이즈스토: reasonEntry?.약이즈스토 ?? 0,
+      };
+    });
+
+    console.log('Transformed Reasons Data:', transformedData);
+    return transformedData;
   };
 
   const { data: procentData } = useQueryApiClient({
@@ -107,7 +176,9 @@ export function Dashboard(): JSX.Element {
       return (
         <div className="custom-tooltip">
           <p className="label">{`${label}`}</p>
-          <p className="value">{`Count: ${payload[0].value}`}</p>
+          {payload.map((entry, index) => (
+            <p key={index} className="value">{`${entry.name}: ${entry.value}`}</p>
+          ))}
         </div>
       );
     }
@@ -239,6 +310,36 @@ export function Dashboard(): JSX.Element {
                         fill={`hsl(${index * 60}, 70%, 60%)`}
                       />
                     ))}
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === '3' && (
+          <div className="chart-container">
+            <div className="charts-section">
+              <div className="comparison-chart">
+                <ResponsiveContainer width="100%" height={400}>
+                  <BarChart
+                    data={getReasonsData()}
+                    layout="vertical"
+                    margin={{
+                      top: 20,
+                      right: 30,
+                      left: 100,
+                      bottom: 5,
+                    }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                    <XAxis type="number" />
+                    <YAxis dataKey="name" type="category" width={100} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Legend />
+                    <Bar dataKey="약이즈스본트" fill={CATEGORY_COLORS.약이즈스본트} />
+                    <Bar dataKey="대티스토" fill={CATEGORY_COLORS.대티스토} />
+                    <Bar dataKey="약이즈스토" fill={CATEGORY_COLORS.약이즈스토} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
