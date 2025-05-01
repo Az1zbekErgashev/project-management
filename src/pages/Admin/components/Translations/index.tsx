@@ -187,6 +187,7 @@ export function Translations() {
         open={open}
         handleClose={handleClose}
       />
+
       {coniformModal && <ConfirmModal {...coniformModal} />}
     </StyledTranslation>
   );

@@ -35,8 +35,8 @@ export function TranslationActionForm({ form, open, handleClose, handleSubmitTra
       footer={null}
       width={700}
     >
-      <StyledTranslation>
-        <Form className="action-form" form={form} layout="vertical">
+      <StyledTranslation className="translation-modal">
+        <Form className="action-form " form={form} layout="vertical">
           <Input
             onKeyDown={handleKeyPress}
             name="key"
