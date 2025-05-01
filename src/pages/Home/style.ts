@@ -138,81 +138,267 @@ export const StyledHomePage = styled.div`
     font-weight: 500;
   }
 
-  /* Chart tabs */
-  .chart-tabs {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-bottom: 15px !important;
-    overflow-x: auto;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
-  }
-
-  .chart-tab {
-    padding: 8px 15px;
-    background: none;
-    border: none;
-    border-bottom: 2px solid transparent;
-    cursor: pointer;
-    font-size: 14px;
-    color: #666;
-    white-space: nowrap;
-    transition: all 0.2s;
-  }
-
-  .chart-tab.active {
-    border-bottom: 2px solid #2196f3;
-    color: #2196f3;
-    font-weight: 500;
-  }
-
-  .chart-tab:hover:not(.active) {
-    color: #2196f3;
-    background-color: rgba(33, 150, 243, 0.05);
-  }
-
-  /* Chart type selector */
-  .chart-type-selector {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
-
-  .chart-type-btn {
-    padding: 6px 12px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 13px;
-    color: #666;
-    transition: all 0.2s;
-  }
-
-  .chart-type-btn.active {
-    background-color: #2196f3;
-    color: white;
-    border-color: #2196f3;
-  }
-
-  .chart-type-btn:hover:not(.active) {
-    background-color: #e0e0e0;
-  }
-
-  /* Chart container */
-  .chart-container {
-    background-color: white;
-    border-radius: 8px;
+  .dashboard {
     padding: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    margin-bottom: 30px !important;
-  }
 
-  .pie-chart {
-    width: 100%;
-    height: 700px;
-    display: flex;
-    justify-content: center;
+    .dashboard-header {
+      margin-bottom: 20px;
+
+      h1 {
+        font-size: 24px;
+        font-weight: 700;
+        margin: 0;
+      }
+    }
+
+    .metric-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 30px;
+
+      .metric-card {
+        flex: 1;
+        min-width: 200px;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+        .metric-title {
+          font-size: 14px;
+          color: #666;
+          margin-bottom: 10px;
+        }
+
+        .metric-value {
+          font-size: 24px;
+          font-weight: 700;
+          color: #333;
+          margin-bottom: 5px;
+        }
+
+        .metric-subtitle {
+          font-size: 14px;
+          color: #888;
+        }
+      }
+    }
+
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 30px 0 15px;
+    }
+
+    .status-tables {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-bottom: 30px;
+
+      .status-table {
+        flex: 1;
+        min-width: 250px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+
+        .table-header {
+          display: flex;
+          justify-content: space-between;
+          padding: 15px;
+          background-color: #f5f5f5;
+          border-bottom: 1px solid #e0e0e0;
+
+          .table-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+          }
+        }
+
+        .status-rows {
+          padding: 10px 15px;
+
+          .status-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #f0f0f0;
+
+            &:last-child {
+              border-bottom: none;
+            }
+
+            .status-name {
+              font-weight: 500;
+            }
+
+            .status-value {
+              font-weight: 600;
+            }
+          }
+        }
+      }
+    }
+
+    .chart-tabs {
+      margin-bottom: 20px;
+
+      div {
+        display: flex;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .chart-tab {
+        padding: 10px 20px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        color: #666;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: #333;
+        }
+
+        &.active {
+          color: #2196f3;
+          border-bottom-color: #2196f3;
+        }
+      }
+    }
+
+    .chart-container {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+    }
+
+    .charts-section {
+      .charts-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 15px;
+        color: #333;
+      }
+
+      .company-charts {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-bottom: 30px;
+
+        @media (max-width: 768px) {
+          flex-direction: column;
+        }
+
+        .chart-card {
+          flex: 1;
+          min-width: 300px;
+          background-color: #fff;
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+          overflow: hidden;
+
+          .chart-header {
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-bottom: 1px solid #e0e0e0;
+
+            h4 {
+              margin: 0;
+              font-size: 16px;
+              font-weight: 600;
+              color: #333;
+            }
+
+            p {
+              margin: 5px 0 0;
+              font-size: 14px;
+              color: #666;
+            }
+          }
+
+          .chart-content {
+            padding: 15px;
+          }
+        }
+      }
+
+      .comparison-table-container {
+        margin-bottom: 30px;
+        overflow-x: auto;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+        .comparison-table {
+          width: 100%;
+          border-collapse: collapse;
+
+          th,
+          td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+          }
+
+          th {
+            background-color: #f5f5f5;
+            font-weight: 600;
+            color: #333;
+          }
+
+          .status-cell {
+            font-weight: 600;
+          }
+
+          .total-row {
+            font-weight: 600;
+            background-color: #f9f9f9;
+
+            td {
+              border-top: 2px solid #e0e0e0;
+            }
+          }
+        }
+      }
+
+      .comparison-chart {
+        margin-bottom: 30px;
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 15px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      }
+    }
+
+    .custom-tooltip {
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+      .label {
+        font-weight: 600;
+        margin: 0 0 5px;
+      }
+
+      .value {
+        margin: 0;
+        color: #666;
+      }
+    }
   }
 `;
