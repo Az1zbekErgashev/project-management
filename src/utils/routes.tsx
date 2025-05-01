@@ -7,6 +7,7 @@ import {
   Logs,
   Profile,
   Request,
+  RequestStatusPage,
   TableDetail,
   Translations,
 } from 'pages';
@@ -41,6 +42,7 @@ export const router = createBrowserRouter([
       { path: '/logs', element: <Logs /> },
       { path: '/add-requests', element: <TableDetail /> },
       { path: '/request-detail/:id', element: <TableDetail /> },
+      { path: '/statuses', element: <RequestStatusPage /> },
     ],
   },
 ]);

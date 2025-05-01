@@ -286,3 +286,25 @@ tbody {
 .ant-select-arrow {
   top: 40% !important;
 }
+
+.ant-color-picker-inner {
+  .ant-color-picker-operation,
+  .ant-color-picker-input-container,
+  .ant-color-picker-input,
+  .ant-select-selection-item {
+    display: none !important;
+  }
+
+  .ant-color-picker-slider-container {
+    margin-top: 10px !important;
+  }
+}
+
+.ant-color-picker-color-block-inner {
+  box-shadow: none !important;
+}
+
+.ant-color-picker-trigger {
+  min-height: 30px !important;
+  width: 100%;
+}

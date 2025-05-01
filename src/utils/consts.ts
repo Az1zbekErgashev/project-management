@@ -22,6 +22,7 @@ export const ADMIN_NAVIGATE: adminNavigate[] = [
   // { key: 'issue_management', path: '/issue-management', icon: 'issue-management' },
   { key: 'logs', path: '/logs', icon: 'logs' },
   { key: 'translations', path: '/translations', icon: 'translations' },
+  { key: 'statuses', path: '/statuses', icon: 'statuses' },
 ];
 
 export const EMPLOYEE_NAVIGATE: adminNavigate[] = [
@@ -62,44 +63,33 @@ export const PROJECT_STATUS = [
   {
     id: 0,
     text: 'Failed',
-    backgroundColor: '#ff4d4f', 
-    color: '#FF6B6B', 
+    backgroundColor: '#ff4d4f',
+    color: '#FF6B6B',
   },
   {
     id: 1,
     text: 'Made',
     backgroundColor: '#52c41a',
-    color: '#4CAF50', 
+    color: '#4CAF50',
   },
   {
     id: 2,
     text: 'On-going',
     backgroundColor: '#1890ff',
-    color: '#2196F3', 
+    color: '#2196F3',
   },
   {
     id: 3,
     text: 'On-hold',
     backgroundColor: '#fa8c16',
-    color: '#FFA726', 
+    color: '#FFA726',
   },
   {
     id: 4,
     text: 'Dropped',
-    backgroundColor: '#bfbfbf', 
-    color: '#9C27B0', 
+    backgroundColor: '#bfbfbf',
+    color: '#9C27B0',
   },
-];
-
-export const PROCESSING_STATUS = [
-  { id: 0, text: 'Failed(입찰실주)' },
-  { id: 1, text: 'Failed(높은견적)' },
-  { id: 2, text: 'Failed(인력부족)' },
-  { id: 3, text: '당사Dropped(인력부족)' },
-  { id: 4, text: '당사Dropped(1인요청)' },
-  { id: 5, text: '당사Dropped(저단가)' },
-  { id: 6, text: '고객Dropped(고객입찰실주)' },
-  { id: 7, text: '고객Dropped(고객내부사정)' },   
 ];
 
 export const defaultImageUrl =

@@ -47,4 +47,38 @@ export const StyledTranslation = styled.div`
 
     margin-top: 20px !important;
   }
+
+  .color-picker {
+    input {
+      height: 30px !important;
+      font-size: 0.7777777rem;
+      color: var(--text-color);
+      font-family: var(--default-font);
+      font-style: normal;
+      font-weight: 500;
+      line-height: 1.55556rem;
+      width: 100%;
+
+      &::-webkit-input-placeholder {
+        font-family: var(--default-font);
+        font-size: 0.777777rem;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 1.55556rem;
+        color: #cacaca;
+      }
+    }
+    .ant-form-item-explain-error {
+      font-size: 0.8889rem;
+    }
+
+    .ant-input-affix-wrapper {
+      padding: 0 10px;
+      font-size: 0.777777rem;
+    }
+
+    .ant-select-selection-item {
+      display: none !important;
+    }
+  }
 `;

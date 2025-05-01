@@ -4,7 +4,7 @@ import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import { PROCESSING_STATUS, PROJECT_STATUS } from 'utils/consts';
+import { PROJECT_STATUS } from 'utils/consts';
 import { CloseCircleOutlined, FileDoneOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { routes } from 'config/config';
@@ -89,6 +89,13 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
     return `${(size / 1024 / 1024).toFixed(1)} MB`;
   };
 
+  const { data: processingData, isLoading: isProcessingLoading } = useQueryApiClient({
+    request: {
+      url: '/api/processingstatus?PageIndex=1&PageSize=1000000000',
+      method: 'GET',
+    },
+  });
+
   return (
     <StyledInputSelection>
       <div className="form-div">
@@ -129,19 +136,20 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
             <div className="form-group">
               <h3>{t('status')}</h3>
 
-                <div className="category">
+              <div className="category">
                 <Select
+                  loading={isProcessingLoading}
                   disabled={disable}
                   label={t('processing_status')}
                   name="processingStatus"
                 >
-                  {PROCESSING_STATUS.map((item: any) => (
-                    <SelectOption value={item.text} key={item.id}>
+                  {processingData?.data?.items?.map((item: any) => (
+                    <SelectOption value={item.id} key={item.id}>
                       {t(item.text)}
                     </SelectOption>
                   ))}
                 </Select>
-              </div>              
+              </div>
               <div className="category">
                 <Select
                   disabled={disable}
@@ -171,7 +179,6 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
                 </Select>
               </div>
             </div>
-  
           </div>
         </div>
 
@@ -206,57 +213,56 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
             )}
           </div>
         </div>
-        
       </div>
-      <div className='upload-container'>
-      <div className="form-group upload-group">
-              <div className="upload-container">
+      <div className="upload-container">
+        <div className="form-group upload-group">
+          <div className="upload-container">
+            {(fileList || filePath) && (
+              <Tooltip
+                color="#ffffff"
+                style={{ color: 'black' }}
+                placement="top"
+                title={<span style={{ color: 'var(--black)' }}>{t('delete_attachment')}</span>}
+                trigger={'hover'}
+              >
+                <button
+                  disabled={disable}
+                  onClick={() => {
+                    setFileList(null);
+                    setFilePath(null);
+                  }}
+                  className="delete-svg"
+                >
+                  <CloseCircleOutlined />
+                </button>
+              </Tooltip>
+            )}
+            <Upload disabled={disable || !!filePath} onChange={handleChange}>
+              <div className={!fileList && !filePath ? 'upload-form big' : 'upload-form small'}>
+                <FileDoneOutlined />
                 {(fileList || filePath) && (
-                  <Tooltip
-                    color="#ffffff"
-                    style={{ color: 'black' }}
-                    placement="top"
-                    title={<span style={{ color: 'var(--black)' }}>{t('delete_attachment')}</span>}
-                    trigger={'hover'}
-                  >
-                    <button
-                      disabled={disable}
-                      onClick={() => {
-                        setFileList(null);
-                        setFilePath(null);
-                      }}
-                      className="delete-svg"
-                    >
-                      <CloseCircleOutlined />
-                    </button>
-                  </Tooltip>
-                )}
-                <Upload disabled={disable || !!filePath} onChange={handleChange}>
-                  <div className={!fileList && !filePath ? 'upload-form big' : 'upload-form small'}>
-                    <FileDoneOutlined />
-                    {(fileList || filePath) && (
-                      <div className="file_name">
-                        {fileList ? (
-                          <>
-                            <div>
-                              <span>{fileList?.name}</span>
-                            </div>
-                            <div>
-                              <span>{formatSize(fileList?.size || 0)}</span>
-                            </div>
-                          </>
-                        ) : (
-                          <Button
-                            type="link"
-                            onClick={() => window.open(`${routes.api.baseUrl}/${filePath}`, '_blank')}
-                            label={t('view_file')}
-                          />
-                        )}
-                      </div>
+                  <div className="file_name">
+                    {fileList ? (
+                      <>
+                        <div>
+                          <span>{fileList?.name}</span>
+                        </div>
+                        <div>
+                          <span>{formatSize(fileList?.size || 0)}</span>
+                        </div>
+                      </>
+                    ) : (
+                      <Button
+                        type="link"
+                        onClick={() => window.open(`${routes.api.baseUrl}/${filePath}`, '_blank')}
+                        label={t('view_file')}
+                      />
                     )}
                   </div>
-                </Upload>
+                )}
               </div>
+            </Upload>
+          </div>
         </div>
       </div>
     </StyledInputSelection>

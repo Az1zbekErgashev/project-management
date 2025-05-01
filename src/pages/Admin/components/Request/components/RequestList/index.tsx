@@ -2,11 +2,11 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Button, Popover, Tooltip } from 'antd';
+import { Button, Popover } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import { PROCESSING_STATUS, PROJECT_STATUS } from 'utils/consts';
+import { PROJECT_STATUS } from 'utils/consts';
 import { RequestItems, RequestModel } from './type';
 import { useNavigate } from 'react-router-dom';
 
@@ -172,14 +172,13 @@ export function RequestList({ isRequestsLoading, requests, categories, setQueryP
     },
     {
       title: t('processing_status'),
-      dataIndex: 'processingStatus',
+      dataIndex: ['processingStatus', 'text'],
       key: 'processingStatus',
       width: '200px',
       render: (_, record) => {
-        const processingStatus = PROCESSING_STATUS.find(
-          (item) => item?.text?.toLowerCase() === record?.processingStatus?.toLowerCase()
-        );
-        return processingStatus ? <span key={processingStatus.id}>{t(processingStatus.text)}</span> : null;
+        return record?.processingStatus ? (
+          <span style={{ color: record.processingStatus?.color }}>{t(record?.processingStatus?.text)}</span>
+        ) : null;
       },
     },
     {

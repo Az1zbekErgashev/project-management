@@ -12,7 +12,7 @@ export interface RequestModel {
   client?: string; // Клиент
   contactNumber?: string; // Контактный номер
   email?: string; // Электронная почта
-  processingStatus?: string; // Статус обработки
+  processingStatus?: { text: string; color: string }; // Статус обработки
   finalResult?: string; // Итоговый результат
   notes?: string; // Примечания (причина итогового результата)
   requestStatus?: RequestStatusModel | null;

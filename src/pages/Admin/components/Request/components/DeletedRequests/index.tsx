@@ -149,6 +149,17 @@ export function DeletedRequests() {
         ) : null;
       },
     },
+    {
+      title: t('processing_status'),
+      dataIndex: ['processingStatus', 'text'],
+      key: 'processingStatus',
+      width: '200px',
+      render: (_, record) => {
+        return record?.processingStatus ? (
+          <span style={{ color: record.processingStatus?.color }}>{t(record?.processingStatus?.text)}</span>
+        ) : null;
+      },
+    },
   ];
 
   const {

@@ -7,3 +7,4 @@ export { Profile } from './Profile';
 export { DeletedRequests } from './Admin/components/Request/components/DeletedRequests';
 export { Dashboard } from './Home';
 export { TableDetail } from './Admin/components/Request/components/TableDetails';
+export { RequestStatusPage } from './Admin/components/RequestStatus';
