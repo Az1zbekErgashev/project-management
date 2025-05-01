@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
-import { Button, Drawer, Form, Table } from 'antd';
+import { Button, Table } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
 import useQueryApiClient from 'utils/useQueryApiClient';
-import dayjs from 'dayjs';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestFilter } from '../RequestFilter';
 import Tooltip from 'antd/lib/tooltip';
@@ -40,20 +39,6 @@ export function DeletedRequests() {
       dataIndex: 'date',
       key: 'date',
       fixed: 'left',
-      render: (date: string) => {
-        if (!date) return '-';
-        return dayjs(date).format('YYYY-MM-DD');
-      },
-    },
-    {
-      title: t('updatedAt'),
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      fixed: 'left',
-      render: (updatedAt: string) => {
-        if (!updatedAt) return '-';
-        return dayjs.utc(updatedAt).tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm:ss');
-      },
     },
     {
       title: t('inquiry_type'),

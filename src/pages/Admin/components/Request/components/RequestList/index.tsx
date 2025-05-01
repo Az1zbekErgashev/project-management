@@ -33,20 +33,6 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: Pro
       dataIndex: 'date',
       key: 'date',
       fixed: 'left',
-      render: (date: string) => {
-        if (!date) return '-';
-        return dayjs(date).format('YYYY-MM-DD');
-      },
-    },
-    {
-      title: t('updatedAt'),
-      dataIndex: 'updatedAt',
-      key: 'updatedAt',
-      fixed: 'left',
-      render: (updatedAt: string) => {
-        if (!updatedAt) return '-';
-        return dayjs.utc(updatedAt).tz(dayjs.tz.guess()).format('YYYY-MM-DD HH:mm:ss');
-      },
     },
     {
       title: t('inquiry_type'),
