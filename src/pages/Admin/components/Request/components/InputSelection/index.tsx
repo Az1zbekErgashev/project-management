@@ -127,7 +127,6 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
           <div className="form-cont">
             <div className="form-group">
               <h3>{t('internal_assignment')}</h3>
-              <Input name="companyName" disabled={disable} label={t('company_name')} />
               <Input name="department" disabled={disable} label={t('department')} />
               <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
             </div>

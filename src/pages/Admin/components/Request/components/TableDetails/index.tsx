@@ -11,6 +11,7 @@ import { TFunction } from 'i18next';
 import { CommentsSection } from 'components/Comments';
 import { HistorySection } from 'components';
 import dayjs from 'dayjs';
+import { smoothScroll } from 'utils/globalFunctions';
 
 const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
   cancelText: t('cancel'),
@@ -107,6 +108,10 @@ export function TableDetail() {
     },
   ];
 
+  useEffect(() => {
+    smoothScroll('top', 0);
+  }, []);
+
   return (
     <StyledTableDetail>
       <div className="table-detail">
@@ -126,7 +131,14 @@ export function TableDetail() {
         </div>
 
         <Form form={form} layout="vertical" className="form">
-          <InputSelection setFilePath={setFilePath} filePath={filePath} request={request} setDisable={setDisable} disable={disable} form={form} />
+          <InputSelection
+            setFilePath={setFilePath}
+            filePath={filePath}
+            request={request}
+            setDisable={setDisable}
+            disable={disable}
+            form={form}
+          />
         </Form>
         <br />
         {!window.location.pathname.includes('/add-requests') && (

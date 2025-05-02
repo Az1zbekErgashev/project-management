@@ -13,6 +13,26 @@ export const StyledHomePage = styled.div`
     margin-bottom: 20px !important;
   }
 
+  .chart-tabs {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px !important;
+    overflow-x: auto;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+
+    .ant-select {
+      width: 150px;
+    }
+  }
+
+  .select-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
   .dashboard-header h1 {
     font-size: 24px;
     font-weight: 600;

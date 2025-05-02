@@ -1,22 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyledHomePage } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { useTranslation } from 'react-i18next';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-
-interface CategoryStatusData {
-  CategoryId: number;
-  Category: string;
-  Made: number;
-  Failed: number;
-  'On-going': number;
-  'On-Hold': number;
-  Dropped: number;
-  [key: string]: string | number;
-}
+import { Select } from 'antd';
 
 interface StatusChartData {
   name: string;
@@ -24,16 +14,24 @@ interface StatusChartData {
   color: string;
 }
 
+const months = [
+  { value: '01', label: 'January' },
+  { value: '02', label: 'February' },
+  { value: '03', label: 'March' },
+  { value: '04', label: 'April' },
+  { value: '05', label: 'May' },
+  { value: '06', label: 'June' },
+  { value: '07', label: 'July' },
+  { value: '08', label: 'August' },
+  { value: '09', label: 'September' },
+  { value: '10', label: 'October' },
+  { value: '11', label: 'November' },
+  { value: '12', label: 'December' },
+];
+
 interface ComparisonChartData {
   name: string;
   [category: string]: string | number;
-}
-
-interface ReasonChartData {
-  name: string;
-  약이즈스본트: number;
-  대티스토: number;
-  약이즈스토: number;
 }
 
 interface TabData {
@@ -41,37 +39,19 @@ interface TabData {
   label: string;
 }
 
-type ReasonKey =
-  | 'Failed(입찰실주)'
-  | 'Failed(높은견적)'
-  | 'Failed(인력부족)'
-  | '당사Dropped(인력부족)'
-  | '당사Dropped(1인요청)'
-  | '당사Dropped(저단가)'
-  | '고객Dropped(고객입찰실주)'
-  | '고객Dropped(고객내부사정)';
-
-const REASONS: ReasonKey[] = [
-  'Failed(입찰실주)',
-  'Failed(높은견적)',
-  'Failed(인력부족)',
-  '당사Dropped(인력부족)',
-  '당사Dropped(1인요청)',
-  '당사Dropped(저단가)',
-  '고객Dropped(고객입찰실주)',
-  '고객Dropped(고객내부사정)',
-];
-
 const CATEGORY_COLORS: Record<string, string> = {
-  약이즈스본트: '#4CAF50', // Green
-  대티스토: '#FF6B6B',     // Red
-  약이즈스토: '#2196F3',   // Blue
+  와이즈스톤티: '#52E452',
+  ICT연구소: '#E0E052',
+  '마케팅본부(STF팀)': '#52E0E0',
+  더테스트: '#E05252',
 };
 
 export function Dashboard(): JSX.Element {
   const { t } = useTranslation();
+  const [selectedYear, setSelectedYear] = useState();
+  const [selectedMonth, setSelectedMonth] = useState();
 
-  const [activeTab, setActiveTab] = useState<string>('2');
+  const [activeTab, setActiveTab] = useState<string>('1');
   const tabs: TabData[] = [
     { key: '1', label: t('first_step_dashboard') },
     { key: '2', label: t('second_step_dashboard') },
@@ -109,41 +89,12 @@ export function Dashboard(): JSX.Element {
     });
   };
 
-  // Fetch reason analysis data from the API
-  const { data: reasonData } = useQueryApiClient({
+  const { data: reasonData, refetch: getLineChart } = useQueryApiClient({
     request: {
-      url: '/api/request/reason-analysis',
+      url: `/api/request/request-line-chart?year=${selectedYear}&month=${selectedMonth}`,
       method: 'GET',
     },
   });
-
-  console.log('Reason Data from API:', reasonData);
-
-  const getReasonsData = (): ReasonChartData[] => {
-    // If API data is not available, use mock data for testing
-    if (!reasonData?.data) {
-      console.log('No API data, using mock data for reasons chart');
-      return REASONS.map((reason, index) => ({
-        name: reason,
-        약이즈스본트: Math.floor(Math.random() * 5) + 1,
-        대티스토: Math.floor(Math.random() * 5) + 1,
-        약이즈스토: Math.floor(Math.random() * 5) + 1,
-      }));
-    }
-
-    const transformedData = REASONS.map((reason) => {
-      const reasonEntry = reasonData.data.find((item: any) => item.reason === reason);
-      return {
-        name: reason,
-        약이즈스본트: reasonEntry?.약이즈스본트 ?? 0,
-        대티스토: reasonEntry?.대티스토 ?? 0,
-        약이즈스토: reasonEntry?.약이즈스토 ?? 0,
-      };
-    });
-
-    console.log('Transformed Reasons Data:', transformedData);
-    return transformedData;
-  };
 
   const { data: procentData } = useQueryApiClient({
     request: {
@@ -159,9 +110,15 @@ export function Dashboard(): JSX.Element {
     },
   });
 
-  const { data: pieChartData } = useQueryApiClient({
+  const { data: pieChartData, refetch: getPieChart } = useQueryApiClient({
     request: {
-      url: `/api/request/request-pie-chart`,
+      url: `/api/request/request-pie-chart?year=${selectedYear}&month=${selectedMonth}`,
+    },
+  });
+
+  const { data: yearData } = useQueryApiClient({
+    request: {
+      url: `/api/request/request-status-years`,
     },
   });
 
@@ -184,6 +141,22 @@ export function Dashboard(): JSX.Element {
     }
     return null;
   };
+
+  useEffect(() => {
+    if (selectedYear || selectedMonth) {
+      getPieChart();
+      getLineChart();
+    }
+  }, [selectedYear, selectedMonth]);
+
+  const getDataKeys = (data: any[]) => {
+    if (!data || data.length === 0) return [];
+
+    const firstItem = data[0];
+    return Object.keys(firstItem).filter((key) => key !== 'name');
+  };
+
+  const dataKeys = getDataKeys(reasonData?.data);
 
   return (
     <StyledHomePage>
@@ -242,6 +215,24 @@ export function Dashboard(): JSX.Element {
                 {tab.label}
               </button>
             ))}
+          </div>
+          <div className='select-wrap'>
+            <Select value={selectedMonth} onChange={(x: any) => setSelectedMonth(x)} defaultValue={null}>
+              {months?.map((item: any, index: number) => (
+                <Select.Option value={item.value} key={index}>
+                  {item.label}
+                </Select.Option>
+              ))}
+              <Select.Option value={null}>{t('all_month')}</Select.Option>
+            </Select>
+            <Select value={selectedYear} onChange={(x: any) => setSelectedYear(x)} defaultValue={null}>
+              {yearData?.data?.map((item: any, index: number) => (
+                <Select.Option value={item} key={index}>
+                  {item}
+                </Select.Option>
+              ))}
+              <Select.Option value={null}>{t('all_year')}</Select.Option>
+            </Select>
           </div>
         </div>
 
@@ -323,7 +314,7 @@ export function Dashboard(): JSX.Element {
               <div className="comparison-chart">
                 <ResponsiveContainer width="100%" height={400}>
                   <BarChart
-                    data={getReasonsData()}
+                    data={reasonData?.data}
                     layout="vertical"
                     margin={{
                       top: 20,
@@ -337,9 +328,9 @@ export function Dashboard(): JSX.Element {
                     <YAxis dataKey="name" type="category" width={100} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
-                    <Bar dataKey="약이즈스본트" fill={CATEGORY_COLORS.약이즈스본트} />
-                    <Bar dataKey="대티스토" fill={CATEGORY_COLORS.대티스토} />
-                    <Bar dataKey="약이즈스토" fill={CATEGORY_COLORS.약이즈스토} />
+                    {dataKeys.map((key, index) => (
+                      <Bar key={key} dataKey={key} fill={CATEGORY_COLORS[key] || `hsl(${index * 45}, 70%, 50%)`} />
+                    ))}
                   </BarChart>
                 </ResponsiveContainer>
               </div>
