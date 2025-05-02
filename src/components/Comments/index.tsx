@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Avatar, Button, Input, Typography, Space, InputRef } from 'antd';
+import { Avatar, Button, Input, Typography, Space, InputRef, Modal } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 dayjs.extend(relativeTime);
 
 const { Text, Paragraph } = Typography;
+const { confirm } = Modal;
 
 interface User {
   id: number;
@@ -104,8 +105,19 @@ export function CommentsSection({ requestId }: any) {
     setEditingComment(null);
   };
 
-  const deleteComment = (id: number) => {
-    handleDelete(id);
+  const showDeleteConfirm = (id: number) => {
+    confirm({
+      title: t('delete_comment_confirmation'),
+      content: t('are_you_sure_delete_comment'),
+      okText: t('yes'),
+      okType: 'danger',
+      cancelText: t('no'),
+      onOk() {
+        handleDelete(id);
+      },
+      onCancel() {
+      },
+    });
   };
 
   const handleCreateComment = () => {
@@ -154,7 +166,7 @@ export function CommentsSection({ requestId }: any) {
                         type="text"
                         icon={<DeleteOutlined />}
                         className="comment-delete-btn"
-                        onClick={() => deleteComment(comment.id)}
+                        onClick={() => showDeleteConfirm(comment.id)}
                         danger
                       />
                     </div>
@@ -209,7 +221,7 @@ export function CommentsSection({ requestId }: any) {
                             type="text"
                             icon={<DeleteOutlined />}
                             className="comment-delete-btn"
-                            onClick={() => deleteComment(reply.id)}
+                            onClick={() => showDeleteConfirm(reply.id)}
                             danger
                           />
                         )}
@@ -218,7 +230,7 @@ export function CommentsSection({ requestId }: any) {
 
                     {reply.parentCommentId && (
                       <Text type="secondary" className="reply-to-text">
-                        {t('replying_to')}&nbsp;&nbsp;
+                        {t('replying_to')}  
                         {findParentComment(reply.parentCommentId)?.user.email || 'Unknown'}
                       </Text>
                     )}
@@ -255,7 +267,7 @@ export function CommentsSection({ requestId }: any) {
           <div className="reply-form-container">
             <div className="reply-form-content">
               <Text type="secondary" className="reply-form-label">
-                {t('replying_to')}&nbsp;&nbsp;<Text strong>{replyingTo.email}</Text>
+                {t('replying_to')}  <Text strong>{replyingTo.email}</Text>
               </Text>
               <Space className="reply-form-actions">
                 <Input
