@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Avatar, Button, Input, Typography, Space } from 'antd';
+import { useState, useRef, useEffect } from 'react';
+import { Avatar, Button, Input, Typography, Space, InputRef } from 'antd';
 import { DeleteOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -45,6 +45,19 @@ export function CommentsSection({ requestId }: any) {
   const [editingComment, setEditingComment] = useState<{ id: number; text: string } | null>(null);
   const { user } = useUser();
   const { t } = useTranslation();
+
+  const replyInputRef = useRef<InputRef>(null);
+  const newCommentInputRef = useRef<InputRef>(null);
+
+  useEffect(() => {
+    if (replyingTo) {
+      setTimeout(() => {
+        replyInputRef.current?.focus();
+      }, 100);
+    } else {
+      newCommentInputRef.current?.focus();
+    }
+  }, [replyingTo]);
 
   const formatDate = (dateString: string) => {
     try {
@@ -100,6 +113,21 @@ export function CommentsSection({ requestId }: any) {
     setNewComment('');
   };
 
+  const handleReplyClick = (commentId: number, email: string) => {
+    setReplyingTo({ id: commentId, email });
+    smoothScroll('bottom', 0);
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      if (replyingTo) {
+        handleReply();
+      } else {
+        handleCreateComment();
+      }
+    }
+  };
+
   return (
     <StyledCommentsSection>
       <div className="comments-container">
@@ -122,12 +150,6 @@ export function CommentsSection({ requestId }: any) {
                   </div>
                   {user?.id === comment?.user?.id && (
                     <div className="comment-actions">
-                      {/* <Button
-                        type="text"
-                        icon={<EditOutlined />}
-                        className="comment-edit-btn"
-                        onClick={() => handleEditComment(comment.id, comment.text)}
-                      /> */}
                       <Button
                         type="text"
                         icon={<DeleteOutlined />}
@@ -157,10 +179,7 @@ export function CommentsSection({ requestId }: any) {
                 <Button
                   type="link"
                   className="comment-reply-btn"
-                  onClick={() => {
-                    setReplyingTo({ id: comment.id, email: comment.user.email });
-                    smoothScroll('bottom', 0);
-                  }}
+                  onClick={() => handleReplyClick(comment.id, comment.user.email)}
                 >
                   {t('reply')}
                 </Button>
@@ -185,12 +204,6 @@ export function CommentsSection({ requestId }: any) {
                         </Text>
                       </div>
                       <div className="comment-actions">
-                        {/* <Button
-                          type="text"
-                          icon={<EditOutlined />}
-                          className="comment-edit-btn"
-                          onClick={() => handleEditComment(reply.id, reply.text)}
-                        /> */}
                         {user?.id === reply?.user?.id && (
                           <Button
                             type="text"
@@ -228,10 +241,7 @@ export function CommentsSection({ requestId }: any) {
                     <Button
                       type="link"
                       className="comment-reply-btn"
-                      onClick={() => {
-                        setReplyingTo({ id: reply.id, email: reply.user.email });
-                        smoothScroll('bottom', 0);
-                      }}
+                      onClick={() => handleReplyClick(reply.id, reply.user.email)}
                     >
                       {t('reply')}
                     </Button>
@@ -249,12 +259,14 @@ export function CommentsSection({ requestId }: any) {
               </Text>
               <Space className="reply-form-actions">
                 <Input
+                  ref={replyInputRef}
                   value={replyText}
                   onChange={(e) => setReplyText(e.target.value)}
                   placeholder={t('write_reply')}
                   className="reply-form-input"
+                  onKeyDown={handleKeyDown}
                 />
-                <Button onClick={cancelReply}>Cancel</Button>
+                <Button onClick={cancelReply}>{t('cancel')}</Button>
                 <Button type="primary" onClick={handleReply}>
                   {t('reply')}
                 </Button>
@@ -266,10 +278,12 @@ export function CommentsSection({ requestId }: any) {
             <div className="reply-form-content">
               <Space className="reply-form-actions">
                 <Input
+                  ref={newCommentInputRef}
                   value={newComment}
                   onChange={(e) => setNewComment(e.target.value)}
                   placeholder={t('write_new_comment')}
                   className="reply-form-input"
+                  onKeyDown={handleKeyDown}
                 />
                 <Button type="primary" onClick={handleCreateComment}>
                   {t('submit')}
