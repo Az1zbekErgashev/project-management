@@ -11,10 +11,26 @@ export const StyledHomePage = styled.div`
 
   .dashboard-header {
     margin-bottom: 20px !important;
-    padding: 5px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    background-color: white;
+  }
+
+  .chart-tabs {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 15px !important;
+    overflow-x: auto;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+
+    .ant-select {
+      width: 150px;
+    }
+  }
+
+  .select-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   .dashboard-header h1 {
@@ -30,9 +46,6 @@ export const StyledHomePage = styled.div`
     font-weight: 600;
     margin: 30px 0 15px !important;
     text-align: center;
-    padding: 5px;
-    border-radius: 8px;
-    background-color: white;
   }
 
   /* Metric cards */
@@ -43,25 +56,13 @@ export const StyledHomePage = styled.div`
     justify-content: center;
     margin-bottom: 30px !important;
   }
- 
+
   .table-header {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     justify-content: space-between;
     padding-bottom: 20px;
-  }
-
-  /* ONLY CHANGE: Added blue background to All Requests card */
-  .metric-card:first-child {
-    background-color:rgb(20, 41, 65); 
-    border-left: 4px solid #2196f3; 
-  }
-
-  .metric-card:second-child {
-    background-color:rgb(20, 41, 65); 
-    border-left: 4px solid #2196f3; 
-
   }
 
   .metric-card {
@@ -75,7 +76,6 @@ export const StyledHomePage = styled.div`
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: 10px;
     transition:
       transform 0.2s,
       box-shadow 0.2s;
@@ -86,32 +86,22 @@ export const StyledHomePage = styled.div`
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  .metric-card {
-    max-width: 370px;
-    height: 180px;
-  }
-
   .metric-title {
+    font-size: 14px;
     color: #666;
     margin-bottom: 10px !important;
-    font-weight: 700;
-    font-size: 26px;
   }
 
   .metric-value {
-    font-size: 20px;
+    font-size: 28px;
     font-weight: 600;
-    color: #666;
+    color: #2196f3;
     margin-bottom: 5px !important;
   }
 
   .metric-subtitle {
-    font-size: 18px;
-    color: #666;
-    font-weight: bold;
-    padding: 6px 12px;
-    border-radius: 8px;
-    background-color: #f5f5f5; 
+    font-size: 12px;
+    color: #999;
   }
 
   /* Status tables */
@@ -134,22 +124,16 @@ export const StyledHomePage = styled.div`
       box-shadow 0.2s;
   }
 
-  .all-requests-table {
-    max-width: 370px;
-  }
-
   .status-table:hover {
     transform: translateY(-3px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
   .table-title {
-    font-size: 26px;
+    font-size: 16px;
     font-weight: 500;
     margin-bottom: 15px;
-    font-weight: 700;
     text-align: center;
-    color: #666;
   }
 
   .status-rows {
@@ -200,29 +184,23 @@ export const StyledHomePage = styled.div`
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        gap: 15px;
 
         .metric-title {
+          font-size: 14px;
           color: #666;
           margin-bottom: 10px;
-          font-weight: 700;
-          font-size: 26px;
         }
 
         .metric-value {
-          font-size: 20px;
-          font-weight: 600;
-          color: #666;
+          font-size: 24px;
+          font-weight: 700;
+          color: #333;
           margin-bottom: 5px;
         }
 
         .metric-subtitle {
-          font-size: 18px;
-          color: #666;
-          font-weight: bold;
-          padding: 6px 12px;
-          border-radius: 8px;
-          background-color: #f5f5f5; 
+          font-size: 14px;
+          color: #888;
         }
       }
     }
@@ -442,5 +420,12 @@ export const StyledHomePage = styled.div`
         color: #666;
       }
     }
+  }
+
+  .recharts-default-legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
   }
 `;

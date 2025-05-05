@@ -9,7 +9,7 @@ import UsersFilter from './components/UsersFilter';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { TFunction } from 'i18next';
-import { Drawer, Form } from 'antd';
+import { Form } from 'antd';
 import { UserInformation } from './components/UserInformation';
 import { useSearchParams } from 'react-router-dom';
 
