@@ -215,8 +215,12 @@ export function Dashboard(): JSX.Element {
               <div className="metric-title">
                 {metric.categoryText === 'all_requests' ? t('all_requests') : metric.categoryText}
               </div>
-              <div className="metric-value">{t('total_percent')} {metric.procent}%</div>
-              <div className="metric-subtitle">{t('total')} {metric.total}</div>
+              <div className="metric-value">
+                {t('total_percent')} {metric.procent}%
+              </div>
+              <div className="metric-subtitle">
+                {t('total')} {metric.total}
+              </div>
             </div>
           ))}
         </div>

@@ -87,8 +87,9 @@ export const StyledHomePage = styled.div`
   }
 
   .metric-title {
-    font-size: 14px;
+    font-size: 16px;
     color: #666;
+    font-weight: 800;
     margin-bottom: 10px !important;
   }
 
@@ -149,13 +150,14 @@ export const StyledHomePage = styled.div`
   }
 
   .status-name {
-    font-size: 14px;
+    font-size: 16px;
     cursor: pointer;
+    font-weight: 800 !important;
   }
 
   .status-value {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 16px;
+    font-weight: 800 !important;
   }
 
   .dashboard {
