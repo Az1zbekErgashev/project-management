@@ -13,6 +13,7 @@ import {
   Legend,
   Line,
   LineChart,
+  Rectangle,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -173,7 +174,7 @@ export function Dashboard(): JSX.Element {
     if (!data || data.length === 0) return [];
 
     const firstItem = data[0];
-    return Object.keys(firstItem).filter((key) => key !== 'name');
+    return Object.keys(firstItem).filter((key) => key !== 'name' && key !== 'color');
   };
 
   const statusLabels = {
@@ -186,6 +187,21 @@ export function Dashboard(): JSX.Element {
 
   const dataKeys = getDataKeys(reasonData?.data);
   type StatusKey = keyof typeof statusLabels;
+
+  const CustomYAxisTick = (props: any) => {
+    const { x, y, payload, data } = props;
+
+    const dataEntry = data.find((entry: any) => entry.name === payload.value);
+    const textColor = dataEntry?.color || '#000';
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={0} y={0} dy={3} textAnchor="end" fill={textColor} style={{ fontWeight: 'bold' }}>
+          {payload.value}
+        </text>
+      </g>
+    );
+  };
 
   return (
     <StyledHomePage>
@@ -365,10 +381,15 @@ export function Dashboard(): JSX.Element {
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" width={100} />
+                    <YAxis
+                      dataKey="name"
+                      type="category"
+                      width={100}
+                      tick={<CustomYAxisTick data={reasonData?.data} />}
+                    />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
-                    {dataKeys.map((key, index) => (
+                    {dataKeys?.map((key, index) => (
                       <Bar key={key} dataKey={key} fill={CATEGORY_COLORS[key] || `hsl(${index * 45}, 70%, 50%)`} />
                     ))}
                   </BarChart>

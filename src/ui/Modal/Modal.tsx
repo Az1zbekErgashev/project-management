@@ -19,7 +19,8 @@ export interface ModalProps {
   getContainer?: string | false | HTMLElement | undefined;
   destroyOnClose?: boolean;
   centered?: boolean;
-  closable?:boolean;
+  closable?: boolean;
+  className?: string;
 }
 
 export const Modal = ({
@@ -38,7 +39,8 @@ export const Modal = ({
   getContainer,
   destroyOnClose,
   centered,
-  closable
+  closable,
+  className,
 }: ModalProps) => {
   useEffect(() => {
     if (open) {
@@ -65,6 +67,7 @@ export const Modal = ({
       destroyOnClose={destroyOnClose}
       centered={centered}
       closable={closable}
+      className={className}
     >
       {children}
     </AntdModal>

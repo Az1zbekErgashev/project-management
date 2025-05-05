@@ -25,15 +25,23 @@ interface initalQuery {
 
 const createModalConfig = (
   t: TFunction,
-  isDelete: 'DELETE' | 'RECOVER',
+  isDelete: 'DELETE' | 'RECOVER' | 'HARD',
   onConfirm: () => void,
   onCancel: () => void
 ) => ({
   isDelete,
   cancelText: t('cancel'),
-  confirmText: t(isDelete === 'DELETE' ? 'delete_user' : 'recover_user'),
-  title: t(isDelete === 'DELETE' ? 'delete_user_title' : 'recover_user_title'),
-  content: t(isDelete === 'DELETE' ? 'delete_user_description' : 'recover_user_description'),
+  confirmText: t(isDelete === 'DELETE' ? 'delete_user' : isDelete == 'RECOVER' ? 'recover_user' : 'hard_delete'),
+  title: t(
+    isDelete === 'DELETE' ? 'delete_user_title' : isDelete == 'RECOVER' ? 'recover_user_title' : 'hard_delete_title'
+  ),
+  content: t(
+    isDelete === 'DELETE'
+      ? 'delete_user_description'
+      : isDelete == 'RECOVER'
+        ? 'recover_user_description'
+        : 'hard_user_description'
+  ),
   open: true,
   onConfirm,
   onCancel,
@@ -47,7 +55,7 @@ export function AdminUsers() {
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
   });
   const [coniformModal, setConiformModal] = useState<any>(null);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [userId, setUserId] = useState<{ id: number; status: boolean } | null>(null);
   const [open, setOpen] = useState<{ type: 'VIEW' | 'ADD' | 'EDIT'; user: any }>({
     type: 'ADD',
     user: null,
@@ -55,13 +63,13 @@ export function AdminUsers() {
   const [drawerStatus, setDrawerStatus] = useState<boolean>(false);
   const [form] = Form.useForm();
 
-  const handleDelete = (id: number, type: 'DELETE' | 'RECOVER') => {
+  const handleDelete = (id: number, type: 'DELETE' | 'RECOVER' | 'HARD') => {
     setConiformModal(
       createModalConfig(
         t,
         type,
         () => {
-          setUserId(id);
+          setUserId({ id: id, status: type == 'HARD' ? true : false });
         },
         () => {
           setConiformModal(null);
@@ -72,7 +80,7 @@ export function AdminUsers() {
 
   const { refetch: deleteUser } = useQueryApiClient({
     request: {
-      url: `/api/user/delete?userId=${userId}`,
+      url: `/api/user/delete?userId=${userId?.id}&isHardDelete=${userId?.status}`,
       method: 'DELETE',
     },
     onSuccess(response) {
@@ -213,7 +221,14 @@ export function AdminUsers() {
       />
 
       {coniformModal && <ConfirmModal {...coniformModal} />}
-      <Modal footer={null} width={600} onCancel={onClose} centered={true} open={drawerStatus}>
+      <Modal
+        className="user-information-modal"
+        footer={null}
+        width={600}
+        onCancel={onClose}
+        centered={true}
+        open={drawerStatus}
+      >
         <UserInformation
           getUsers={getUsers}
           handleDelete={handleDelete}

@@ -308,3 +308,9 @@ tbody {
   min-height: 30px !important;
   width: 100%;
 }
+
+.user-information-modal {
+  .ant-modal-content {
+    padding: 50px;
+  }
+}

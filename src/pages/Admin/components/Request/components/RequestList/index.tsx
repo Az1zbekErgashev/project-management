@@ -145,8 +145,8 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: Pro
             key={status.id}
             style={{
               color: status.color,
-              fontSize: '14px',
-              fontWeight: '600',
+              fontSize: '16px',
+              fontWeight: '800',
               textAlign: 'center',
             }}
           >
@@ -162,7 +162,11 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: Pro
       width: '200px',
       render: (_, record) => {
         return record?.processingStatus ? (
-          <span style={{ color: record.processingStatus?.color }}>{t(record?.processingStatus?.text)}</span>
+          <span
+            style={{ color: record.processingStatus?.color, fontSize: '16px', fontWeight: '800', textAlign: 'center' }}
+          >
+            {t(record?.processingStatus?.text)}
+          </span>
         ) : null;
       },
     },

@@ -23,7 +23,7 @@ interface props {
   >;
   onClose: () => void;
   form: FormInstance;
-  handleDelete: (id: number, type: 'DELETE' | 'RECOVER') => void;
+  handleDelete: (id: number, type: 'DELETE' | 'RECOVER' | 'HARD') => void;
   getUsers: () => void;
 }
 
@@ -204,8 +204,10 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
     }
   }, [open]);
 
-  const handleDeleteUser = () => {
-    if (open.user.isDeleted === 0) {
+  const handleDeleteUser = (type?: string) => {
+    if (type === 'HARD') {
+      handleDelete(open?.user?.id, 'HARD');
+    } else if (open.user.isDeleted === 0) {
       handleDelete(open?.user?.id, 'DELETE');
     } else {
       handleDelete(open?.user?.id, 'RECOVER');
@@ -374,13 +376,22 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
             <>
               <Button label={t('cancel')} onClick={onClose} type="default" className="cancel-button" />
               {user.id != open?.user?.id && (
-                <Button
-                  danger
-                  label={open?.user?.isDeleted === 0 ? t('delete') : t('recover')}
-                  onClick={handleDeleteUser}
-                  className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
-                  type="primary"
-                />
+                <>
+                  <Button
+                    danger
+                    label={open?.user?.isDeleted === 0 ? t('delete') : t('recover')}
+                    onClick={() => handleDeleteUser()}
+                    className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+                    type="primary"
+                  />
+                  <Button
+                    danger
+                    label={t('hard_delete')}
+                    onClick={() => handleDeleteUser('HARD')}
+                    className={open?.user?.isDeleted === 0 ? 'delete-button' : 'recover-button'}
+                    type="primary"
+                  />
+                </>
               )}
             </>
           )}
