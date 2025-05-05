@@ -38,7 +38,13 @@ export function RequestStatusPage() {
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const columns = [
-    { title: t('id'), dataIndex: 'id', key: 'id' },
+    {
+      title: t('id'),
+      dataIndex: 'id',
+      key: 'id',
+      render: (_: any, record: any, index: number) =>
+        (requestStatus?.data?.pageIndex - 1) * requestStatus?.data?.itemsPerPage + index + 1,
+    },
     { title: t('color_title'), dataIndex: 'text', key: 'text' },
     {
       title: t('color'),
