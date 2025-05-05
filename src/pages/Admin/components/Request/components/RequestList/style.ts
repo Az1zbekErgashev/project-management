@@ -42,6 +42,12 @@ export const StyledRequestList = styled.div`
     display: flex;
   }
 
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
   .filter-btn {
     border-radius: 5px;
   }

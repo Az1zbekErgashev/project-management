@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
 import { Button, Table, Checkbox } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -11,6 +11,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { smoothScroll } from 'utils/globalFunctions';
 import Pagination from 'ui/Pagination/Pagination';
 import { useSearchParams } from 'react-router-dom';
+import { Notification } from 'ui';
 
 interface queryParamsType {
   PageSize: number;
@@ -25,11 +26,15 @@ interface queryParamsType {
 export function DeletedRequests() {
   const { t } = useTranslation();
   const [searchParams, _] = useSearchParams();
+  const [isDeleting, setIsDeleting] = useState(false);
+
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
     IsDeleted: 1,
   });
+  const [selectedIds, setSelectedIds] = useState<number[]>([]); // State for selected rows
+
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
   };
@@ -40,7 +45,15 @@ export function DeletedRequests() {
       key: 'checkbox',
       fixed: 'left',
       width: 50,
-      render: (_, record) => <Checkbox />,
+      render: (_, record) => (
+        <Checkbox
+          checked={selectedIds.includes(record.id)} // Assuming `id` is the unique identifier
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setSelectedIds((prev) => (checked ? [...prev, record.id] : prev.filter((id) => id !== record.id)));
+          }}
+        />
+      ),
     },
     {
       title: t('createdAt'),
@@ -169,15 +182,73 @@ export function DeletedRequests() {
   const {
     data: requests,
     isLoading: isRequestsLoading,
-    appendData: postRequest,
+    appendData: getRequests, // Renamed for consistency
   } = useQueryApiClient({
     request: {
-      url: '/api/request/requets',
+      url: '/api/request/requets', // Note: Typo in 'requets', should be 'requests'
       method: 'GET',
       data: queryparams,
       disableOnMount: true,
     },
   });
+
+  const { refetch: handleDelete } = useQueryApiClient({
+    request: {
+      url: '/api/request/delete-deleted-request',
+      method: 'DELETE',
+      data: selectedIds,
+    },
+    onSuccess: () => {
+      Notification({ type: 'info', text: t('request_deleted') });
+      setQueryParams((res) => ({ ...res }));
+      setSelectedIds([]);
+    },
+    onError: () => {
+      Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+  });
+
+  const { refetch: handleRecover } = useQueryApiClient({
+    request: {
+      url: '/api/request/soft-recover-open-request',
+      method: 'DELETE',
+      data: selectedIds,
+    },
+    onSuccess: () => {
+      Notification({ type: 'info', text: t('request_deleted') });
+      setQueryParams((res) => ({ ...res }));
+      setSelectedIds([]);
+    },
+    onError: () => {
+      Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+  });
+
+  const handleRecoverSelected = useCallback(async () => {
+    if (selectedIds.length === 0) return;
+    setIsDeleting(true);
+    try {
+      await handleRecover();
+    } catch (error) {
+      console.error('Recovery failed:', error);
+      // Notification.error(t('failed_to_delete_requests'));
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [selectedIds, handleRecover]);
+
+  const handleHardDelete = useCallback(async () => {
+    if (selectedIds.length === 0) return;
+    setIsDeleting(true);
+    try {
+      await handleDelete();
+    } catch (error) {
+      console.error('Deletion failed:', error);
+      // Notification.error(t('failed_to_delete_requests'));
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [selectedIds, handleDelete]);
 
   const handleFilterChange = (changedValue: any) => {
     setQueryParams((res) => ({
@@ -187,7 +258,7 @@ export function DeletedRequests() {
   };
 
   useEffect(() => {
-    postRequest(queryparams);
+    getRequests(queryparams);
   }, [queryparams]);
 
   const { data: categories } = useQueryApiClient({
@@ -206,6 +277,31 @@ export function DeletedRequests() {
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
+        
+      <div className='header-actions'>
+      {selectedIds.length > 0 && (
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleRecoverSelected()}
+            loading={isDeleting}
+            style={{ marginLeft: 'auto' }}
+          >
+            {t('Recover')}
+          </Button>
+        )}
+        {selectedIds.length > 0 && (
+          <Button
+            type="primary"
+            danger
+            onClick={() => handleHardDelete()}
+            loading={isDeleting}
+            style={{ marginLeft: 'auto' }}
+          >
+            {t('delete_selected')}
+          </Button>
+        )}
+      </div>
       </div>
       <RequestFilter categories={categories} handleFilterChange={handleFilterChange} isDeleted={1} />
       <Table

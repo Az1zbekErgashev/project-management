@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { RequestList } from './components/RequestList';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
-import { Button, Spinner, Modal } from 'ui';
+import { Button, Spinner, Modal, Notification } from 'ui';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
@@ -24,18 +24,21 @@ interface queryParamsType {
 
 export function Request() {
   const { t } = useTranslation();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
   });
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [isDeleting, setIsDeleting] = useState(false);
   const navigate = useNavigate();
   const [showUpload, setShowUpload] = useState(false);
   const { getHeader } = useJwt();
   const { language } = useLanguage();
   const getToken = getHeader();
+
   const {
     data: requests,
     isLoading: isRequestsLoading,
@@ -49,25 +52,52 @@ export function Request() {
     },
   });
 
-  const handlePaginationChange = (page: number, pageSize: number) => {
-    smoothScroll('top', 0);
-    setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
-  };
+  const { refetch: handleDelete } = useQueryApiClient({
+    request: {
+      url: '/api/request/soft-delete-open-request',
+      method: 'DELETE',
+      data: selectedIds,
+    },
+    onSuccess: () => {
+      Notification({ type: 'info', text: t('request_deleted') });
+      getRequests();
+      setSelectedIds([]);
+    },
+    onError: () => {
+      Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+  });
 
-  const handleFilterChange = (changedValue: any) => {
-    setQueryParams((res) => ({
-      ...res,
+  const handleDeleteSelected = useCallback(async () => {
+    if (selectedIds.length === 0) return;
+    setIsDeleting(true);
+    try {
+      await handleDelete();
+    } catch (error) {
+      console.error('Deletion failed:', error);
+      // Notification.error(t('failed_to_delete_requests'));
+    } finally {
+      setIsDeleting(false);
+    }
+  }, [selectedIds, handleDelete]);
+
+  const handlePaginationChange = useCallback((page: number, pageSize: number) => {
+    smoothScroll('top', 0);
+    setQueryParams((prev) => ({ ...prev, PageIndex: page, PageSize: pageSize }));
+  }, []);
+
+  const handleFilterChange = useCallback((changedValue: Partial<queryParamsType>) => {
+    setQueryParams((prev) => ({
+      ...prev,
       ...changedValue,
     }));
-  };
+  }, []);
 
   useEffect(() => {
-    postRequest({
-      ...queryparams,
-    });
+    postRequest({ ...queryparams });
   }, [queryparams]);
 
-  const handleDownload = async () => {
+  const handleDownload = useCallback(async () => {
     setIsFileLoading(true);
     try {
       const response = await axios.get(`${routes.api.baseUrl}/api/request/export-excel?languageId=${language}`, {
@@ -80,18 +110,18 @@ export function Request() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const a = document.createElement('a');
       a.href = url;
-      a.download = `${queryparams.RequestTitle == undefined ? 'All' : queryparams.RequestTitle}.xlsx`;
-      document?.body?.appendChild(a);
+      a.download = `${queryparams.RequestTitle ?? 'All'}.xlsx`;
+      document.body.appendChild(a);
       a.click();
-      if (document.body.contains(a)) {
-        document.body.removeChild(a);
-      }
+      document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     } catch (error) {
+      console.error('Download failed:', error);
+      // message.error(t('failed_to_download'));
     } finally {
       setIsFileLoading(false);
     }
-  };
+  }, [queryparams, language, getToken, t]);
 
   const { data: categories } = useQueryApiClient({
     request: {
@@ -107,11 +137,19 @@ export function Request() {
           <Spinner spinning={true} />
         </div>
       ) : (
-        // Show the main RequestList view
         <React.Fragment>
           <div className="header-line">
             <h1 className="global-title">{t('manage_requests')}</h1>
             <div className="upload-download">
+              {selectedIds.length > 0 && (
+                <Button
+                  label={t('delete')}
+                  type="primary"
+                  onClick={handleDeleteSelected}
+                  loading={isDeleting}
+                  disabled={isDeleting}
+                />
+              )}
               <Button label={t('upload')} type="primary" onClick={() => setShowUpload(true)} />
               <Modal
                 footer={null}
@@ -129,9 +167,9 @@ export function Request() {
                   onClose={() => setShowUpload(false)}
                 />
               </Modal>
-              <Button className={'down-upload'} label={t('download')} type="primary" onClick={handleDownload} />
+              <Button className="down-upload" label={t('download')} type="primary" onClick={handleDownload} />
               <Button
-                className={'down-upload'}
+                className="down-upload"
                 label={t('add_new_request')}
                 type="primary"
                 onClick={() => navigate('/add-requests')}
@@ -139,19 +177,19 @@ export function Request() {
             </div>
           </div>
           <RequestFilter categories={categories} handleFilterChange={handleFilterChange} isDeleted={0} />
-
           <RequestList
             setQueryParams={setQueryParams}
-            requests={requests?.data || []}
+            requests={requests?.data || { items: [], totalItems: 0, itemsPerPage: 10, PageIndex: 1 }}
             isRequestsLoading={isRequestsLoading}
+            setSelectedIds={setSelectedIds}
+            selectedIds={selectedIds}
           />
-
           <Pagination
-            total={requests?.data?.totalItems}
-            pageSize={requests?.data?.itemsPerPage}
+            total={requests?.data?.totalItems ?? 0}
+            pageSize={requests?.data?.itemsPerPage ?? 10}
             onChange={handlePaginationChange}
             hideOnSinglePage={true}
-            current={requests?.data?.PageIndex}
+            current={requests?.data?.PageIndex ?? 1}
           />
         </React.Fragment>
       )}
