@@ -186,6 +186,9 @@ export const StyledHomePage = styled.div`
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        &:first-child {
+          background-color:rgb(164, 198, 229);
+        }
 
         .metric-title {
           font-size: 14px;
@@ -226,6 +229,9 @@ export const StyledHomePage = styled.div`
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        &:first-child {
+          background-color: green;
+        }
 
         .table-header {
           display: flex;
