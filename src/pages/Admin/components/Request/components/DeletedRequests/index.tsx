@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
-import { Button, Table } from 'antd';
+import { Button, Table, Checkbox } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
@@ -11,6 +11,7 @@ import Tooltip from 'antd/lib/tooltip';
 import { smoothScroll } from 'utils/globalFunctions';
 import Pagination from 'ui/Pagination/Pagination';
 import { useSearchParams } from 'react-router-dom';
+
 interface queryParamsType {
   PageSize: number;
   PageIndex: number;
@@ -34,6 +35,13 @@ export function DeletedRequests() {
   };
 
   const columns: ColumnsType<RequestModel> = [
+    {
+      title: '',
+      key: 'checkbox',
+      fixed: 'left',
+      width: 50,
+      render: (_, record) => <Checkbox />,
+    },
     {
       title: t('createdAt'),
       dataIndex: 'date',

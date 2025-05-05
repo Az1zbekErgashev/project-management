@@ -2,7 +2,7 @@ import React from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Button, Popover } from 'antd';
+import { Button, Popover, Checkbox } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -28,6 +28,13 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams }: Pro
   };
 
   const columns: ColumnsType<RequestModel> = [
+    {
+      title: '',
+      key: 'checkbox',
+      fixed: 'left',
+      width: 50,
+      render: (_, record) => <Checkbox />,
+    },
     {
       title: t('createdAt'),
       dataIndex: 'date',
