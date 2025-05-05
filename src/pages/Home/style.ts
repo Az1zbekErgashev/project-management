@@ -312,8 +312,8 @@ export const StyledHomePage = styled.div`
       }
 
       .company-charts {
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
         gap: 20px;
         margin-bottom: 30px;
 
