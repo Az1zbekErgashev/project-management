@@ -5,7 +5,19 @@ import { StyledHomePage } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { useTranslation } from 'react-i18next';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
 import { Select } from 'antd';
 
 interface StatusChartData {
@@ -49,13 +61,14 @@ const CATEGORY_COLORS: Record<string, string> = {
 export function Dashboard(): JSX.Element {
   const { t } = useTranslation();
   const [selectedYear, setSelectedYear] = useState();
-  const [selectedMonth, setSelectedMonth] = useState();
-
+  const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
+  const [selectedStatus, setSelectedStatus] = useState<string>('Made');
   const [activeTab, setActiveTab] = useState<string>('1');
   const tabs: TabData[] = [
     { key: '1', label: t('first_step_dashboard') },
     { key: '2', label: t('second_step_dashboard') },
     { key: '3', label: t('reason_analysis_dashboard') },
+    { key: '4', label: t('line_analysis_dashboard') },
   ];
 
   const statusColors: Record<string, string> = {
@@ -122,6 +135,12 @@ export function Dashboard(): JSX.Element {
     },
   });
 
+  const { data: lineData, refetch: getLineData } = useQueryApiClient({
+    request: {
+      url: `/api/request/request-line-by-status-chart?year=${selectedYear}&status=${selectedStatus}`,
+    },
+  });
+
   interface CustomTooltipProps {
     active?: boolean;
     payload?: Array<{ value: number; name: string }>;
@@ -146,6 +165,7 @@ export function Dashboard(): JSX.Element {
     if (selectedYear || selectedMonth) {
       getPieChart();
       getLineChart();
+      getLineData();
     }
   }, [selectedYear, selectedMonth]);
 
@@ -156,7 +176,16 @@ export function Dashboard(): JSX.Element {
     return Object.keys(firstItem).filter((key) => key !== 'name');
   };
 
+  const statusLabels = {
+    Made: 'Made',
+    'On-hold': 'On-hold',
+    'On-going': 'On-going',
+    Dropped: 'Dropped',
+    Failed: 'Failed',
+  } as const;
+
   const dataKeys = getDataKeys(reasonData?.data);
+  type StatusKey = keyof typeof statusLabels;
 
   return (
     <StyledHomePage>
@@ -216,15 +245,26 @@ export function Dashboard(): JSX.Element {
               </button>
             ))}
           </div>
-          <div className='select-wrap'>
-            <Select value={selectedMonth} onChange={(x: any) => setSelectedMonth(x)} defaultValue={null}>
-              {months?.map((item: any, index: number) => (
-                <Select.Option value={item.value} key={index}>
-                  {item.label}
-                </Select.Option>
-              ))}
-              <Select.Option value={null}>{t('all_month')}</Select.Option>
-            </Select>
+          <div className="select-wrap">
+            {activeTab !== '4' ? (
+              <Select value={selectedMonth} onChange={(x: any) => setSelectedMonth(x)} defaultValue={null}>
+                {months?.map((item: any, index: number) => (
+                  <Select.Option value={item.value} key={index}>
+                    {item.label}
+                  </Select.Option>
+                ))}
+                <Select.Option value={null}>{t('all_month')}</Select.Option>
+              </Select>
+            ) : (
+              <Select value={selectedStatus} onChange={(x: any) => setSelectedStatus(x)} defaultValue={'made'}>
+                {Object.keys(statusLabels)?.map((item: any, index: number) => (
+                  <Select.Option value={item} key={index}>
+                    {statusLabels[item as StatusKey]}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+
             <Select value={selectedYear} onChange={(x: any) => setSelectedYear(x)} defaultValue={null}>
               {yearData?.data?.map((item: any, index: number) => (
                 <Select.Option value={item} key={index}>
@@ -334,6 +374,102 @@ export function Dashboard(): JSX.Element {
                   </BarChart>
                 </ResponsiveContainer>
               </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === '4' && (
+          <div className="charts-section">
+            <div className="comparison-chart">
+              <ResponsiveContainer width="100%" height={400}>
+                <LineChart
+                  data={lineData?.data?.[selectedStatus]}
+                  margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" tick={{ fontSize: 14 }} />
+                  <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3, 4]} tick={{ fontSize: 12 }} />
+                  <Tooltip
+                    formatter={(value, name) => {
+                      const companyName =
+                        name === '와이즈스톤티'
+                          ? '와이즈스톤티'
+                          : name === 'ICT연구소'
+                            ? 'ICT연구소'
+                            : name === '마케팅본부(STF팀)'
+                              ? '마케팅본부(STF팀)'
+                              : name === '더테스트'
+                                ? '더테스트'
+                                : name;
+                      return [value, companyName];
+                    }}
+                    labelFormatter={(label) => `Month: ${label}`}
+                  />
+                  <Legend
+                    formatter={(value) => {
+                      const companyName =
+                        value === '와이즈스톤티'
+                          ? '와이즈스톤티'
+                          : value === 'ICT연구소'
+                            ? 'ICT연구소'
+                            : value === '마케팅본부(STF팀)'
+                              ? '마케팅본부(STF팀)'
+                              : value === '더테스트'
+                                ? '더테스트'
+                                : value;
+                      return companyName;
+                    }}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="와이즈스톤티"
+                    name="와이즈스톤티"
+                    stroke={CATEGORY_COLORS.와이즈스톤티}
+                    strokeWidth={3}
+                    dot={{ r: 6, strokeWidth: 2, fill: 'white' }}
+                    activeDot={{ r: 8 }}
+                    isAnimationActive={true}
+                    animationDuration={800}
+                    animationEasing="ease-in-out"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="ICT연구소"
+                    name="ICT연구소"
+                    stroke={CATEGORY_COLORS.ICT연구소}
+                    strokeWidth={3}
+                    dot={{ r: 6, strokeWidth: 2, fill: 'white' }}
+                    activeDot={{ r: 8 }}
+                    isAnimationActive={true}
+                    animationDuration={800}
+                    animationEasing="ease-in-out"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="마케팅본부(STF팀)"
+                    name="마케팅본부(STF팀)"
+                    stroke={CATEGORY_COLORS['마케팅본부(STF팀)']}
+                    strokeWidth={3}
+                    dot={{ r: 6, strokeWidth: 2, fill: 'white' }}
+                    activeDot={{ r: 8 }}
+                    isAnimationActive={true}
+                    animationDuration={800}
+                    animationEasing="ease-in-out"
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="더테스트"
+                    name="더테스트"
+                    stroke={CATEGORY_COLORS.더테스트}
+                    strokeWidth={3}
+                    dot={{ r: 6, strokeWidth: 2, fill: 'white' }}
+                    activeDot={{ r: 8 }}
+                    isAnimationActive={true}
+                    animationDuration={800}
+                    animationEasing="ease-in-out"
+                  />
+                </LineChart>
+              </ResponsiveContainer>
             </div>
           </div>
         )}
