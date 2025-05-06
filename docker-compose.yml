@@ -12,7 +12,7 @@ services:
       - /app/node_modules
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.frontend.rule=Host(`mycareer-dev.esynergy.lv`)"
+      - "traefik.http.routers.frontend.rule=Host(`crm-api.wisestone-u.com`)"
       - "traefik.http.routers.frontend.entrypoints=websecure"
       - "traefik.http.routers.frontend.tls=true"
       - "traefik.http.services.frontend.loadbalancer.server.port=80"
