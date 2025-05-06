@@ -61,7 +61,7 @@ export function Request() {
     },
     onSuccess: () => {
       Notification({ type: 'info', text: t('request_deleted') });
-      getRequests();
+      setQueryParams((res) => ({...res}))
       setSelectedIds([]);
     },
     onError: () => {
