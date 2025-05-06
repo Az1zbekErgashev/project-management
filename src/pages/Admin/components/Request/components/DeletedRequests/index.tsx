@@ -27,13 +27,34 @@ export function DeletedRequests() {
   const { t } = useTranslation();
   const [searchParams, _] = useSearchParams();
   const [isDeleting, setIsDeleting] = useState(false);
-
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
     IsDeleted: 1,
   });
-  const [selectedIds, setSelectedIds] = useState<number[]>([]); // State for selected rows
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const {
+    data: requests,
+    isLoading: isRequestsLoading,
+    appendData: getRequests,
+  } = useQueryApiClient({
+    request: {
+      url: '/api/request/requets',
+      method: 'GET',
+      data: queryparams,
+      disableOnMount: true,
+    },
+  });
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allIds = requests?.data?.items.map((record: RequestModel) => record.id) || [];
+      setSelectedIds(allIds);
+    } else {
+      setSelectedIds([]);
+    }
+  };
 
   const handleFilter = (pagination: any, filters: any, sorter: any) => {
     setQueryParams((res: any) => ({ ...res, ...filters }));
@@ -41,13 +62,21 @@ export function DeletedRequests() {
 
   const columns: ColumnsType<RequestModel> = [
     {
-      title: '',
+      title: (
+        <Checkbox
+          checked={selectedIds.length > 0 && selectedIds.length === requests?.data?.items.length}
+          indeterminate={
+            selectedIds.length > 0 && selectedIds.length < requests?.data?.items.length
+          }
+          onChange={(e) => handleSelectAll(e.target.checked)}
+        />
+      ),
       key: 'checkbox',
       fixed: 'left',
       width: 50,
       render: (_, record) => (
         <Checkbox
-          checked={selectedIds.includes(record.id)} // Assuming `id` is the unique identifier
+          checked={selectedIds.includes(record.id)}
           onChange={(e) => {
             const checked = e.target.checked;
             setSelectedIds((prev) => (checked ? [...prev, record.id] : prev.filter((id) => id !== record.id)));
@@ -179,19 +208,6 @@ export function DeletedRequests() {
     },
   ];
 
-  const {
-    data: requests,
-    isLoading: isRequestsLoading,
-    appendData: getRequests, // Renamed for consistency
-  } = useQueryApiClient({
-    request: {
-      url: '/api/request/requets', // Note: Typo in 'requets', should be 'requests'
-      method: 'GET',
-      data: queryparams,
-      disableOnMount: true,
-    },
-  });
-
   const { refetch: handleDelete } = useQueryApiClient({
     request: {
       url: '/api/request/delete-deleted-request',
@@ -231,7 +247,6 @@ export function DeletedRequests() {
       await handleRecover();
     } catch (error) {
       console.error('Recovery failed:', error);
-      // Notification.error(t('failed_to_delete_requests'));
     } finally {
       setIsDeleting(false);
     }
@@ -244,7 +259,6 @@ export function DeletedRequests() {
       await handleDelete();
     } catch (error) {
       console.error('Deletion failed:', error);
-      // Notification.error(t('failed_to_delete_requests'));
     } finally {
       setIsDeleting(false);
     }
@@ -277,31 +291,30 @@ export function DeletedRequests() {
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
-        
-      <div className='header-actions'>
-      {selectedIds.length > 0 && (
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleRecoverSelected()}
-            loading={isDeleting}
-            style={{ marginLeft: 'auto' }}
-          >
-            {t('Recover')}
-          </Button>
-        )}
-        {selectedIds.length > 0 && (
-          <Button
-            type="primary"
-            danger
-            onClick={() => handleHardDelete()}
-            loading={isDeleting}
-            style={{ marginLeft: 'auto' }}
-          >
-            {t('delete_selected')}
-          </Button>
-        )}
-      </div>
+        <div className='header-actions'>
+          {selectedIds.length > 0 && (
+            <Button
+              type="primary"
+              danger
+              onClick={() => handleRecoverSelected()}
+              loading={isDeleting}
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('Recover')}
+            </Button>
+          )}
+          {selectedIds.length > 0 && (
+            <Button
+              type="primary"
+              danger
+              onClick={() => handleHardDelete()}
+              loading={isDeleting}
+              style={{ marginLeft: 'auto' }}
+            >
+              {t('delete_selected')}
+            </Button>
+          )}
+        </div>
       </div>
       <RequestFilter categories={categories} handleFilterChange={handleFilterChange} isDeleted={1} />
       <Table

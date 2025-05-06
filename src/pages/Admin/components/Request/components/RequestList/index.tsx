@@ -40,10 +40,34 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
     [selectedIds, setSelectedIds]
   );
 
+  const handleSelectAllChange = useCallback(
+    (e: any) => {
+      if (e.target.checked) {
+        const allIds = requests?.items?.map((item) => item.id).filter((id): id is number => !!id) || [];
+        setSelectedIds(allIds);
+      } else {
+        setSelectedIds([]);
+      }
+    },
+    [requests?.items, setSelectedIds]
+  );
+
   const columns = useMemo<ColumnsType<RequestModel>>(
     () => [
       {
-        title: '',
+        title: (
+          <Checkbox
+            checked={
+              requests?.items?.length > 0 && 
+              selectedIds.length === requests.items.length
+            }
+            indeterminate={
+              selectedIds.length > 0 && 
+              selectedIds.length < (requests?.items?.length || 0)
+            }
+            onChange={handleSelectAllChange}
+          />
+        ),
         key: 'checkbox',
         fixed: 'left',
         width: 50,
@@ -54,6 +78,22 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
               onChange={() => handleCheckboxChange(record.id)}
             />
           ) : null,
+      },
+      {
+        title: t('action'),
+        dataIndex: 'action',
+        key: 'action',
+        render: (_, record) => (
+          <Button
+            style={{ fontSize: '12px', padding: '8px', borderRadius: '12px' }}
+            type="primary"
+            onClick={() => {
+              navigate(`/request-detail/${record.id}`);
+            }}
+          >
+            {t('view_details')}
+          </Button>
+        ),
       },
       {
         title: t('createdAt'),
@@ -197,24 +237,10 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           ) : null;
         },
       },
-      {
-        title: t('action'),
-        dataIndex: 'action',
-        key: 'action',
-        render: (_, record) => (
-          <Button
-            style={{ fontSize: '12px', padding: '8px', borderRadius: '12px' }}
-            type="primary"
-            onClick={() => {
-              navigate(`/request-detail/${record.id}`);
-            }}
-          >
-            {t('view_details')}
-          </Button>
-        ),
-      },
+ 
+
     ],
-    [t, selectedIds, handleCheckboxChange, navigate]
+    [t, selectedIds, handleCheckboxChange, navigate, requests?.items, handleSelectAllChange]
   );
 
   return (
@@ -227,6 +253,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         scroll={{ x: 'max-content' }}
         pagination={false}
         showSorterTooltip={false}
+        rowKey="id"
       />
     </StyledRequestList>
   );

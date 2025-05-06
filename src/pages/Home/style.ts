@@ -34,7 +34,7 @@ export const StyledHomePage = styled.div`
   }
 
   .dashboard-header h1 {
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 600;
     color: #333;
     text-align: center;
@@ -87,21 +87,21 @@ export const StyledHomePage = styled.div`
   }
 
   .metric-title {
-    font-size: 16px;
+    font-size: 30px;
     color: #666;
     font-weight: 800;
     margin-bottom: 10px !important;
   }
 
   .metric-value {
-    font-size: 28px;
+    font-size: 35px;
     font-weight: 600;
     color: #2196f3;
     margin-bottom: 5px !important;
   }
 
   .metric-subtitle {
-    font-size: 12px;
+    font-size: 20px;
     color: #999;
   }
 
@@ -167,7 +167,7 @@ export const StyledHomePage = styled.div`
       margin-bottom: 20px;
 
       h1 {
-        font-size: 24px;
+        font-size: 36px;
         font-weight: 700;
         margin: 0;
       }
@@ -186,10 +186,13 @@ export const StyledHomePage = styled.div`
         background-color: #fff;
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        &:first-child {
+          background-color:rgb(164, 198, 229);
+        }
 
         .metric-title {
-          font-size: 14px;
-          color: #666;
+          font-size: 28px;
+          color: #333;
           margin-bottom: 10px;
         }
 
@@ -201,14 +204,14 @@ export const StyledHomePage = styled.div`
         }
 
         .metric-subtitle {
-          font-size: 14px;
-          color: #888;
+          font-size: 20px;
+          color: #333;
         }
       }
     }
 
     .section-title {
-      font-size: 20px;
+      font-size: 35px;
       font-weight: 600;
       margin: 30px 0 15px;
     }
@@ -226,6 +229,7 @@ export const StyledHomePage = styled.div`
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+  
 
         .table-header {
           display: flex;
@@ -235,9 +239,10 @@ export const StyledHomePage = styled.div`
           border-bottom: 1px solid #e0e0e0;
 
           .table-title {
-            font-size: 16px;
+            font-size: 20px;
             font-weight: 600;
             margin: 0;
+            
           }
         }
 
@@ -280,8 +285,8 @@ export const StyledHomePage = styled.div`
         border: none;
         border-bottom: 2px solid transparent;
         cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
+        font-size: 20px;
+        font-weight: 600;
         color: #666;
         transition: all 0.2s ease;
 
@@ -313,14 +318,18 @@ export const StyledHomePage = styled.div`
 
       .company-charts {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(4, 1fr); /* Changed from 2 to 4 */
         gap: 20px;
         margin-bottom: 30px;
 
-        @media (max-width: 768px) {
-          flex-direction: column;
+        @media (max-width: 1200px) { /* Adjusted breakpoint */
+          grid-template-columns: repeat(2, 1fr);
         }
-
+        
+        @media (max-width: 768px) {
+          grid-template-columns: 1fr;
+        }
+ 
         .chart-card {
           flex: 1;
           min-width: 300px;
@@ -350,7 +359,7 @@ export const StyledHomePage = styled.div`
           }
 
           .chart-content {
-            padding: 15px;
+            padding: 5px;
           }
         }
       }

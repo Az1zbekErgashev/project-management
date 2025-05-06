@@ -5,6 +5,7 @@ import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
 import { Button, Spinner, Modal, Notification } from 'ui';
+import { DeleteOutlined } from '@ant-design/icons';
 import { StyledRequests } from './style';
 import axios from 'axios';
 import { routes } from 'config/config';
@@ -145,6 +146,7 @@ export function Request() {
                 <Button
                   label={t('delete')}
                   type="primary"
+                  icon={<DeleteOutlined />}
                   onClick={handleDeleteSelected}
                   loading={isDeleting}
                   disabled={isDeleting}
