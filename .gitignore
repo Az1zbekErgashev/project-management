@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-.runtime-config.js
+/public/runtime-config.js
 /.pnp
 .pnp.js
 
@@ -10,7 +10,6 @@
 /coverage
 
 /build
-/runtime-config.js  # <-- Add this line for the runtime config
 
 # misc
 .DS_Store
