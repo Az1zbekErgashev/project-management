@@ -96,9 +96,8 @@ export function Dashboard(): JSX.Element {
       { name: 'Failed', value: categoryData.Failed || 0, color: statusColors.Failed },
       { name: 'On-going', value: categoryData['On-going'] || 0, color: statusColors['On-going'] },
       { name: 'On-Hold', value: categoryData['On-Hold'] || 0, color: statusColors['On-Hold'] },
-      { name: 'Dropped', value: categoryData.Dropped || 0, color: statusColors.Dropped }
+      { name: 'Dropped', value: categoryData.Dropped || 0, color: statusColors.Dropped },
     ];
-  
   };
 
   const getComparisonData = (): ComparisonChartData[] => {
@@ -182,7 +181,7 @@ export function Dashboard(): JSX.Element {
     if (!data || data.length === 0) return [];
 
     const firstItem = data[0];
-    return Object.keys(firstItem).filter((key) => key !== 'name');
+    return Object.keys(firstItem).filter((key) => key !== 'name' && key !== 'color');
   };
 
   const statusLabels = {
@@ -300,36 +299,36 @@ export function Dashboard(): JSX.Element {
                     </div>
                     <div className="chart-content">
                       <ResponsiveContainer width="100%" height={300}>
-                      <BarChart
-                      data={getStatusData(category.Category)}
-                      margin={{
-                        top: 5,
-                        right: 30,
-                        left: 20,
-                        bottom: 70, 
-                      }}
-                    >
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                      <XAxis 
-                      dataKey="name"
-                      angle={-45}  
-                      textAnchor="end"  
-                      height={20}
-                      interval={0}
-                      tick={{
-                        fontSize: 12,
-                        dy: 10,  
-                        dx: -10 
-                      }}
-                    />
-                      <YAxis />
-                      <Tooltip content={<CustomTooltip />} />
-                      <Bar dataKey="value">
-                        {getStatusData(category.Category).map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Bar>
-                    </BarChart>
+                        <BarChart
+                          data={getStatusData(category.Category)}
+                          margin={{
+                            top: 5,
+                            right: 30,
+                            left: 20,
+                            bottom: 70,
+                          }}
+                        >
+                          <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                          <XAxis
+                            dataKey="name"
+                            angle={-45}
+                            textAnchor="end"
+                            height={20}
+                            interval={0}
+                            tick={{
+                              fontSize: 12,
+                              dy: 10,
+                              dx: -10,
+                            }}
+                          />
+                          <YAxis />
+                          <Tooltip content={<CustomTooltip />} />
+                          <Bar dataKey="value">
+                            {getStatusData(category.Category).map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={entry.color} />
+                            ))}
+                          </Bar>
+                        </BarChart>
                       </ResponsiveContainer>
                     </div>
                   </div>
