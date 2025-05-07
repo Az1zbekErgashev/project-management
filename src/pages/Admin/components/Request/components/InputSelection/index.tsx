@@ -101,11 +101,10 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
       <div className="form-div">
         <div className="form">
           <div className="form-content">
-            <div className="form-group">
+          <div className="form-group">
               <h3>{t('submission_info')}</h3>
               <DatePicker disabled={disable} name="date" label={t('date_created')} />
             </div>
-
             {/* Inquiry Details */}
             <div className="form-group">
               <h3>{t('inquiry_details')}</h3>
@@ -114,21 +113,21 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
               <Input name="inquiryField" disabled={disable} label={t('inquiry_field')} />
             </div>
 
-            {/* Client Information */}
-            <div className="form-group">
-              <h3>{t('client_information')}</h3>
-              <Input name="clientCompany" disabled={disable} label={t('client_company')} />
-              <Input name="client" disabled={disable} label={t('client')} />
-              <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-              <Input name="email" disabled={disable} label={t('email')} />
-            </div>
-          </div>
-
-          <div className="form-cont">
             <div className="form-group">
               <h3>{t('internal_assignment')}</h3>
               <Input name="department" disabled={disable} label={t('department')} />
               <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
+            </div>
+            </div>
+            <div className="form-cont">
+
+            {/* Client Information */}
+            <div className="form-group">
+            <h3>{t('client_information')}</h3>
+            <Input name="clientCompany" disabled={disable} label={t('client_company')} />
+            <Input name="client" disabled={disable} label={t('client')} />
+            <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
+            <Input name="email" disabled={disable} label={t('email')} />
             </div>
 
             {/* Status */}

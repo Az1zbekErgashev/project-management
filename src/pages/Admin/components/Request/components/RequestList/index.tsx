@@ -80,22 +80,6 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           ) : null,
       },
       {
-        title: t('action'),
-        dataIndex: 'action',
-        key: 'action',
-        render: (_, record) => (
-          <Button
-            style={{ fontSize: '12px', padding: '8px', borderRadius: '12px' }}
-            type="primary"
-            onClick={() => {
-              navigate(`/request-detail/${record.id}`);
-            }}
-          >
-            {t('view_details')}
-          </Button>
-        ),
-      },
-      {
         title: t('createdAt'),
         dataIndex: 'date',
         key: 'date',
@@ -237,7 +221,22 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           ) : null;
         },
       },
- 
+      {
+        title: t('action'),
+        dataIndex: 'action',
+        key: 'action',
+        render: (_, record) => (
+          <Button
+            style={{ fontSize: '12px', padding: '8px', borderRadius: '12px' }}
+            type="primary"
+            onClick={() => {
+              navigate(`/request-detail/${record.id}`);
+            }}
+          >
+            {t('view_details')}
+          </Button>
+        ),
+      },
 
     ],
     [t, selectedIds, handleCheckboxChange, navigate, requests?.items, handleSelectAllChange]
