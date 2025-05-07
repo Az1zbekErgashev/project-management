@@ -187,6 +187,21 @@ export function Dashboard(): JSX.Element {
     Failed: 'Failed',
   } as const;
 
+  const monthMap = {
+    Jan: t('jan'),
+    Feb: t('feb'),
+    Mar: t('mar'),
+    Apr: t('apr'),
+    May: t('may'),
+    Jun: t('jun'),
+    Jul: t('jul'),
+    Aug: t('aug'),
+    Sep: t('sep'),
+    Oct: t('oct'),
+    Nov: t('nov'),
+    Dec: t('dec'),
+  };
+
   const dataKeys = getDataKeys(reasonData?.data);
   type StatusKey = keyof typeof statusLabels;
 
@@ -210,7 +225,7 @@ export function Dashboard(): JSX.Element {
               </div>
             </div>
           ))}
-        </div>  
+        </div>
         <h2 className="section-title">{t('category_title_count')}</h2>
         <div className="status-tables">
           {countsData?.data?.map((table: any, index: any) => (
@@ -257,7 +272,7 @@ export function Dashboard(): JSX.Element {
               <Select value={selectedMonth} onChange={(x: any) => setSelectedMonth(x)} defaultValue={null}>
                 {months?.map((item: any, index: number) => (
                   <Select.Option value={item.value} key={index}>
-                    {item.label}
+                    {t(item.label)}
                   </Select.Option>
                 ))}
                 <Select.Option value={null}>{t('all_month')}</Select.Option>
@@ -405,7 +420,11 @@ export function Dashboard(): JSX.Element {
                   margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="month" tick={{ fontSize: 14 }} />
+                  <XAxis
+                    tickFormatter={(month) => monthMap[month as keyof typeof monthMap] || month}
+                    dataKey="month"
+                    tick={{ fontSize: 14 }}
+                  />
                   <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3, 4]} tick={{ fontSize: 12 }} />
                   <Tooltip
                     formatter={(value, name) => {
@@ -421,7 +440,9 @@ export function Dashboard(): JSX.Element {
                                 : name;
                       return [value, companyName];
                     }}
-                    labelFormatter={(label) => `Month: ${label}`}
+                    labelFormatter={(label) =>
+                      `${t('common.month')}: ${monthMap[label as keyof typeof monthMap] || label}`
+                    }
                   />
                   <Legend
                     formatter={(value) => {
