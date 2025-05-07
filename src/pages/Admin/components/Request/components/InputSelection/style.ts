@@ -100,9 +100,13 @@ export const StyledInputSelection = styled.div`
     width: 400px;
     display: flex;
     flex-direction: column;
-    row-gap: 100px;
-    justify-content: flex-end;
+    row-gap: 15px;
+    justify-content: flex-start;
     margin-bottom: 50px;
+
+    &:second-child {
+      margin-bottom: 50px;
+    }
   }
 
   .form-group {

@@ -306,20 +306,20 @@ export function Dashboard(): JSX.Element {
                         top: 5,
                         right: 30,
                         left: 20,
-                        bottom: 70, // Increased more for all 5 labels
+                        bottom: 70, 
                       }}
                     >
                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                       <XAxis 
                       dataKey="name"
-                      angle={-45}  // Negative angle for opposite slant
-                      textAnchor="end"  // Aligns text properly with negative angle
+                      angle={-45}  
+                      textAnchor="end"  
                       height={20}
                       interval={0}
                       tick={{
                         fontSize: 12,
-                        dy: 10,  // Adjust vertical position
-                        dx: -10  // Negative dx to prevent overlap
+                        dy: 10,  
+                        dx: -10 
                       }}
                     />
                       <YAxis />

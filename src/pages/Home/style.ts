@@ -188,8 +188,8 @@ export const StyledHomePage = styled.div`
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
         &:first-child {
-          background-color:rgb(164, 198, 229);
-        }
+          background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%)
+      }
 
         .metric-title {
           font-size: 24px;
@@ -222,6 +222,7 @@ export const StyledHomePage = styled.div`
       flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 30px;
+    
 
       .status-table {
         flex: 1;
@@ -230,7 +231,9 @@ export const StyledHomePage = styled.div`
         border-radius: 8px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        
+        &:first-child {
+        background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%)
+      }
 
         .table-header {
           display: flex;
@@ -238,12 +241,14 @@ export const StyledHomePage = styled.div`
           padding: 15px;
           background-color: #f5f5f5;
           border-bottom: 1px solid #e0e0e0;
+          /* &:first-child() {
+            background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
+          } */
 
           .table-title {
             font-size: 20px;
             font-weight: 600;
             margin: 0;
-            
           }
         }
 
@@ -319,11 +324,11 @@ export const StyledHomePage = styled.div`
 
       .company-charts {
         display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Changed from 2 to 4 */
+        grid-template-columns: repeat(4, 1fr); 
         gap: 20px;
         margin-bottom: 30px;
 
-        @media (max-width: 1200px) { /* Adjusted breakpoint */
+        @media (max-width: 1200px) { 
           grid-template-columns: repeat(2, 1fr);
         }
         
