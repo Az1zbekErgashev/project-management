@@ -167,9 +167,7 @@ export function AdminUsers() {
   const handleFilterChange = (changedValue: any) => {
     setQueryParams((res) => ({
       ...res,
-      CompanyId: changedValue.CompanyId,
       Role: changedValue.Role,
-      TeamLeaderId: changedValue.TeamLeaderId,
       Text: changedValue.Text,
       IsDeleted: changedValue.IsDeleted,
     }));
@@ -203,13 +201,22 @@ export function AdminUsers() {
     form.resetFields();
   };
 
+  const resetFileds = () => {
+    setQueryParams((res) => ({
+      ...res,
+      Role: undefined,
+      Text: undefined,
+      IsDeleted: undefined,
+    }));
+  };
+
   return (
     <StyledAdminUsers>
       <div className="header-line">
         <h1 className="global-title">{t('manage_users')}</h1>
         <Button label={t('add_user')} type="primary" onClick={() => showDrawer('ADD', null)} />
       </div>
-      <UsersFilter handleFilterChange={handleFilterChange} />
+      <UsersFilter resetFileds={resetFileds} handleFilterChange={handleFilterChange} />
       <Table columns={column} dataSource={users?.data?.items ?? []} />
 
       <Pagination

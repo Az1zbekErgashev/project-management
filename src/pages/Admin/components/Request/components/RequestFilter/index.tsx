@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestFilter } from './style';
 import { AutoComplete, Form } from 'antd';
-import { Select, SelectOption } from 'ui';
+import { Button, Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { useForm } from 'antd/es/form/Form';
@@ -11,8 +11,9 @@ interface props {
   isDeleted: number;
   status?: number | null;
   categories: any;
+  resetFileds: () => void;
 }
-export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null, categories }: props) {
+export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null, categories, resetFileds }: props) {
   const { t } = useTranslation();
   const isPendingRequests = window.location.pathname.includes('pending-request');
   const [value, setValue] = useState('');
@@ -73,6 +74,19 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null
             </Select>
           )}
         </div>
+        {(form.getFieldValue('Text') || form.getFieldValue('Category')) && (
+          <div className="clear_btn">
+            <Button
+              className="btn"
+              label={t('clear_filter')}
+              type="primary"
+              onClick={() => {
+                form.resetFields();
+                resetFileds();
+              }}
+            />
+          </div>
+        )}
       </Form>
     </StyledRequestFilter>
   );

@@ -4,7 +4,7 @@ export const StyledUsersFilter = styled.div`
   margin-bottom: 30px !important;
   form {
     display: flex;
-    align-items: center;
+    align-items: end;
     justify-content: space-between;
     gap: 20px;
 

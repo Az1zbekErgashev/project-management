@@ -4,9 +4,9 @@ export const StyledLogsFilter = styled.div`
   margin-bottom: 30px !important;
   form {
     display: flex;
-    align-items: center;
+    align-items: end;
     justify-content: space-between;
-    gap: 12px;
+    gap: 15px;
 
     .ant-form-item {
       width: 100%;

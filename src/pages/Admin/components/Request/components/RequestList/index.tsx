@@ -25,16 +25,17 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
   const { t } = useTranslation();
   const navigate = useNavigate();
 
-  const handleFilter = useCallback((pagination: any, filters: any, sorter: any) => {
-    setQueryParams((prev: any) => ({ ...prev, ...filters }));
-  }, [setQueryParams]);
+  const handleFilter = useCallback(
+    (pagination: any, filters: any, sorter: any) => {
+      setQueryParams((prev: any) => ({ ...prev, ...filters }));
+    },
+    [setQueryParams]
+  );
 
   const handleCheckboxChange = useCallback(
     (recordId: number) => {
       setSelectedIds(
-        selectedIds.includes(recordId)
-          ? selectedIds.filter((id) => id !== recordId)
-          : [...selectedIds, recordId]
+        selectedIds.includes(recordId) ? selectedIds.filter((id) => id !== recordId) : [...selectedIds, recordId]
       );
     },
     [selectedIds, setSelectedIds]
@@ -57,14 +58,8 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
       {
         title: (
           <Checkbox
-            checked={
-              requests?.items?.length > 0 && 
-              selectedIds.length === requests.items.length
-            }
-            indeterminate={
-              selectedIds.length > 0 && 
-              selectedIds.length < (requests?.items?.length || 0)
-            }
+            checked={requests?.items?.length > 0 && selectedIds.length === requests.items.length}
+            indeterminate={selectedIds.length > 0 && selectedIds.length < (requests?.items?.length || 0)}
             onChange={handleSelectAllChange}
           />
         ),
@@ -73,10 +68,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         width: 50,
         render: (_, record) =>
           record.id ? (
-            <Checkbox
-              checked={selectedIds.includes(record.id)}
-              onChange={() => handleCheckboxChange(record.id)}
-            />
+            <Checkbox checked={selectedIds.includes(record.id)} onChange={() => handleCheckboxChange(record.id)} />
           ) : null,
       },
       {
@@ -214,7 +206,12 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         render: (_, record) => {
           return record?.processingStatus ? (
             <span
-              style={{ color: record.processingStatus?.color, fontSize: '16px', fontWeight: '800', textAlign: 'center' }}
+              style={{
+                color: record.processingStatus?.color,
+                fontSize: '16px',
+                fontWeight: '800',
+                textAlign: 'center',
+              }}
             >
               {t(record?.processingStatus?.text)}
             </span>
@@ -237,7 +234,6 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           </Button>
         ),
       },
-
     ],
     [t, selectedIds, handleCheckboxChange, navigate, requests?.items, handleSelectAllChange]
   );

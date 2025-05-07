@@ -9,6 +9,10 @@ export const StyledLoginPage = styled.div`
     height: 100%;
     overflow: hidden;
     position: relative;
+    background: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     img {
       width: 100%;
       max-height: 100%;
@@ -32,8 +36,6 @@ export const StyledLoginPage = styled.div`
       padding: 30px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
       background: var(--white);
-
-
 
       .flex {
         display: flex;

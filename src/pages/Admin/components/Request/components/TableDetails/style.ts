@@ -1,7 +1,6 @@
 import { styled } from 'styled-components';
 
 export const StyledTableDetail = styled.div`
-  background: #fff;
   border-radius: 8px;
   margin: 16px 0;
   display: flex;

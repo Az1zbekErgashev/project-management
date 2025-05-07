@@ -39,6 +39,12 @@ html {
   }
 }
 
+.clear_btn {
+  button {
+    height: 50px;
+  }
+}
+
 body {
   position: relative;
   color: var(--text-color);

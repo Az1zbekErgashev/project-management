@@ -3,7 +3,7 @@ import { StyledLoginPage } from './style';
 import { Form, Image } from 'antd';
 import { Button, Input } from 'ui';
 import { useTranslation } from 'react-i18next';
-import loginImage from 'assets/images/Login.jpeg';
+import loginImage from 'assets/images/Login.jpg';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { useUser } from 'hooks/useUserState';
 import useJwt from 'utils/useJwt';
@@ -47,7 +47,7 @@ export function LoginPage() {
   return (
     <StyledLoginPage>
       <div className="image-container">
-        <Image preview={false} style={{ width: '100%', height: '100vh' }} src={loginImage} className="login-image" />
+        <Image preview={false} height={600} src={loginImage} className="login-image" />
       </div>
       <div className="form-container">
         <Form form={form} layout="vertical" onFinish={onFinish}>

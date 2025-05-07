@@ -11,7 +11,8 @@ import Tooltip from 'antd/lib/tooltip';
 import { smoothScroll } from 'utils/globalFunctions';
 import Pagination from 'ui/Pagination/Pagination';
 import { useSearchParams } from 'react-router-dom';
-import { Notification } from 'ui';
+import { ConfirmModal, Notification } from 'ui';
+import { TFunction } from 'i18next';
 
 interface queryParamsType {
   PageSize: number;
@@ -23,6 +24,23 @@ interface queryParamsType {
   IsDeleted: 1;
 }
 
+const createModalConfig = (
+  t: TFunction,
+  onConfirm: () => void,
+  onCancel: () => void,
+  type: string,
+  titleText: string,
+  desctiption: string
+) => ({
+  cancelText: t('cancel'),
+  confirmText: t(type),
+  title: t(titleText),
+  content: t(desctiption),
+  open: true,
+  onConfirm,
+  onCancel,
+});
+
 export function DeletedRequests() {
   const { t } = useTranslation();
   const [searchParams, _] = useSearchParams();
@@ -32,6 +50,7 @@ export function DeletedRequests() {
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
     IsDeleted: 1,
   });
+  const [actionModal, setActionModal] = useState<any>();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
 
   const {
@@ -65,9 +84,7 @@ export function DeletedRequests() {
       title: (
         <Checkbox
           checked={selectedIds.length > 0 && selectedIds.length === requests?.data?.items.length}
-          indeterminate={
-            selectedIds.length > 0 && selectedIds.length < requests?.data?.items.length
-          }
+          indeterminate={selectedIds.length > 0 && selectedIds.length < requests?.data?.items.length}
           onChange={(e) => handleSelectAll(e.target.checked)}
         />
       ),
@@ -215,9 +232,10 @@ export function DeletedRequests() {
       data: selectedIds,
     },
     onSuccess: () => {
-      Notification({ type: 'info', text: t('request_deleted') });
+      Notification({ type: 'delete', text: t('request_deleted') });
       setQueryParams((res) => ({ ...res }));
       setSelectedIds([]);
+      setActionModal(null);
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
@@ -231,9 +249,10 @@ export function DeletedRequests() {
       data: selectedIds,
     },
     onSuccess: () => {
-      Notification({ type: 'info', text: t('request_deleted') });
+      Notification({ type: 'success', text: t('request_recovered') });
       setQueryParams((res) => ({ ...res }));
       setSelectedIds([]);
+      setActionModal(null);
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
@@ -244,9 +263,21 @@ export function DeletedRequests() {
     if (selectedIds.length === 0) return;
     setIsDeleting(true);
     try {
-      await handleRecover();
+      setActionModal(
+        createModalConfig(
+          t,
+          () => {
+            handleRecover();
+          },
+          () => {
+            setActionModal(null);
+          },
+          'recover',
+          'recover_request_title',
+          'recover_request_description'
+        )
+      );
     } catch (error) {
-      console.error('Recovery failed:', error);
     } finally {
       setIsDeleting(false);
     }
@@ -256,9 +287,21 @@ export function DeletedRequests() {
     if (selectedIds.length === 0) return;
     setIsDeleting(true);
     try {
-      await handleDelete();
+      setActionModal(
+        createModalConfig(
+          t,
+          () => {
+            handleDelete();
+          },
+          () => {
+            setActionModal(null);
+          },
+          'delete',
+          'delete_request_title',
+          'delete_request_description'
+        )
+      );
     } catch (error) {
-      console.error('Deletion failed:', error);
     } finally {
       setIsDeleting(false);
     }
@@ -287,11 +330,15 @@ export function DeletedRequests() {
     setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
   };
 
+  const resetFileds = () => {
+    setQueryParams((res) => ({ ...res, requestTitle: undefined, category: undefined, text: undefined }));
+  };
+
   return (
     <StyledRequestList className="deleted-requests">
       <div className="header-line">
         <h1 className="global-title">{t('deleted_requests')}</h1>
-        <div className='header-actions'>
+        <div className="header-actions">
           {selectedIds.length > 0 && (
             <Button
               type="primary"
@@ -300,7 +347,7 @@ export function DeletedRequests() {
               loading={isDeleting}
               style={{ marginLeft: 'auto' }}
             >
-              {t('Recover')}
+              {t('recover_selected_requests')}
             </Button>
           )}
           {selectedIds.length > 0 && (
@@ -316,7 +363,12 @@ export function DeletedRequests() {
           )}
         </div>
       </div>
-      <RequestFilter categories={categories} handleFilterChange={handleFilterChange} isDeleted={1} />
+      <RequestFilter
+        resetFileds={resetFileds}
+        categories={categories}
+        handleFilterChange={handleFilterChange}
+        isDeleted={1}
+      />
       <Table
         columns={columns}
         dataSource={requests?.data?.items || []}
@@ -333,6 +385,7 @@ export function DeletedRequests() {
         hideOnSinglePage={true}
         current={requests?.data?.pageIndex}
       />
+      {actionModal && <ConfirmModal {...actionModal} />}
     </StyledRequestList>
   );
 }

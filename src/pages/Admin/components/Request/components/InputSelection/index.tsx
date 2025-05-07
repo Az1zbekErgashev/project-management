@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea, Upload } from 'ui';
+import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
-import { CloseCircleOutlined, FileDoneOutlined } from '@ant-design/icons';
+import { CloseCircleOutlined, UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import { routes } from 'config/config';
 import Tooltip from 'antd/lib/tooltip';
+import { message, Upload } from 'antd';
 
 interface Props {
   form: FormInstance;
@@ -25,6 +25,8 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
+  const [fileInfo, setFileInfo] = useState<any>(null);
+  const [uploadedUrl, setUploadedUrl] = useState<any>(null);
 
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
@@ -49,15 +51,26 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
     },
   });
 
+  const handleChange = (info: any) => {
+    if (info.file.status === 'uploading') {
+      setFileInfo({
+        name: info.file.name,
+        size: (info.file.size / 1024).toFixed(2) + ' KB',
+      });
+      setUploadedUrl(null);
+    }
+  };
+
+  const handleDelete = () => {
+    setUploadedUrl(null);
+    setFileInfo(null);
+    Notification({ text: t('file_removed'), type: 'error' });
+  };
+
   const handleSubmit = async () => {
     form
       .validateFields()
       .then((res) => {
-        res.File = fileList;
-        if (window.location.pathname.includes('request-detail')) {
-          res.UpdateFile = fileList ? true : false;
-          res.RemoveFile = !fileList && !filePath ? true : false;
-        }
         createData(res);
       })
       .catch(() => {
@@ -72,29 +85,27 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
     },
   });
 
-  const handleChange = (file: any) => {
-    const realFile =
-      file?.file instanceof File
-        ? file.file
-        : file?.file?.originFileObj instanceof File
-          ? file.file.originFileObj
-          : null;
-
-    setFileList(realFile ? realFile : null);
-  };
-
-  const formatSize = (size: number) => {
-    if (size < 1024) return `${size} B`;
-    if (size < 1024 * 1024) return `${(size / 1024).toFixed(1)} KB`;
-    return `${(size / 1024 / 1024).toFixed(1)} MB`;
-  };
-
   const { data: processingData, isLoading: isProcessingLoading } = useQueryApiClient({
     request: {
       url: '/api/processingstatus?PageIndex=1&PageSize=1000000000',
       method: 'GET',
     },
   });
+
+  const customRequest = ({ file, onSuccess, onError }: any) => {
+    setTimeout(() => {
+      try {
+        const url = `https://example.com/uploads/${file.name}`;
+        setUploadedUrl(url);
+        setFileInfo(null);
+        onSuccess('ok');
+        Notification({ text: t('file_uploaded'), type: 'error' });
+      } catch (err) {
+        onError('Upload failed');
+        Notification({ text: t('file_removed'), type: 'error' });
+      }
+    }, 2000);
+  };
 
   return (
     <StyledInputSelection>
@@ -118,16 +129,15 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
               <Input name="department" disabled={disable} label={t('department')} />
               <Input name="responsiblePerson" disabled={disable} label={t('responsible_person')} />
             </div>
-            </div>
-            <div className="form-cont">
-
+          </div>
+          <div className="form-cont">
             {/* Client Information */}
             <div className="form-group">
-            <h3>{t('client_information')}</h3>
-            <Input name="clientCompany" disabled={disable} label={t('client_company')} />
-            <Input name="client" disabled={disable} label={t('client')} />
-            <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-            <Input name="email" disabled={disable} label={t('email')} />
+              <h3>{t('client_information')}</h3>
+              <Input name="clientCompany" disabled={disable} label={t('client_company')} />
+              <Input name="client" disabled={disable} label={t('client')} />
+              <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
+              <Input name="email" disabled={disable} label={t('email')} />
             </div>
 
             {/* Status */}
@@ -235,31 +245,37 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
                 </button>
               </Tooltip>
             )}
-            <Upload disabled={disable || !!filePath} onChange={handleChange}>
-              <div className={!fileList && !filePath ? 'upload-form big' : 'upload-form small'}>
-                <FileDoneOutlined />
-                {(fileList || filePath) && (
-                  <div className="file_name">
-                    {fileList ? (
-                      <>
-                        <div>
-                          <span>{fileList?.name}</span>
-                        </div>
-                        <div>
-                          <span>{formatSize(fileList?.size || 0)}</span>
-                        </div>
-                      </>
-                    ) : (
-                      <Button
-                        type="link"
-                        onClick={() => window.open(`${routes.api.baseUrl}/${filePath}`, '_blank')}
-                        label={t('view_file')}
-                      />
-                    )}
-                  </div>
-                )}
-              </div>
-            </Upload>
+            <div className="file-upload-container">
+              {(fileInfo || uploadedUrl) && (
+                <button className="delete-button" onClick={handleDelete}>
+                  <CloseOutlined />
+                </button>
+              )}
+
+              <Upload
+                customRequest={customRequest}
+                onChange={handleChange}
+                showUploadList={false}
+                accept=".pdf,.doc,.docx,.txt"
+              >
+                <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
+              </Upload>
+
+              {fileInfo && (
+                <div className="file-info">
+                  <span className="file-name">{fileInfo.name}</span>
+                  <span className="file-size">({fileInfo.size})</span>
+                </div>
+              )}
+
+              {uploadedUrl && (
+                <div className="file-link">
+                  <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
+                    {fileInfo?.name || 'Uploaded File'}
+                  </a>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>

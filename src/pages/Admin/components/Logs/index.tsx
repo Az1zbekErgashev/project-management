@@ -53,12 +53,23 @@ export function Logs() {
     }));
   };
 
+  const resetFileds = () => {
+    setQueryParams((res) => ({
+      ...res,
+      Action: undefined,
+      UserId: undefined,
+      Text: undefined,
+      StartDate: undefined,
+      EndDate: undefined,
+    }));
+  };
+
   return (
     <div>
       <div className="header-line">
         <h1 className="global-title">{t('logs')}</h1>
       </div>
-      <LogsFilter handleFilterChange={handleFilterChange} />
+      <LogsFilter resetFileds={resetFileds} handleFilterChange={handleFilterChange} />
       <LogsList logs={logs} />
       <Pagination
         total={logs?.data?.totalItems}

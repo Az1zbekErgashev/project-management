@@ -12,11 +12,18 @@ import { StyledTranslation } from '../Translations/styled';
 import { useSearchParams } from 'react-router-dom';
 import { ColumnsType } from 'antd/es/table';
 
-const createModalConfig = (t: TFunction, type: 'DELETE' | 'RECOVER', onConfirm: () => void, onCancel: () => void) => ({
+const createModalConfig = (
+  t: TFunction,
+  onConfirm: () => void,
+  onCancel: () => void,
+  type: string,
+  title: string,
+  description: string
+) => ({
   cancelText: t('cancel'),
-  confirmText: type === 'DELETE' ? t('delete') : t('recover'),
-  title: type === 'DELETE' ? t('delete_request_status_title') : t('recover_request_status_title'),
-  content: type === 'DELETE' ? t('delete_request_status_description') : t('recover_request_status_description'),
+  confirmText: t(type),
+  title: t(title),
+  content: t(description),
   open: true,
   onConfirm,
   onCancel,
@@ -138,16 +145,20 @@ export function RequestStatusPage() {
   ];
 
   const handleDelete = (key: number, type: 'DELETE' | 'RECOVER') => {
+    const title = type === 'DELETE' ? 'delete_request_status_title' : 'recover_request_status_title';
+    const description = type === 'DELETE' ? 'delete_request_status_description' : 'recover_request_status_description';
     setConiformModal(
       createModalConfig(
         t,
-        type,
         () => {
           setId({ id: key, type: type });
         },
         () => {
           setConiformModal(null);
-        }
+        },
+        type === 'DELETE' ? 'delete' : 'recover',
+        title,
+        description
       )
     );
   };
@@ -163,6 +174,7 @@ export function RequestStatusPage() {
       method: 'DELETE',
     },
     onSuccess() {
+      Notification({ type: 'info', text: t('request_status_deleted') });
       refetch();
     },
   });
@@ -172,6 +184,7 @@ export function RequestStatusPage() {
       method: 'DELETE',
     },
     onSuccess() {
+      Notification({ type: 'info', text: t('request_status_deleted') });
       refetch();
     },
   });
@@ -183,12 +196,15 @@ export function RequestStatusPage() {
       data: selectedIds,
     },
     onSuccess: () => {
-      Notification({ type: 'info', text: t('request_deleted') });
+      Notification({ type: 'info', text: t('request_status_deleted') });
       setSelectedIds([]);
       refetch();
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+    onFinally() {
+      setConiformModal(null);
     },
   });
   const { refetch: recoverRequests } = useQueryApiClient({
@@ -198,19 +214,67 @@ export function RequestStatusPage() {
       data: selectedIds,
     },
     onSuccess: () => {
-      Notification({ type: 'info', text: t('request_recovered') });
+      Notification({ type: 'info', text: t('request_status_recovered') });
       setSelectedIds([]);
       refetch();
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
     },
+    onFinally() {
+      setConiformModal(null);
+    },
   });
 
-  const handleDeleteSelected = async (type: 'DELETE' | 'RECOVER') => {
+  const handleDeleteSelected = async (type: 'DELETE' | 'RECOVER' | 'HARD_DELETE') => {
     if (selectedIds.length === 0) return;
-    if (type === 'DELETE') await deleteRequests();
-    else recoverRequests();
+
+    if (type === 'DELETE') {
+      setConiformModal(
+        createModalConfig(
+          t,
+          () => {
+            deleteRequests();
+          },
+          () => {
+            setConiformModal(null);
+          },
+          'delete',
+          'delete_request_statuses_title',
+          'delete_request_statuses_description'
+        )
+      );
+    } else if (type === 'RECOVER') {
+      setConiformModal(
+        createModalConfig(
+          t,
+          () => {
+            recoverRequests();
+          },
+          () => {
+            setConiformModal(null);
+          },
+          'recover',
+          'recover_request_statuses_title',
+          'recover_request_statuses_description'
+        )
+      );
+    } else {
+      setConiformModal(
+        createModalConfig(
+          t,
+          () => {
+            recoverRequests();
+          },
+          () => {
+            setConiformModal(null);
+          },
+          'hard_delete',
+          'hard_delete_request_statuses_title',
+          'hard_delete_request_statuses_description'
+        )
+      );
+    }
   };
 
   const { appendData: createData } = useQueryApiClient({
@@ -276,49 +340,45 @@ export function RequestStatusPage() {
     }
   }, [open]);
 
+  const handleChangePage = (deleted: number) => {
+    setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: deleted }));
+    setSearchParams((prev) => {
+      return {
+        ...prev,
+        pageIndex: '1',
+        pageSize: '10',
+      };
+    });
+    setSelectedIds([]);
+  };
+
   return (
     <StyledRequestStatusPage>
       <div className="header-line">
         <h1 className="global-title">{t('statuses')}</h1>
         <div style={{ display: 'flex', gap: '10px' }}>
           {selectedIds.length > 0 && (
-            <Button
-              type="primary"
-              danger
-              onClick={() => handleDeleteSelected(queryParams.isDeleted === 0 ? 'DELETE' : 'RECOVER')}
-              label={queryParams.isDeleted === 0 ? t('delete_selected') : t('recover_selected')}
-            />
+            <>
+              <Button
+                type="primary"
+                danger
+                onClick={() => handleDeleteSelected(queryParams.isDeleted === 0 ? 'DELETE' : 'RECOVER')}
+                label={queryParams.isDeleted === 0 ? t('delete_selected') : t('recover_selected')}
+              />
+              {queryParams.isDeleted === 1 && (
+                <Button
+                  type="primary"
+                  danger
+                  onClick={() => handleDeleteSelected('HARD_DELETE')}
+                  label={t('hard_delete_selected')}
+                />
+              )}
+            </>
           )}
           {queryParams.isDeleted === 0 ? (
-            <Button
-              label={t('deleted_status')}
-              type="primary"
-              onClick={() => {
-                setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: 1 }));
-                setSearchParams((prev) => {
-                  return {
-                    ...prev,
-                    pageIndex: '1',
-                    pageSize: '10',
-                  };
-                });
-              }}
-            />
+            <Button label={t('deleted_status')} type="primary" onClick={() => handleChangePage(1)} />
           ) : (
-            <Button
-              label={t('open_status')}
-              type="primary"
-              onClick={() => {
-                setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: 0 }));
-                setSearchParams((prev) => {
-                  return {
-                    ...prev,
-                    pageIndex: '1',
-                    pageSize: '10',
-                  };
-                });
-              }}
-            />
+            <Button label={t('open_status')} type="primary" onClick={() => handleChangePage(0)} />
           )}
 
           <Button

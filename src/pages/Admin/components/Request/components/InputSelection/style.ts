@@ -35,6 +35,7 @@ export const StyledInputSelection = styled.div`
     align-items: flex-start;
     justify-content: flex-start;
     box-shadow: none !important;
+    background: transparent !important;
 
     .file_name {
       display: flex;
@@ -165,6 +166,102 @@ export const StyledInputSelection = styled.div`
 
     .ant-form-item {
       width: 100%;
+    }
+  }
+
+  .file-upload-container {
+    position: relative; /* For positioning the delete button */
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #e8e8e8;
+    border-radius: 4px;
+    width: fit-content;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+
+    .delete-button {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #999;
+      font-size: 12px;
+      padding: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &:hover {
+        color: #ff4d4f; /* Red on hover */
+      }
+
+      .anticon {
+        font-size: 12px;
+      }
+    }
+
+    .ant-btn {
+      background-color: var(--base-color);
+      color: white;
+      border: none;
+      padding: 4px 12px;
+      height: 28px;
+      font-size: 14px;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+
+      &:hover {
+        background-color: var(--base-color);
+      }
+
+      .anticon {
+        margin-right: 4px;
+      }
+    }
+
+    .file-info {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: #666;
+
+      .file-name {
+        font-weight: 500;
+        color: #333;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .file-size {
+        color: #999;
+      }
+    }
+
+    .file-link {
+      font-size: 12px;
+
+      a {
+        color: var(--base-color);
+        text-decoration: none;
+        max-width: 200px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: inline-block;
+
+        &:hover {
+          text-decoration: underline;
+          color: var(--base-color);
+        }
+      }
     }
   }
 `;

@@ -38,26 +38,9 @@ export function ProfileActionForm({ image, setImage }: props) {
 
   const validateImage = async (file: File): Promise<boolean> => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    const minSize = 25 * 1024; // Minimum size in bytes
-    const maxSize = 3 * 1024 * 1024; // Maximum size in bytes
-    const minWidth = 400; // Minimum width in pixels
-    const minHeight = 400; // Minimum height in pixels
-    const maxWidth = 1920; // Maximum width in pixels
-    const maxHeight = 1280; // Maimum height in pixels
 
-    // Check file type
     if (!allowedTypes.includes(file.type)) {
       Notification({ type: 'error', text: t('CreateCvNotificationAvatarType') });
-      return false;
-    }
-
-    // Check file size
-    if (file.size < minSize || file.size > maxSize) {
-      Notification({
-        type: 'error',
-        text: file.size < minSize ? t('CreateCvNotificationAvatarMinSize') : t('CreateCvNotificationAvatarMaxSize'),
-      });
-
       return false;
     }
 
@@ -67,22 +50,6 @@ export function ProfileActionForm({ image, setImage }: props) {
 
     return new Promise<boolean>((resolve) => {
       image.onload = () => {
-        const width = image.naturalWidth;
-        const height = image.naturalHeight;
-
-        if (width < minWidth || height < minHeight || width > maxWidth || height > maxHeight) {
-          Notification({
-            type: 'error',
-            text:
-              width < minWidth || height < minHeight
-                ? t('CreateCvNotificationAvatarMinDimensions')
-                : t('CreateCvNotificationAvatarMaxDimensions'),
-          });
-          resolve(false);
-        } else {
-          resolve(true);
-        }
-
         URL.revokeObjectURL(image.src);
       };
 

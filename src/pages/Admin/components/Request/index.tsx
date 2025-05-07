@@ -4,7 +4,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
-import { Button, Spinner, Modal, Notification } from 'ui';
+import { Button, Spinner, Modal, Notification, ConfirmModal } from 'ui';
 import { DeleteOutlined } from '@ant-design/icons';
 import { StyledRequests } from './style';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import UploadModal from './components/Upload/upload';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import useJwt from 'utils/useJwt';
 import { useLanguage } from 'contexts/LanguageContext';
+import { TFunction } from 'i18next';
 
 interface queryParamsType {
   PageSize: number;
@@ -22,6 +23,16 @@ interface queryParamsType {
   Category?: string;
   RequestTitle?: string;
 }
+
+const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
+  cancelText: t('cancel'),
+  confirmText: t('delete'),
+  title: t('delete_requests_title'),
+  content: t('delete_requests_description'),
+  open: true,
+  onConfirm,
+  onCancel,
+});
 
 export function Request() {
   const { t } = useTranslation();
@@ -34,6 +45,7 @@ export function Request() {
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [actionModal, setActionModal] = useState<any>();
   const navigate = useNavigate();
   const [showUpload, setShowUpload] = useState(false);
   const { getHeader } = useJwt();
@@ -61,8 +73,9 @@ export function Request() {
     },
     onSuccess: () => {
       Notification({ type: 'info', text: t('request_deleted') });
-      setQueryParams((res) => ({...res}))
+      setQueryParams((res) => ({ ...res }));
       setSelectedIds([]);
+      setActionModal(null);
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
@@ -73,14 +86,26 @@ export function Request() {
     if (selectedIds.length === 0) return;
     setIsDeleting(true);
     try {
-      await handleDelete();
+      setActionModal(
+        createModalConfig(
+          t,
+          () => {
+            handleDelete();
+          },
+          () => {
+            setActionModal(null);
+          }
+        )
+      );
     } catch (error) {
-      console.error('Deletion failed:', error);
-      // Notification.error(t('failed_to_delete_requests'));
     } finally {
       setIsDeleting(false);
     }
   }, [selectedIds, handleDelete]);
+
+  const resetFileds = () => {
+    setQueryParams((res) => ({ ...res, RequestTitle: undefined, Category: undefined, Text: undefined }));
+  };
 
   const handlePaginationChange = useCallback((page: number, pageSize: number) => {
     smoothScroll('top', 0);
@@ -117,8 +142,6 @@ export function Request() {
       document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Download failed:', error);
-      // message.error(t('failed_to_download'));
     } finally {
       setIsFileLoading(false);
     }
@@ -150,6 +173,7 @@ export function Request() {
                   onClick={handleDeleteSelected}
                   loading={isDeleting}
                   disabled={isDeleting}
+                  danger
                 />
               )}
               <Button label={t('upload')} type="primary" onClick={() => setShowUpload(true)} />
@@ -178,7 +202,12 @@ export function Request() {
               />
             </div>
           </div>
-          <RequestFilter categories={categories} handleFilterChange={handleFilterChange} isDeleted={0} />
+          <RequestFilter
+            resetFileds={resetFileds}
+            categories={categories}
+            handleFilterChange={handleFilterChange}
+            isDeleted={0}
+          />
           <RequestList
             setQueryParams={setQueryParams}
             requests={requests?.data || { items: [], totalItems: 0, itemsPerPage: 10, PageIndex: 1 }}
@@ -195,6 +224,8 @@ export function Request() {
           />
         </React.Fragment>
       )}
+
+      {actionModal && <ConfirmModal {...actionModal} />}
     </StyledRequests>
   );
 }

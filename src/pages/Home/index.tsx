@@ -205,6 +205,20 @@ export function Dashboard(): JSX.Element {
   const dataKeys = getDataKeys(reasonData?.data);
   type StatusKey = keyof typeof statusLabels;
 
+  const CustomYAxisTick = (props: any) => {
+    const { x, y, payload } = props;
+    const item = reasonData.data.find((item: any) => item.name === payload.value);
+    const color = item?.color || '#000';
+
+    return (
+      <g transform={`translate(${x},${y})`}>
+        <text x={-10} y={0} dy={4} textAnchor="end" fill={color} style={{ fontWeight: 'bold' }}>
+          {payload.value}
+        </text>
+      </g>
+    );
+  };
+
   return (
     <StyledHomePage>
       <div className="dashboard">
@@ -398,7 +412,7 @@ export function Dashboard(): JSX.Element {
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis type="number" />
-                    <YAxis dataKey="name" type="category" width={100} />
+                    <YAxis dataKey="name" type="category" width={150} tick={<CustomYAxisTick />} />
                     <Tooltip content={<CustomTooltip />} />
                     <Legend />
                     {dataKeys.map((key, index) => (

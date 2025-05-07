@@ -128,6 +128,9 @@ export function Translations() {
       getTranslations();
       handleClose();
     },
+    onError() {
+      Notification({ type: 'error', text: t('key_already_exist') });
+    },
   });
 
   const { appendData: updateTranslation, isLoading: isUpdateTranslation } = useQueryApiClient({
