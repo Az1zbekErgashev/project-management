@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { StyledRequestStatusPage } from './style';
-import { Button, ConfirmModal, Input, Table } from 'ui';
+import { Button, ConfirmModal, Input, Table, Notification } from 'ui';
 import { useTranslation } from 'react-i18next';
 import { TFunction } from 'i18next';
 import SvgSelector from 'assets/icons/SvgSelector';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
 import { smoothScroll } from 'utils/globalFunctions';
-import { ColorPicker, Form, Modal } from 'antd';
+import { Checkbox, ColorPicker, Form, Modal } from 'antd';
 import { StyledTranslation } from '../Translations/styled';
 import { useSearchParams } from 'react-router-dom';
+import { ColumnsType } from 'antd/es/table';
 
 const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
   cancelText: t('cancel'),
@@ -37,7 +38,49 @@ export function RequestStatusPage() {
   const [id, setId] = useState<number | null>(null);
   const { t } = useTranslation();
   const [form] = Form.useForm();
-  const columns = [
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  const { data: requestStatus, refetch } = useQueryApiClient({
+    request: {
+      url: `/api/processingstatus`,
+      disableOnMount: true,
+      data: queryParams,
+    },
+  });
+
+  const columns: ColumnsType<any> = [
+    {
+      title: (
+        <Checkbox
+          checked={selectedIds.length > 0 && selectedIds.length === requestStatus?.data?.items.length}
+          indeterminate={selectedIds.length > 0 && selectedIds.length < requestStatus?.data?.items.length}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            if (checked) {
+              const allIds = requestStatus?.data?.items.map((item: { id: any; }) => item.id) || [];
+              setSelectedIds(allIds);
+            } else {
+              setSelectedIds([]);
+            }
+          }}
+        />
+      ),
+      key: 'select',
+      fixed: 'left',
+      width: 50,
+      render: (_: any, record: { id: number; }) => (
+        <Checkbox
+          checked={selectedIds.includes(record.id)}
+          onChange={(e) => {
+            const checked = e.target.checked;
+            setSelectedIds((prev) =>
+              checked ? [...prev, record.id] : prev.filter((id) => id !== record.id)
+            );
+          }}
+        />
+      ),
+    },
+    
     {
       title: t('id'),
       dataIndex: 'id',
@@ -98,14 +141,6 @@ export function RequestStatusPage() {
     setQueryParams((res) => ({ ...res, pageIndex: page, pageSize: pageSize }));
   };
 
-  const { data: requestStatus, refetch } = useQueryApiClient({
-    request: {
-      url: `/api/processingstatus`,
-      disableOnMount: true,
-      data: queryParams,
-    },
-  });
-
   const { refetch: deleteRequest } = useQueryApiClient({
     request: {
       url: `/api/processingstatus?id=${id}`,
@@ -116,6 +151,29 @@ export function RequestStatusPage() {
     },
   });
 
+  const { refetch: deleteRequests } = useQueryApiClient({
+    request: {
+      url: '/api/processingstatus/list',
+      method: 'DELETE',
+      data: selectedIds
+    },
+    onSuccess: () => {
+      Notification({ type: 'info', text: t('request_deleted') });
+      setSelectedIds([]);
+      refetch(); 
+    },
+    onError: () => {
+      Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+  });
+
+  console.log(selectedIds);
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.length === 0) return;
+    await deleteRequests();
+  };
+  
   const { appendData: createData } = useQueryApiClient({
     request: {
       url: '/api/processingstatus',
@@ -180,11 +238,21 @@ export function RequestStatusPage() {
     <StyledRequestStatusPage>
       <div className="header-line">
         <h1 className="global-title">{t('statuses')}</h1>
+      <div style={{display: "flex", gap: "10px"}}> 
+        {selectedIds.length > 0 && (
+        <Button
+          type="primary"
+          danger
+          onClick={() => handleDeleteSelected()}
+          label={t('delete_selected')}
+       />
+      )}
         <Button
           label={t('add_request_status')}
           type="primary"
           onClick={() => setOpen({ type: 'ADD', open: true, status: null })}
         />
+      </div>
       </div>
 
       <div className="table-div">

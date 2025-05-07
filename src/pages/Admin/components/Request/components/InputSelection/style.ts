@@ -101,7 +101,7 @@ export const StyledInputSelection = styled.div`
     display: flex;
     flex-direction: column;
     row-gap: 15px;
-    justify-content: flex-start;
+    justify-content: flex-end;
     margin-bottom: 50px;
 
     &:second-child {

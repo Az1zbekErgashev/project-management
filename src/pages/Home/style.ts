@@ -167,8 +167,8 @@ export const StyledHomePage = styled.div`
       margin-bottom: 20px;
 
       h1 {
-        font-size: 36px;
-        font-weight: 700;
+        font-size: 37px;
+        font-weight: 600;
         margin: 0;
       }
     }
@@ -194,12 +194,13 @@ export const StyledHomePage = styled.div`
         .metric-title {
           font-size: 24px;
           color: #333;
+          font-weight: 560;
           margin-bottom: 10px;
         }
 
         .metric-value {
           font-size: 20px;
-          font-weight: 700;
+          font-weight: 550;
           color: #333;
           margin-bottom: 5px;
         }
@@ -212,8 +213,8 @@ export const StyledHomePage = styled.div`
     }
 
     .section-title {
-      font-size: 35px;
-      font-weight: 600;
+      font-size: 30px;
+      font-weight: 500;
       margin: 30px 0 15px;
     }
 
