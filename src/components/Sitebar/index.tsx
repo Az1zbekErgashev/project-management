@@ -53,6 +53,8 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
     }
   }, [isCollapsed]);
 
+  console.log(user);
+
   return (
     <StyledSitebar>
       <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>
@@ -66,7 +68,7 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
         </header>
         <nav className="sidebar-nav">
           <ul className="nav-list primary-nav">
-            {user?.role !== 'employees'
+            {user?.role !== 'Employees'
               ? ADMIN_NAVIGATE.map((item, index) =>
                   item.key === 'requests' ? (
                     <div key={index} className="nav-item dropdown">

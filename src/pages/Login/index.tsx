@@ -24,7 +24,7 @@ export function LoginPage() {
     onSuccess(response) {
       set(response.data.token, 86400);
       setUser(response.data);
-      navigate('/', { replace: true });
+      navigate('/');
     },
     onError() {
       form.setFields([

@@ -85,12 +85,6 @@ export function Dashboard(): JSX.Element {
     const categoryData = pieChartData?.data?.find((item: any) => item.Category === categoryName);
     if (!categoryData) return [];
 
-    // return statusKeys?.map((key) => ({
-    //   name: key,
-    //   value: categoryData[key] as number,
-    //   color: statusColors[key],
-    // }));
-
     return [
       { name: 'Made', value: categoryData.Made || 0, color: statusColors.Made },
       { name: 'Failed', value: categoryData.Failed || 0, color: statusColors.Failed },

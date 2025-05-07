@@ -10,6 +10,7 @@ import { smoothScroll } from 'utils/globalFunctions';
 import { ColorPicker, Form, Modal } from 'antd';
 import { StyledTranslation } from '../Translations/styled';
 import { useSearchParams } from 'react-router-dom';
+import { render } from 'react-dom';
 
 const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
   cancelText: t('cancel'),
@@ -45,7 +46,12 @@ export function RequestStatusPage() {
       render: (_: any, record: any, index: number) =>
         (requestStatus?.data?.pageIndex - 1) * requestStatus?.data?.itemsPerPage + index + 1,
     },
-    { title: t('color_title'), dataIndex: 'text', key: 'text' },
+    {
+      title: t('color_title'),
+      dataIndex: 'text',
+      key: 'text',
+      render: (text: string, record: any) => <div style={{ color: record.color, fontWeight: '800' }}>{text}</div>,
+    },
     {
       title: t('color'),
       dataIndex: 'color',
@@ -62,12 +68,21 @@ export function RequestStatusPage() {
       key: 'action',
       render: (_: any, record: any) => (
         <div className="actions">
-          <Button
-            label={t('delete')}
-            onClick={() => handleDelete(record.id)}
-            danger
-            icon={<SvgSelector id="trash" />}
-          />
+          {record.isDeleted == 0 ? (
+            <Button
+              label={t('delete')}
+              onClick={() => handleDelete(record.id)}
+              danger
+              icon={<SvgSelector id="trash" />}
+            />
+          ) : (
+            <Button
+              label={t('recover')}
+              onClick={() => handleDelete(record.id)}
+              danger
+              icon={<SvgSelector id="eye" />}
+            />
+          )}
           <Button
             type="primary"
             label={t('edit')}

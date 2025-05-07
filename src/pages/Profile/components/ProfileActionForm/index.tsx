@@ -24,14 +24,7 @@ interface props {
   setPasswordStatus: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export function ProfileActionForm({
-  actionForm,
-  setActionForm,
-  image,
-  passwordStatus,
-  setImage,
-  setPasswordStatus,
-}: props) {
+export function ProfileActionForm({ image, setImage }: props) {
   const { t } = useTranslation();
 
   const [disable, setDisable] = useState<boolean>(false);
@@ -170,7 +163,11 @@ export function ProfileActionForm({
                 rel="preload"
                 loading="lazy"
                 src={
-                  image?.img ? URL.createObjectURL(image.img) : image?.path ? routes.api.baseUrl + '/' + image.path : ''
+                  image?.img
+                    ? URL.createObjectURL(image.img)
+                    : image?.path
+                      ? routes.api.baseUrl + '/api/' + image.path
+                      : ''
                 }
                 fallback={defaultImageUrl}
                 preview={false}
