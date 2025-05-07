@@ -71,29 +71,14 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
     },
   });
 
-  const validateImage = async (file: File): Promise<boolean> => {
+  const validateImage = async (file: File) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     if (!allowedTypes.includes(file.type)) {
       Notification({ type: 'error', text: t('CreateCvNotificationAvatarType') });
       return false;
     }
-
-    const image = new window.Image();
-
-    image.src = URL.createObjectURL(file);
-
-    return new Promise<boolean>((resolve) => {
-      image.onload = () => {
-        URL.revokeObjectURL(image.src);
-      };
-
-      image.onerror = () => {
-        Notification({ type: 'error', text: t('CreateCvNotificationAvatarLoadError') });
-        resolve(false);
-        URL.revokeObjectURL(image.src);
-      };
-    });
+    return true;
   };
 
   const handleFileSelect = (file: File) => {

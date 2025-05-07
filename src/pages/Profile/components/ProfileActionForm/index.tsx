@@ -36,29 +36,14 @@ export function ProfileActionForm({ image, setImage }: props) {
     },
   });
 
-  const validateImage = async (file: File): Promise<boolean> => {
+  const validateImage = async (file: File) => {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     if (!allowedTypes.includes(file.type)) {
       Notification({ type: 'error', text: t('CreateCvNotificationAvatarType') });
       return false;
     }
-
-    const image = new window.Image();
-
-    image.src = URL.createObjectURL(file);
-
-    return new Promise<boolean>((resolve) => {
-      image.onload = () => {
-        URL.revokeObjectURL(image.src);
-      };
-
-      image.onerror = () => {
-        Notification({ type: 'error', text: t('CreateCvNotificationAvatarLoadError') });
-        resolve(false);
-        URL.revokeObjectURL(image.src);
-      };
-    });
+    return true;
   };
 
   const handleFileSelect = (file: File) => {
@@ -130,11 +115,7 @@ export function ProfileActionForm({ image, setImage }: props) {
                 rel="preload"
                 loading="lazy"
                 src={
-                  image?.img
-                    ? URL.createObjectURL(image.img)
-                    : image?.path
-                      ? routes.api.baseUrl + '/api/' + image.path
-                      : ''
+                  image?.img ? URL.createObjectURL(image.img) : image?.path ? routes.api.baseUrl + '/' + image.path : ''
                 }
                 fallback={defaultImageUrl}
                 preview={false}
