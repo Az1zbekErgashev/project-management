@@ -19,6 +19,7 @@ import {
   YAxis,
 } from 'recharts';
 import { Select } from 'antd';
+import { t } from 'i18next';
 
 interface StatusChartData {
   name: string;
@@ -205,11 +206,11 @@ export function Dashboard(): JSX.Element {
                 {t('total_percent')} {metric.procent}%
               </div>
               <div className="metric-subtitle">
-                {t('total')} {metric.total}
+                {t('total')} {metric.total} {t('request')}
               </div>
             </div>
           ))}
-        </div>
+        </div>  
         <h2 className="section-title">{t('category_title_count')}</h2>
         <div className="status-tables">
           {countsData?.data?.map((table: any, index: any) => (
