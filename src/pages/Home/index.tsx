@@ -440,9 +440,7 @@ export function Dashboard(): JSX.Element {
                                 : name;
                       return [value, companyName];
                     }}
-                    labelFormatter={(label) =>
-                      `${t('common.month')}: ${monthMap[label as keyof typeof monthMap] || label}`
-                    }
+                    labelFormatter={(label) => `${monthMap[label as keyof typeof monthMap] || label}`}
                   />
                   <Legend
                     formatter={(value) => {
