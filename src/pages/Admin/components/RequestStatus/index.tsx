@@ -10,14 +10,13 @@ import { smoothScroll } from 'utils/globalFunctions';
 import { Checkbox, ColorPicker, Form, Modal } from 'antd';
 import { StyledTranslation } from '../Translations/styled';
 import { useSearchParams } from 'react-router-dom';
-import { render } from 'react-dom';
 import { ColumnsType } from 'antd/es/table';
 
-const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
+const createModalConfig = (t: TFunction, type: 'DELETE' | 'RECOVER', onConfirm: () => void, onCancel: () => void) => ({
   cancelText: t('cancel'),
-  confirmText: t('delete'),
-  title: t('delete_request_status_title'),
-  content: t('delete_request_status_description'),
+  confirmText: type === 'DELETE' ? t('delete') : t('recover'),
+  title: type === 'DELETE' ? t('delete_request_status_title') : t('recover_request_status_title'),
+  content: type === 'DELETE' ? t('delete_request_status_description') : t('recover_request_status_description'),
   open: true,
   onConfirm,
   onCancel,
@@ -30,13 +29,14 @@ export function RequestStatusPage() {
     status: null,
   });
   const [searchParams, _] = useSearchParams();
-  const [queryParams, setQueryParams] = useState<{ pageIndex: number; pageSize: number }>({
+  const [queryParams, setQueryParams] = useState<{ pageIndex: number; pageSize: number; isDeleted: number }>({
     pageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+    isDeleted: 0,
   });
   const [color, setColor] = useState<string>('#1677ff');
   const [coniformModal, setConiformModal] = useState<any>(null);
-  const [id, setId] = useState<number | null>(null);
+  const [id, setId] = useState<{ id: number; type: 'DELETE' | 'RECOVER' } | null>(null);
   const { t } = useTranslation();
   const [form] = Form.useForm();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -112,35 +112,38 @@ export function RequestStatusPage() {
           {record.isDeleted == 0 ? (
             <Button
               label={t('delete')}
-              onClick={() => handleDelete(record.id)}
+              onClick={() => handleDelete(record.id, 'DELETE')}
               danger
               icon={<SvgSelector id="trash" />}
             />
           ) : (
             <Button
               label={t('recover')}
-              onClick={() => handleDelete(record.id)}
+              onClick={() => handleDelete(record.id, 'RECOVER')}
               danger
               icon={<SvgSelector id="eye" />}
             />
           )}
-          <Button
-            type="primary"
-            label={t('edit')}
-            icon={<SvgSelector id="edit" />}
-            onClick={() => setOpen({ type: 'EDIT', open: true, status: record })}
-          />
+          {record.isDeleted == 0 && (
+            <Button
+              type="primary"
+              label={t('edit')}
+              icon={<SvgSelector id="edit" />}
+              onClick={() => setOpen({ type: 'EDIT', open: true, status: record })}
+            />
+          )}
         </div>
       ),
     },
   ];
 
-  const handleDelete = (key: number) => {
+  const handleDelete = (key: number, type: 'DELETE' | 'RECOVER') => {
     setConiformModal(
       createModalConfig(
         t,
+        type,
         () => {
-          setId(key);
+          setId({ id: key, type: type });
         },
         () => {
           setConiformModal(null);
@@ -156,7 +159,16 @@ export function RequestStatusPage() {
 
   const { refetch: deleteRequest } = useQueryApiClient({
     request: {
-      url: `/api/processingstatus?id=${id}`,
+      url: `/api/processingstatus?id=${id?.id}`,
+      method: 'DELETE',
+    },
+    onSuccess() {
+      refetch();
+    },
+  });
+  const { refetch: recoverRequest } = useQueryApiClient({
+    request: {
+      url: `/api/processingstatus/recover?id=${id?.id}`,
       method: 'DELETE',
     },
     onSuccess() {
@@ -179,12 +191,26 @@ export function RequestStatusPage() {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
     },
   });
+  const { refetch: recoverRequests } = useQueryApiClient({
+    request: {
+      url: '/api/processingstatus/recover-list',
+      method: 'DELETE',
+      data: selectedIds,
+    },
+    onSuccess: () => {
+      Notification({ type: 'info', text: t('request_recovered') });
+      setSelectedIds([]);
+      refetch();
+    },
+    onError: () => {
+      Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+  });
 
-  console.log(selectedIds);
-
-  const handleDeleteSelected = async () => {
+  const handleDeleteSelected = async (type: 'DELETE' | 'RECOVER') => {
     if (selectedIds.length === 0) return;
-    await deleteRequests();
+    if (type === 'DELETE') await deleteRequests();
+    else recoverRequests();
   };
 
   const { appendData: createData } = useQueryApiClient({
@@ -211,11 +237,14 @@ export function RequestStatusPage() {
   }, [queryParams]);
 
   useEffect(() => {
-    if (id) {
+    if (id?.id && id.type === 'DELETE') {
       deleteRequest();
-      setId(null);
-      setConiformModal(null);
+    } else if (id?.id && id.type === 'RECOVER') {
+      recoverRequest();
     }
+
+    setId(null);
+    setConiformModal(null);
   }, [id]);
 
   const handleClose = () => {
@@ -253,8 +282,27 @@ export function RequestStatusPage() {
         <h1 className="global-title">{t('statuses')}</h1>
         <div style={{ display: 'flex', gap: '10px' }}>
           {selectedIds.length > 0 && (
-            <Button type="primary" danger onClick={() => handleDeleteSelected()} label={t('delete_selected')} />
+            <Button
+              type="primary"
+              danger
+              onClick={() => handleDeleteSelected(queryParams.isDeleted === 0 ? 'DELETE' : 'RECOVER')}
+              label={queryParams.isDeleted === 0 ? t('delete_selected') : t('recover_selected')}
+            />
           )}
+          {queryParams.isDeleted === 0 ? (
+            <Button
+              label={t('deleted_status')}
+              type="primary"
+              onClick={() => setQueryParams((res) => ({ ...res, isDeleted: 1 }))}
+            />
+          ) : (
+            <Button
+              label={t('open_status')}
+              type="primary"
+              onClick={() => setQueryParams((res) => ({ ...res, isDeleted: 0 }))}
+            />
+          )}
+
           <Button
             label={t('add_request_status')}
             type="primary"
