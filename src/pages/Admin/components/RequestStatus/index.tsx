@@ -28,7 +28,7 @@ export function RequestStatusPage() {
     type: 'ADD',
     status: null,
   });
-  const [searchParams, _] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [queryParams, setQueryParams] = useState<{ pageIndex: number; pageSize: number; isDeleted: number }>({
     pageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
@@ -293,13 +293,31 @@ export function RequestStatusPage() {
             <Button
               label={t('deleted_status')}
               type="primary"
-              onClick={() => setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: 1 }))}
+              onClick={() => {
+                setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: 1 }));
+                setSearchParams((prev) => {
+                  return {
+                    ...prev,
+                    pageIndex: '1',
+                    pageSize: '10',
+                  };
+                });
+              }}
             />
           ) : (
             <Button
               label={t('open_status')}
               type="primary"
-              onClick={() => setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: 0 }))}
+              onClick={() => {
+                setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: 0 }));
+                setSearchParams((prev) => {
+                  return {
+                    ...prev,
+                    pageIndex: '1',
+                    pageSize: '10',
+                  };
+                });
+              }}
             />
           )}
 
