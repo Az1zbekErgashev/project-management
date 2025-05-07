@@ -101,7 +101,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
       <div className="form-div">
         <div className="form">
           <div className="form-content">
-          <div className="form-group">
+            <div className="form-group">
               <h3>{t('submission_info')}</h3>
               <DatePicker disabled={disable} name="date" label={t('date_created')} />
             </div>

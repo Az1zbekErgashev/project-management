@@ -161,10 +161,9 @@ export const StyledHomePage = styled.div`
   }
 
   .dashboard {
-    padding: 20px;
-
     .dashboard-header {
       margin-bottom: 20px;
+      padding: 30px;
 
       h1 {
         font-size: 37px;
@@ -184,11 +183,10 @@ export const StyledHomePage = styled.div`
         min-width: 200px;
         padding: 20px;
         background-color: #fff;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-
+        border-radius: 12px;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), 0 10px 15px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.25);
         &:first-child {
-          background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%)
+          background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
       }
 
         .metric-title {
@@ -206,7 +204,7 @@ export const StyledHomePage = styled.div`
         }
 
         .metric-subtitle {
-          font-size: 20px;
+          font-size: 17px;
           color: #333;
         }
       }
@@ -216,6 +214,7 @@ export const StyledHomePage = styled.div`
       font-size: 30px;
       font-weight: 500;
       margin: 30px 0 15px;
+      padding: 20px;
     }
 
     .status-tables {
@@ -229,11 +228,12 @@ export const StyledHomePage = styled.div`
         flex: 1;
         min-width: 250px;
         background-color: #fff;
-        border-radius: 8px;
+        border-radius: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         overflow: hidden;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), 0 10px 15px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.25);
         &:first-child {
-        background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%)
+        background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
       }
 
         .table-header {
@@ -245,6 +245,7 @@ export const StyledHomePage = styled.div`
           /* &:first-child() {
             background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
           } */
+          border-radius: 12px;
 
           .table-title {
             font-size: 20px;
