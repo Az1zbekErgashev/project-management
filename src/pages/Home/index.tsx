@@ -15,11 +15,12 @@ import {
   LineChart,
   ResponsiveContainer,
   Tooltip,
+  TooltipProps,
   XAxis,
   YAxis,
 } from 'recharts';
 import { Select } from 'antd';
-import { t } from 'i18next';
+import { NameType, ValueType } from 'recharts/types/component/DefaultTooltipContent';
 
 interface StatusChartData {
   name: string;
@@ -144,20 +145,50 @@ export function Dashboard(): JSX.Element {
     },
   });
 
-  interface CustomTooltipProps {
-    active?: boolean;
-    payload?: Array<{ value: number; name: string }>;
-    label?: string;
-  }
-
-  const CustomTooltip = ({ active, payload, label }: CustomTooltipProps): JSX.Element | null => {
+  const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
-          <p className="label">{`${label}`}</p>
+          <p
+            className="label"
+            style={{ color: statusColors[label] || '#000', fontWeight: 'bold', fontSize: 17 }}
+          >{`${label}`}</p>
           {payload.map((entry, index) => (
-            <p key={index} className="value">{`${entry.name}: ${entry.value}`}</p>
+            <p style={{ fontWeight: 'bold', fontSize: 17 }} key={index} className="value">{`${entry.value} 건`}</p>
           ))}
+        </div>
+      );
+    }
+    return null;
+  };
+
+  const CustomTooltipForProccesStatus = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+    if (active && payload && payload.length) {
+      const reason = reasonData?.data?.find((item: any) => item.name === label);
+      const reasonColor = reason?.color || '#000';
+      return (
+        <div className="custom-tooltip">
+          <p
+            className="label"
+            style={{ color: reasonColor || '#000', fontWeight: 'bold', fontSize: 17 }}
+          >{`${label}`}</p>
+          {payload.map((entry, index) => {
+            const categoryColor = CATEGORY_COLORS[entry.name || ''] || '#000';
+            return (
+              <p
+                key={index}
+                className="value"
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 17,
+                  color: categoryColor,
+                  margin: 0,
+                }}
+              >
+                {entry.name ? `${entry.name} : ${entry.value} 건` : `${entry.value} 건`}
+              </p>
+            );
+          })}
         </div>
       );
     }
@@ -217,6 +248,69 @@ export function Dashboard(): JSX.Element {
         </text>
       </g>
     );
+  };
+
+  const CustomTooltipForAllStatus = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: '#fff',
+            border: '1px solid #ccc',
+            padding: 10,
+            fontSize: 17,
+            color: statusColors[label] || '#000',
+          }}
+        >
+          <p style={{ margin: 0, fontWeight: 'bold' }}>{label}</p>
+          {payload.map((entry: any, index: number) => (
+            <p
+              key={`item-${index}`}
+              style={{
+                margin: 0,
+                color: entry.color,
+                fontWeight: 'bold',
+              }}
+            >
+              {entry.name} : {entry.value} 건
+            </p>
+          ))}
+        </div>
+      );
+    }
+
+    return null;
+  };
+
+  const CustomTooltipForMonth = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+    if (active && payload && payload.length) {
+      return (
+        <div
+          style={{
+            backgroundColor: '#fff',
+            border: '1px solid #ccc',
+            padding: 10,
+            fontSize: 17,
+          }}
+        >
+          <p style={{ margin: 0, fontWeight: 'bold' }}>{label && t(label == 'May' ? label : label.toLowerCase())}</p>
+          {payload.map((entry: any, index: number) => (
+            <p
+              key={`item-${index}`}
+              style={{
+                margin: 0,
+                color: entry.color,
+                fontWeight: 'bold',
+              }}
+            >
+              {entry.name} : {entry.value} 건
+            </p>
+          ))}
+        </div>
+      );
+    }
+
+    return null;
   };
 
   return (
@@ -339,10 +433,22 @@ export function Dashboard(): JSX.Element {
                             textAnchor="end"
                             height={20}
                             interval={0}
-                            tick={{
-                              fontSize: 12,
-                              dy: 10,
-                              dx: -10,
+                            tick={({ x, y, payload }: any) => {
+                              return (
+                                <text
+                                  x={x}
+                                  y={y + 10}
+                                  dx={-10}
+                                  dy={10}
+                                  textAnchor="end"
+                                  fill={statusColors[payload.value] || '#000'}
+                                  fontSize={14}
+                                  fontWeight="bold"
+                                  transform={`rotate(-45, ${x}, ${y})`}
+                                >
+                                  {payload.value}
+                                </text>
+                              );
                             }}
                           />
                           <YAxis />
@@ -377,9 +483,25 @@ export function Dashboard(): JSX.Element {
                     }}
                   >
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-                    <XAxis dataKey="name" />
+                    <XAxis
+                      dataKey="name"
+                      tick={({ x, y, payload }: any) => {
+                        return (
+                          <text
+                            x={x}
+                            y={y + 10}
+                            textAnchor="middle"
+                            fill={statusColors[payload.value] || '#000'}
+                            fontSize={14}
+                            fontWeight="bold"
+                          >
+                            {payload.value}
+                          </text>
+                        );
+                      }}
+                    />
                     <YAxis />
-                    <Tooltip />
+                    <Tooltip content={<CustomTooltipForAllStatus />} />
                     <Legend />
                     {pieChartData?.data?.map((category: any, index: number) => (
                       <Bar
@@ -413,7 +535,7 @@ export function Dashboard(): JSX.Element {
                     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
                     <XAxis type="number" />
                     <YAxis dataKey="name" type="category" width={150} tick={<CustomYAxisTick />} />
-                    <Tooltip content={<CustomTooltip />} />
+                    <Tooltip content={<CustomTooltipForProccesStatus />} />
                     <Legend />
                     {dataKeys.map((key, index) => (
                       <Bar key={key} dataKey={key} fill={CATEGORY_COLORS[key] || `hsl(${index * 45}, 70%, 50%)`} />
@@ -441,6 +563,7 @@ export function Dashboard(): JSX.Element {
                   />
                   <YAxis domain={[0, 4]} ticks={[0, 1, 2, 3, 4]} tick={{ fontSize: 12 }} />
                   <Tooltip
+                    content={<CustomTooltipForMonth />}
                     formatter={(value, name) => {
                       const companyName =
                         name === '와이즈스톤티'
