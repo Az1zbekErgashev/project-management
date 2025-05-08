@@ -274,7 +274,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
             {uploadedUrl && (
               <div className="file-link">
                 <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
-                  {fileInfo?.name || 'Uploaded File'}
+                  {fileInfo?.name || t('download_file')}
                 </a>
               </div>
             )}
