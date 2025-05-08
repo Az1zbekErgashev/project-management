@@ -192,7 +192,7 @@ export function Dashboard(): JSX.Element {
     Feb: t('feb'),
     Mar: t('mar'),
     Apr: t('apr'),
-    May: t('may'),
+    May: t('ma'),
     Jun: t('jun'),
     Jul: t('jul'),
     Aug: t('aug'),
@@ -431,7 +431,7 @@ export function Dashboard(): JSX.Element {
               <ResponsiveContainer width="100%" height={400}>
                 <LineChart
                   data={lineData?.data?.[selectedStatus]}
-                  margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                  margin={{ top: 20, right: 40, left: 20, bottom: 10 }}
                 >
                   <CartesianGrid strokeDasharray="3 3" />
                   <XAxis
