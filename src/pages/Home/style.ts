@@ -166,9 +166,11 @@ export const StyledHomePage = styled.div`
       padding: 30px;
 
       h1 {
-        font-size: 37px;
-        font-weight: 600;
+        font-size: 50px;
+        /* font-weight: 600; */
         margin: 0;
+        font-family: 'NewKoreanFont';     
+        font-weight: bold;
       }
     }
 
@@ -212,7 +214,7 @@ export const StyledHomePage = styled.div`
 
     .section-title {
       font-size: 30px;
-      font-weight: 500;
+      font-weight: 700;
       margin: 30px 0 15px;
       padding: 20px;
     }
