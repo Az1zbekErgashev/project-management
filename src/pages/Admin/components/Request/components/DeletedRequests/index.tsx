@@ -13,6 +13,7 @@ import Pagination from 'ui/Pagination/Pagination';
 import { useSearchParams } from 'react-router-dom';
 import { ConfirmModal, Notification } from 'ui';
 import { TFunction } from 'i18next';
+import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 interface queryParamsType {
   PageSize: number;
@@ -43,7 +44,7 @@ const createModalConfig = (
 
 export function DeletedRequests() {
   const { t } = useTranslation();
-  const [searchParams, _] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [isDeleting, setIsDeleting] = useState(false);
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
@@ -333,6 +334,8 @@ export function DeletedRequests() {
   const resetFileds = () => {
     setQueryParams((res) => ({ ...res, requestTitle: undefined, category: undefined, text: undefined }));
   };
+
+  usePaginationAutoCorrect(requests?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledRequestList className="deleted-requests">

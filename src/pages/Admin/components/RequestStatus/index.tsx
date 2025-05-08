@@ -11,6 +11,7 @@ import { Checkbox, ColorPicker, Form, Modal } from 'antd';
 import { StyledTranslation } from '../Translations/styled';
 import { useSearchParams } from 'react-router-dom';
 import { ColumnsType } from 'antd/es/table';
+import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 const createModalConfig = (
   t: TFunction,
@@ -371,6 +372,8 @@ export function RequestStatusPage() {
     });
     setSelectedIds([]);
   };
+
+  usePaginationAutoCorrect(requestStatus?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledRequestStatusPage>

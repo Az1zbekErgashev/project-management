@@ -15,6 +15,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import useJwt from 'utils/useJwt';
 import { useLanguage } from 'contexts/LanguageContext';
 import { TFunction } from 'i18next';
+import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 interface queryParamsType {
   PageSize: number;
@@ -36,7 +37,7 @@ const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => 
 
 export function Request() {
   const { t } = useTranslation();
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
@@ -153,6 +154,8 @@ export function Request() {
       method: 'GET',
     },
   });
+
+  usePaginationAutoCorrect(requests?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledRequests>
