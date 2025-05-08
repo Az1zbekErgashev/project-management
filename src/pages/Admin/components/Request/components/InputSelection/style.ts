@@ -170,7 +170,7 @@ export const StyledInputSelection = styled.div`
   }
 
   .file-upload-container {
-    min-width: 250px;
+    min-width: 160px;
     position: relative; /* For positioning the delete button */
     display: flex;
     flex-direction: column;
