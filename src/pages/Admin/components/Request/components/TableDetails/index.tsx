@@ -138,6 +138,7 @@ export function TableDetail() {
             setDisable={setDisable}
             disable={disable}
             form={form}
+            handleFetchClick={handleFetchClick}
           />
         </Form>
         <br />

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea } from 'ui';
 import { FormInstance } from 'antd/lib';
@@ -8,7 +8,7 @@ import { PROJECT_STATUS } from 'utils/consts';
 import { CloseCircleOutlined, UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import Tooltip from 'antd/lib/tooltip';
-import { message, Upload } from 'antd';
+import { Upload } from 'antd';
 
 interface Props {
   form: FormInstance;
@@ -17,9 +17,10 @@ interface Props {
   request: any;
   filePath: string | null;
   setFilePath: (value: string | null) => void;
+  handleFetchClick: () => void;
 }
 
-export function InputSelection({ form, disable, setDisable, request, filePath, setFilePath }: Props) {
+export function InputSelection({ form, disable, setDisable, request, filePath, setFilePath, handleFetchClick }: Props) {
   const [fileList, setFileList] = useState<File | null>(null);
   const { t } = useTranslation();
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
   const [fileInfo, setFileInfo] = useState<any>(null);
   const [uploadedUrl, setUploadedUrl] = useState<any>(null);
-
+  const [file, setFile] = useState<File | null>();
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url: window.location.pathname.includes('request-detail')
@@ -57,6 +58,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
         name: info.file.name,
         size: (info.file.size / 1024).toFixed(2) + ' KB',
       });
+      setFile(info.file);
       setUploadedUrl(null);
     }
   };
@@ -106,6 +108,21 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
       }
     }, 2000);
   };
+
+  const { refetch: uploadFile } = useQueryApiClient({
+    request: {
+      url: '/api/request/upload-file',
+      data: { id: request?.data?.id, file: file },
+      method: 'POST',
+      multipart: true,
+    },
+  });
+
+  useEffect(() => {
+    if (file) {
+      uploadFile();
+    }
+  }, [file]);
 
   return (
     <StyledInputSelection>
@@ -200,7 +217,10 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
               <div className="action-btns">
                 {window.location.pathname.includes('request-detail') && !disable && (
                   <Button
-                    onClick={() => setDisable(true)}
+                    onClick={() => {
+                      setDisable(true);
+                      handleFetchClick();
+                    }}
                     label={t('cancel_to_view_mode')}
                     htmlType="button"
                     loading={isLoading}

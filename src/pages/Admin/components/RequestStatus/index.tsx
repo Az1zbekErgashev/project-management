@@ -207,6 +207,26 @@ export function RequestStatusPage() {
       setConiformModal(null);
     },
   });
+
+  const { refetch: hardDeleteRequests } = useQueryApiClient({
+    request: {
+      url: '/api/processingstatus/hard-delete-list',
+      method: 'DELETE',
+      data: selectedIds,
+    },
+    onSuccess: () => {
+      Notification({ type: 'info', text: t('request_status_deleted') });
+      setSelectedIds([]);
+      refetch();
+    },
+    onError: () => {
+      Notification({ type: 'error', text: t('failed_to_delete_requests') });
+    },
+    onFinally() {
+      setConiformModal(null);
+    },
+  });
+
   const { refetch: recoverRequests } = useQueryApiClient({
     request: {
       url: '/api/processingstatus/recover-list',
@@ -264,7 +284,7 @@ export function RequestStatusPage() {
         createModalConfig(
           t,
           () => {
-            recoverRequests();
+            hardDeleteRequests();
           },
           () => {
             setConiformModal(null);
