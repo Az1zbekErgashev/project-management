@@ -101,7 +101,7 @@ export const StyledHomePage = styled.div`
   }
 
   .metric-subtitle {
-    font-size: 20px;
+    font-size: 23px;
     color: #999;
   }
 
