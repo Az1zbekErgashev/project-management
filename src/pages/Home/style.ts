@@ -163,7 +163,7 @@ export const StyledHomePage = styled.div`
   .dashboard {
     .dashboard-header {
       margin-bottom: 20px;
-      padding: 30px;
+      padding:20px;
 
       h1 {
         font-size: 50px;
@@ -189,6 +189,9 @@ export const StyledHomePage = styled.div`
         box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), 0 10px 15px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.25);
         &:first-child {
           background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
+        &:first-child {
+          
+        }
       }
 
         .metric-title {
@@ -204,12 +207,15 @@ export const StyledHomePage = styled.div`
           color: #333;
           margin-bottom: 5px;
         }
-
         .metric-subtitle {
-          font-size: 17px;
+          font-weight: 500;
+          font-size: 20px;
           color: #333;
         }
       }
+    }
+    .metric-card:first-child .metric-value {
+        display: none;
     }
 
     .section-title {
