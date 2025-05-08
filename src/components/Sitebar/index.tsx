@@ -53,8 +53,6 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
     }
   }, [isCollapsed]);
 
-  console.log(user);
-
   return (
     <StyledSitebar>
       <aside className={`sidebar ${isCollapsed ? 'collapsed' : ''}`}>

@@ -5,10 +5,10 @@ import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
-import { CloseCircleOutlined, UploadOutlined, CloseOutlined } from '@ant-design/icons';
+import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import Tooltip from 'antd/lib/tooltip';
 import { Upload } from 'antd';
+import { routes } from 'config/config';
 
 interface Props {
   form: FormInstance;
@@ -28,7 +28,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
   const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
   const [fileInfo, setFileInfo] = useState<any>(null);
   const [uploadedUrl, setUploadedUrl] = useState<any>(null);
-  const [file, setFile] = useState<File | null>();
+  const [file, setFile] = useState<any>(null);
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url: window.location.pathname.includes('request-detail')
@@ -66,6 +66,10 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
   const handleDelete = () => {
     setUploadedUrl(null);
     setFileInfo(null);
+    const formData = new FormData();
+    formData.append('id', request?.data?.id);
+    formData.append('file', '');
+    uploadFile(formData);
     Notification({ text: t('file_removed'), type: 'error' });
   };
 
@@ -94,33 +98,38 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
     },
   });
 
-  const customRequest = ({ file, onSuccess, onError }: any) => {
-    setTimeout(() => {
-      try {
-        const url = `https://example.com/uploads/${file.name}`;
-        setUploadedUrl(url);
-        setFileInfo(null);
-        onSuccess('ok');
-        Notification({ text: t('file_uploaded'), type: 'error' });
-      } catch (err) {
-        onError('Upload failed');
-        Notification({ text: t('file_removed'), type: 'error' });
-      }
-    }, 2000);
-  };
-
-  const { refetch: uploadFile } = useQueryApiClient({
+  const { appendData: uploadFile } = useQueryApiClient({
     request: {
       url: '/api/request/upload-file',
-      data: { id: request?.data?.id, file: file },
       method: 'POST',
       multipart: true,
+    },
+    onSuccess() {
+      getFileUrl();
+    },
+  });
+
+  const { refetch: getFileUrl } = useQueryApiClient({
+    request: {
+      url: `/api/request/get-uploaded-file?id=${id}`,
+      method: 'GET',
+    },
+    onSuccess(response) {
+      if (response?.data) {
+        const url = routes.api.baseUrl + '/' + response?.data;
+        setUploadedUrl(url);
+      } else setUploadedUrl(null);
+
+      setFileInfo(null);
     },
   });
 
   useEffect(() => {
     if (file) {
-      uploadFile();
+      const formData = new FormData();
+      formData.append('id', request?.data?.id);
+      formData.append('file', file.originFileObj);
+      uploadFile(formData);
     }
   }, [file]);
 
@@ -244,58 +253,31 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
       </div>
       <div className="upload-container">
         <div className="form-group upload-group">
-          <div className="upload-container">
-            {(fileList || filePath) && (
-              <Tooltip
-                color="#ffffff"
-                style={{ color: 'black' }}
-                placement="top"
-                title={<span style={{ color: 'var(--black)' }}>{t('delete_attachment')}</span>}
-                trigger={'hover'}
-              >
-                <button
-                  disabled={disable}
-                  onClick={() => {
-                    setFileList(null);
-                    setFilePath(null);
-                  }}
-                  className="delete-svg"
-                >
-                  <CloseCircleOutlined />
-                </button>
-              </Tooltip>
+          <div className="file-upload-container">
+            {uploadedUrl && (
+              <button className="delete-button" onClick={handleDelete}>
+                <CloseOutlined />
+              </button>
             )}
-            <div className="file-upload-container">
-              {(fileInfo || uploadedUrl) && (
-                <button className="delete-button" onClick={handleDelete}>
-                  <CloseOutlined />
-                </button>
-              )}
 
-              <Upload
-                customRequest={customRequest}
-                onChange={handleChange}
-                showUploadList={false}
-                accept=".pdf,.doc,.docx,.txt"
-              >
-                <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
-              </Upload>
+            <Upload onChange={handleChange} showUploadList={false} accept=".pdf,.doc,.docx,.txt">
+              <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
+            </Upload>
 
-              {fileInfo && (
-                <div className="file-info">
-                  <span className="file-name">{fileInfo.name}</span>
-                  <span className="file-size">({fileInfo.size})</span>
-                </div>
-              )}
+            {fileInfo && (
+              <div className="file-info">
+                <span className="file-name">{fileInfo.name}</span>
+                <span className="file-size">({fileInfo.size})</span>
+              </div>
+            )}
 
-              {uploadedUrl && (
-                <div className="file-link">
-                  <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
-                    {fileInfo?.name || 'Uploaded File'}
-                  </a>
-                </div>
-              )}
-            </div>
+            {uploadedUrl && (
+              <div className="file-link">
+                <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
+                  {fileInfo?.name || 'Uploaded File'}
+                </a>
+              </div>
+            )}
           </div>
         </div>
       </div>
