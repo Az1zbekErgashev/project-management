@@ -11,8 +11,6 @@ export function ReasonCard() {
     },
   });
 
-  console.log('countsData', countsData);
-
   return (
     <React.Fragment>
       {countsData?.data?.map((table: any, index: number) => (

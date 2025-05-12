@@ -115,7 +115,7 @@ export const StyledHomePage = styled.div`
   }
 
   .status-table {
-    min-width: 300px;
+    min-width: 500px;
     background-color: white;
     border-radius: 8px;
     padding: 20px;
@@ -140,7 +140,7 @@ export const StyledHomePage = styled.div`
   .status-rows {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 1px;
   }
 
   .status-row {
