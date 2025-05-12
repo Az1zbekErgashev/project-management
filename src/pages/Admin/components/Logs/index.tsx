@@ -7,7 +7,6 @@ import { useTranslation } from 'react-i18next';
 import { LogsFilter } from './components/LogsFilter';
 import dayjs, { Dayjs } from 'dayjs';
 import { useSearchParams } from 'react-router-dom';
-import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 interface initalQuery {
   PageIndex: number;
@@ -20,7 +19,7 @@ interface initalQuery {
 }
 
 export function Logs() {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [queryParams, setQueryParams] = useState<initalQuery>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
@@ -64,8 +63,6 @@ export function Logs() {
       EndDate: undefined,
     }));
   };
-
-  usePaginationAutoCorrect(logs?.data, setQueryParams, setSearchParams);
 
   return (
     <div>

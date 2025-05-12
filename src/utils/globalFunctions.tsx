@@ -174,3 +174,37 @@ export const parseDate = (dateString: string) => {
 export const separateIntegratedString = (string: string | null) => {
   return string?.replace(/([A-Z][a-z]*)/g, ' $1').trim();
 };
+
+interface SyncPaginationParams {
+  totalItems: number;
+  itemsPerPage: number;
+  currentPageIndex: number;
+  deletedCount: number;
+  setSearchParams: (params: Record<string, string>) => void;
+  setQueryParams: (callback: (prev: any) => any) => void;
+  pageSize?: number;
+}
+
+export function syncPaginationAfterDelete({
+  totalItems,
+  itemsPerPage,
+  currentPageIndex,
+  deletedCount,
+  setSearchParams,
+  setQueryParams,
+  pageSize = 10,
+}: SyncPaginationParams) {
+  const totalItemsAfterDelete = totalItems - deletedCount;
+  const totalPagesAfterDelete = Math.ceil(totalItemsAfterDelete / itemsPerPage);
+  const newPageIndex = Math.min(currentPageIndex, totalPagesAfterDelete || 1);
+
+  setSearchParams({
+    pageIndex: newPageIndex.toString(),
+    pageSize: pageSize.toString(),
+  });
+
+  setQueryParams((prev: any) => ({
+    ...prev,
+    PageIndex: newPageIndex,
+  }));
+}

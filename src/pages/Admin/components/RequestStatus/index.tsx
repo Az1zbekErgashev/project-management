@@ -6,12 +6,11 @@ import { TFunction } from 'i18next';
 import SvgSelector from 'assets/icons/SvgSelector';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
-import { smoothScroll } from 'utils/globalFunctions';
+import { smoothScroll, syncPaginationAfterDelete } from 'utils/globalFunctions';
 import { Checkbox, ColorPicker, Form, Modal } from 'antd';
 import { StyledTranslation } from '../Translations/styled';
-import { useSearchParams } from 'react-router-dom';
 import { ColumnsType } from 'antd/es/table';
-import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
+import { useSearchParams } from 'react-router-dom';
 
 const createModalConfig = (
   t: TFunction,
@@ -37,9 +36,9 @@ export function RequestStatusPage() {
     status: null,
   });
   const [searchParams, setSearchParams] = useSearchParams();
-  const [queryParams, setQueryParams] = useState<{ pageIndex: number; pageSize: number; isDeleted: number }>({
-    pageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
-    pageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+  const [queryParams, setQueryParams] = useState<{ PageIndex: number; PageSize: number; isDeleted: number }>({
+    PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
+    PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
     isDeleted: 0,
   });
   const [color, setColor] = useState<string>('#1677ff');
@@ -166,7 +165,7 @@ export function RequestStatusPage() {
 
   const handlePaginationChange = (page: number, pageSize: number) => {
     smoothScroll('top', 0);
-    setQueryParams((res) => ({ ...res, pageIndex: page, pageSize: pageSize }));
+    setQueryParams((res) => ({ ...res, PageIndex: page, PageSize: pageSize }));
   };
 
   const { refetch: deleteRequest } = useQueryApiClient({
@@ -176,7 +175,15 @@ export function RequestStatusPage() {
     },
     onSuccess() {
       Notification({ type: 'info', text: t('request_status_deleted') });
-      refetch();
+      syncPaginationAfterDelete({
+        totalItems: requestStatus?.data?.totalItems ?? 0,
+        itemsPerPage: requestStatus?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryParams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryParams.PageSize,
+      });
     },
   });
   const { refetch: recoverRequest } = useQueryApiClient({
@@ -186,7 +193,15 @@ export function RequestStatusPage() {
     },
     onSuccess() {
       Notification({ type: 'info', text: t('request_status_deleted') });
-      refetch();
+      syncPaginationAfterDelete({
+        totalItems: requestStatus?.data?.totalItems ?? 0,
+        itemsPerPage: requestStatus?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryParams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryParams.PageSize,
+      });
     },
   });
 
@@ -199,7 +214,15 @@ export function RequestStatusPage() {
     onSuccess: () => {
       Notification({ type: 'info', text: t('request_status_deleted') });
       setSelectedIds([]);
-      refetch();
+      syncPaginationAfterDelete({
+        totalItems: requestStatus?.data?.totalItems ?? 0,
+        itemsPerPage: requestStatus?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryParams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryParams.PageSize,
+      });
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
@@ -218,7 +241,15 @@ export function RequestStatusPage() {
     onSuccess: () => {
       Notification({ type: 'info', text: t('request_status_deleted') });
       setSelectedIds([]);
-      refetch();
+      syncPaginationAfterDelete({
+        totalItems: requestStatus?.data?.totalItems ?? 0,
+        itemsPerPage: requestStatus?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryParams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryParams.PageSize,
+      });
     },
     onError: () => {
       Notification({ type: 'error', text: t('failed_to_delete_requests') });
@@ -363,17 +394,8 @@ export function RequestStatusPage() {
 
   const handleChangePage = (deleted: number) => {
     setQueryParams((res) => ({ ...res, pageIndex: 1, pageSize: 10, isDeleted: deleted }));
-    setSearchParams((prev) => {
-      return {
-        ...prev,
-        pageIndex: '1',
-        pageSize: '10',
-      };
-    });
     setSelectedIds([]);
   };
-
-  usePaginationAutoCorrect(requestStatus?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledRequestStatusPage>

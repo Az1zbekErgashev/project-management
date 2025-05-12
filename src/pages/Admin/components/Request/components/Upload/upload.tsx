@@ -7,7 +7,7 @@ interface UploadModalProps {
   onClose: () => void;
   filetState: any;
   setFileState: any;
-  getRequests: any;
+  getRequests: () => void;
 }
 
 const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileState, getRequests }) => {
@@ -47,7 +47,7 @@ const UploadModal: React.FC<UploadModalProps> = ({ onClose, filetState, setFileS
     },
     onFinally() {
       onClose();
-      getRequests((res: any) => ({ ...res }));
+      getRequests();
     },
   });
 

@@ -11,7 +11,6 @@ import { TFunction } from 'i18next';
 import { Form } from 'antd';
 import { TranslationActionForm } from './components/TranslationsActionForm';
 import { useSearchParams } from 'react-router-dom';
-import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 interface initalQuery {
   PageIndex: number;
@@ -38,7 +37,7 @@ const createModalConfig = (
 
 export function Translations() {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [queryParams, setQueryParams] = useState<initalQuery>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
@@ -158,8 +157,6 @@ export function Translations() {
         return;
       });
   };
-
-  usePaginationAutoCorrect(translations?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledTranslation>

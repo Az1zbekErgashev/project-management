@@ -8,12 +8,11 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { RequestFilter } from '../RequestFilter';
 import Tooltip from 'antd/lib/tooltip';
-import { smoothScroll } from 'utils/globalFunctions';
+import { smoothScroll, syncPaginationAfterDelete } from 'utils/globalFunctions';
 import Pagination from 'ui/Pagination/Pagination';
-import { useSearchParams } from 'react-router-dom';
 import { ConfirmModal, Notification } from 'ui';
 import { TFunction } from 'i18next';
-import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
+import { useSearchParams } from 'react-router-dom';
 
 interface queryParamsType {
   PageSize: number;
@@ -234,7 +233,15 @@ export function DeletedRequests() {
     },
     onSuccess: () => {
       Notification({ type: 'delete', text: t('request_deleted') });
-      setQueryParams((res) => ({ ...res }));
+      syncPaginationAfterDelete({
+        totalItems: requests?.data?.totalItems ?? 0,
+        itemsPerPage: requests?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryparams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryparams.PageSize,
+      });
       setSelectedIds([]);
       setActionModal(null);
     },
@@ -251,7 +258,15 @@ export function DeletedRequests() {
     },
     onSuccess: () => {
       Notification({ type: 'success', text: t('request_recovered') });
-      setQueryParams((res) => ({ ...res }));
+      syncPaginationAfterDelete({
+        totalItems: requests?.data?.totalItems ?? 0,
+        itemsPerPage: requests?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryparams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryparams.PageSize,
+      });
       setSelectedIds([]);
       setActionModal(null);
     },
@@ -334,8 +349,6 @@ export function DeletedRequests() {
   const resetFileds = () => {
     setQueryParams((res) => ({ ...res, requestTitle: undefined, category: undefined, text: undefined }));
   };
-
-  usePaginationAutoCorrect(requests?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledRequestList className="deleted-requests">

@@ -12,7 +12,6 @@ import { TFunction } from 'i18next';
 import { Form } from 'antd';
 import { UserInformation } from './components/UserInformation';
 import { useSearchParams } from 'react-router-dom';
-import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 interface initalQuery {
   PageIndex: number;
@@ -50,7 +49,7 @@ const createModalConfig = (
 
 export function AdminUsers() {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, _] = useSearchParams();
   const [queryParams, setQueryParams] = useState<initalQuery>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
@@ -210,8 +209,6 @@ export function AdminUsers() {
       IsDeleted: undefined,
     }));
   };
-
-  usePaginationAutoCorrect(users?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledAdminUsers>

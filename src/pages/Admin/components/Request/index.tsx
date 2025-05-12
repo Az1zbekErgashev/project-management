@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { RequestList } from './components/RequestList';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import Pagination from 'ui/Pagination/Pagination';
-import { smoothScroll } from 'utils/globalFunctions';
+import { smoothScroll, syncPaginationAfterDelete } from 'utils/globalFunctions';
 import { useTranslation } from 'react-i18next';
 import { Button, Spinner, Modal, Notification, ConfirmModal } from 'ui';
 import { DeleteOutlined } from '@ant-design/icons';
@@ -15,7 +15,6 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import useJwt from 'utils/useJwt';
 import { useLanguage } from 'contexts/LanguageContext';
 import { TFunction } from 'i18next';
-import { usePaginationAutoCorrect } from 'hooks/usePaginationAutoCorrect';
 
 interface queryParamsType {
   PageSize: number;
@@ -47,8 +46,8 @@ export function Request() {
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
   const [isDeleting, setIsDeleting] = useState(false);
   const [actionModal, setActionModal] = useState<any>();
-  const navigate = useNavigate();
   const [showUpload, setShowUpload] = useState(false);
+  const navigate = useNavigate();
   const { getHeader } = useJwt();
   const { language } = useLanguage();
   const getToken = getHeader();
@@ -56,12 +55,13 @@ export function Request() {
   const {
     data: requests,
     isLoading: isRequestsLoading,
-    appendData: postRequest,
+    refetch: getRequests,
   } = useQueryApiClient({
     request: {
       url: '/api/request/requets',
       method: 'GET',
       disableOnMount: true,
+      data: queryparams,
     },
   });
 
@@ -73,7 +73,15 @@ export function Request() {
     },
     onSuccess: () => {
       Notification({ type: 'info', text: t('request_deleted') });
-      setQueryParams((res) => ({ ...res }));
+      syncPaginationAfterDelete({
+        totalItems: requests?.data?.totalItems ?? 0,
+        itemsPerPage: requests?.data?.itemsPerPage ?? 10,
+        currentPageIndex: queryparams.PageIndex,
+        deletedCount: selectedIds.length,
+        setSearchParams,
+        setQueryParams,
+        pageSize: queryparams.PageSize,
+      });
       setSelectedIds([]);
       setActionModal(null);
     },
@@ -120,7 +128,7 @@ export function Request() {
   }, []);
 
   useEffect(() => {
-    postRequest({ ...queryparams });
+    getRequests();
   }, [queryparams]);
 
   const handleDownload = useCallback(async () => {
@@ -153,8 +161,6 @@ export function Request() {
       method: 'GET',
     },
   });
-
-  usePaginationAutoCorrect(requests?.data, setQueryParams, setSearchParams);
 
   return (
     <StyledRequests>
@@ -189,7 +195,7 @@ export function Request() {
                 }}
               >
                 <UploadModal
-                  getRequests={setQueryParams}
+                  getRequests={getRequests}
                   setFileState={setFileState}
                   filetState={filetState}
                   onClose={() => setShowUpload(false)}
