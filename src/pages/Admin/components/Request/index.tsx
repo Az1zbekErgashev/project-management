@@ -57,7 +57,6 @@ export function Request() {
     data: requests,
     isLoading: isRequestsLoading,
     appendData: postRequest,
-    refetch: getRequests,
   } = useQueryApiClient({
     request: {
       url: '/api/request/requets',

@@ -1,3 +1,9 @@
 export { Sitebar } from './Sitebar';
 export { EmptyTable } from './EmptyTable';
 export { HistorySection } from './History';
+export { GraphChart } from './HomeComponents/GraphChart';
+export { HorizontalChart } from './HomeComponents/HorizontalChart';
+export { LineCharts } from './HomeComponents/LineChart';
+export { BarCharts } from './HomeComponents/BarChart';
+export { StatusCard } from './HomeComponents/StatusCard';
+export { HomeFilters } from './HomeComponents/HomeFilters';
