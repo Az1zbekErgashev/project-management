@@ -217,6 +217,20 @@ export const StyledHomePage = styled.div`
     .metric-card:first-child .metric-value {
         display: none;
     }
+    .metric-card:first-child .metric-title {
+      font-size: 28px;
+      font-weight: bold;
+
+    }
+    .metric-card:first-child .metric-subtitle {
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    .metric-card:first-child {
+      display: flex;
+      /* justify-content: space-evenly; */
+    }
 
     .section-title {
       font-size: 30px;
