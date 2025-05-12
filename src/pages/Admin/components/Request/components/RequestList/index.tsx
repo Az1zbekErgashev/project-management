@@ -76,6 +76,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         dataIndex: 'date',
         key: 'date',
         fixed: 'left',
+        width: '100px',
       },
       {
         title: t('inquiry_type'),
@@ -207,9 +208,8 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           return record?.processingStatus ? (
             <span
               style={{
-                color: record.processingStatus?.color,
                 fontSize: '16px',
-                fontWeight: '800',
+                fontWeight: '500',
                 textAlign: 'center',
               }}
             >

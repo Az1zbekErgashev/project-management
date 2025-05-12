@@ -152,7 +152,7 @@ export const StyledHomePage = styled.div`
   .status-name {
     font-size: 16px;
     cursor: pointer;
-    font-weight: 800 !important;
+    font-weight: 500 !important;
   }
 
   .status-value {
@@ -163,13 +163,13 @@ export const StyledHomePage = styled.div`
   .dashboard {
     .dashboard-header {
       margin-bottom: 20px;
-      padding:20px;
+      padding: 20px;
 
       h1 {
         font-size: 50px;
         /* font-weight: 600; */
         margin: 0;
-        font-family: 'NewKoreanFont';     
+        font-family: 'NewKoreanFont';
         font-weight: bold;
       }
     }
@@ -186,13 +186,15 @@ export const StyledHomePage = styled.div`
         padding: 20px;
         background-color: #fff;
         border-radius: 12px;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), 0 10px 15px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.25);
+        box-shadow:
+          inset 0 2px 5px rgba(0, 0, 0, 0.15),
+          0 10px 15px rgba(0, 0, 0, 0.35),
+          0 4px 8px rgba(0, 0, 0, 0.25);
         &:first-child {
           background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
-        &:first-child {
-          
+          &:first-child {
+          }
         }
-      }
 
         .metric-title {
           font-size: 24px;
@@ -215,12 +217,11 @@ export const StyledHomePage = styled.div`
       }
     }
     .metric-card:first-child .metric-value {
-        display: none;
+      display: none;
     }
     .metric-card:first-child .metric-title {
       font-size: 28px;
       font-weight: bold;
-
     }
     .metric-card:first-child .metric-subtitle {
       font-size: 24px;
@@ -244,7 +245,6 @@ export const StyledHomePage = styled.div`
       flex-wrap: wrap;
       gap: 20px;
       margin-bottom: 30px;
-    
 
       .status-table {
         flex: 1;
@@ -253,10 +253,13 @@ export const StyledHomePage = styled.div`
         border-radius: 20px;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         overflow: hidden;
-        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.15), 0 10px 15px rgba(0, 0, 0, 0.35), 0 4px 8px rgba(0, 0, 0, 0.25);
+        box-shadow:
+          inset 0 2px 5px rgba(0, 0, 0, 0.15),
+          0 10px 15px rgba(0, 0, 0, 0.35),
+          0 4px 8px rgba(0, 0, 0, 0.25);
         &:first-child {
-        background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
-      }
+          background: linear-gradient(135deg, #f0f8ff 0%, #d0e3ff 100%);
+        }
 
         .table-header {
           display: flex;
@@ -288,11 +291,6 @@ export const StyledHomePage = styled.div`
             &:last-child {
               border-bottom: none;
             }
-
-            .status-name {
-              font-weight: 500;
-            }
-
             .status-value {
               font-weight: 600;
             }
@@ -348,18 +346,18 @@ export const StyledHomePage = styled.div`
 
       .company-charts {
         display: grid;
-        grid-template-columns: repeat(4, 1fr); 
+        grid-template-columns: repeat(4, 1fr);
         gap: 20px;
         margin-bottom: 30px;
 
-        @media (max-width: 1200px) { 
+        @media (max-width: 1200px) {
           grid-template-columns: repeat(2, 1fr);
         }
-        
+
         @media (max-width: 768px) {
           grid-template-columns: 1fr;
         }
- 
+
         .chart-card {
           flex: 1;
           min-width: 300px;
