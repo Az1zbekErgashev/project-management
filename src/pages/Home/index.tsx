@@ -6,6 +6,7 @@ import useQueryApiClient from 'utils/useQueryApiClient';
 import { useTranslation } from 'react-i18next';
 
 import { GraphChart, HorizontalChart, LineCharts, BarCharts, StatusCard, HomeFilters } from 'components';
+import { ReasonCard } from 'components/HomeComponents/ReasonCard';
 
 const CATEGORY_COLORS: Record<string, string> = {
   와이즈스톤티: '#52E452',
@@ -95,6 +96,10 @@ export function Dashboard(): JSX.Element {
         <h2 className="section-title">{t('category_title_count')}</h2>
         <div className="status-tables">
           <StatusCard />
+        </div>
+        <h2 className="section-title">{t('reason_title_count')}</h2>
+        <div className="status-tables">
+          <ReasonCard />
         </div>
         <h2 className="section-title">{t('dashboards')}</h2>
         <div className="chart-tabs">
