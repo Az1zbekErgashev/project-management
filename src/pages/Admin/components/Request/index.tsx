@@ -190,7 +190,7 @@ export function Request() {
                 }}
               >
                 <UploadModal
-                  getRequests={getRequests}
+                  getRequests={setQueryParams}
                   setFileState={setFileState}
                   filetState={filetState}
                   onClose={() => setShowUpload(false)}
