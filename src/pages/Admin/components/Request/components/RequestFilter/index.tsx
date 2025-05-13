@@ -5,6 +5,7 @@ import { Button, Select, SelectOption } from 'ui';
 import { useTranslation } from 'react-i18next';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { useForm } from 'antd/es/form/Form';
+import { useSearchParams } from 'react-router-dom';
 
 interface props {
   handleFilterChange: (value: any) => void;
@@ -15,11 +16,10 @@ interface props {
 }
 export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null, categories, resetFileds }: props) {
   const { t } = useTranslation();
-  const isPendingRequests = window.location.pathname.includes('pending-request');
   const [value, setValue] = useState('');
   const [filteredOptions, setFilteredOptions] = useState([]);
   const [form] = useForm();
-
+  const [searchParams, useSearchParam] = useSearchParams();
   const handleSearch = (searchText: string) => {
     const filtered = options?.data?.filter((option: { text: string }) =>
       option.text.toLowerCase().includes(searchText.toLowerCase())
@@ -63,16 +63,14 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null
         </Form.Item>
 
         <div className="priory">
-          {!isPendingRequests && (
-            <Select className="input-selection-select" name="Category" label={t('category')}>
-              {categories?.data?.map((item: any, index: number) => (
-                <SelectOption key={index} value={item.id}>
-                  {item.title}
-                </SelectOption>
-              ))}
-              <SelectOption value={null}>{t('all')}</SelectOption>
-            </Select>
-          )}
+          <Select modeType="FILTER" className="input-selection-select" name="Category" label={t('category')}>
+            {categories?.data?.map((item: any, index: number) => (
+              <SelectOption key={index} value={item.id}>
+                {item.title}
+              </SelectOption>
+            ))}
+            <SelectOption value={null}>{t('all')}</SelectOption>
+          </Select>
         </div>
         {(form.getFieldValue('Text') || form.getFieldValue('Category')) && (
           <div className="clear_btn">

@@ -7,6 +7,9 @@ import { useTranslation } from 'react-i18next';
 
 import { GraphChart, HorizontalChart, LineCharts, BarCharts, StatusCard, HomeFilters } from 'components';
 import { ReasonCard } from 'components/HomeComponents/ReasonCard';
+import { useLanguage } from 'contexts/LanguageContext';
+import { Tabs } from 'ui';
+import { TabsProps } from 'antd';
 
 const CATEGORY_COLORS: Record<string, string> = {
   와이즈스톤티: '#52E452',
@@ -25,10 +28,12 @@ const statusColors: Record<string, string> = {
 
 export function Dashboard(): JSX.Element {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const [selectedYear, setSelectedYear] = useState();
   const [selectedMonth, setSelectedMonth] = useState<string | null>(null);
   const [selectedStatus, setSelectedStatus] = useState<string>('Made');
   const [activeTab, setActiveTab] = useState<string>('1');
+  const [activeStatusTab, setActiveStatusTab] = useState<string>('1');
 
   const { data: reasonData, refetch: getLineChart } = useQueryApiClient({
     request: {
@@ -72,6 +77,29 @@ export function Dashboard(): JSX.Element {
     Failed: 'Failed',
   } as const;
 
+  const items: TabsProps['items'] = [
+    {
+      key: '1',
+      label: t('status'),
+      children: (
+        <div className="status-tables">
+          <StatusCard />
+        </div>
+      ),
+    },
+    {
+      key: '2',
+      label: t('reason'),
+      children: (
+        <div className='reason-container'>
+          <div className="status-tables reason-tables">
+            <ReasonCard />
+          </div>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <StyledHomePage>
       <div className="dashboard">
@@ -81,26 +109,22 @@ export function Dashboard(): JSX.Element {
         <div className="metric-cards">
           {procentData?.data?.map((metric: any, index: number) => (
             <div className="metric-card" key={index}>
-              <div className="metric-title">
-                {metric.categoryText === 'all_requests' ? t('all_requests') : metric.categoryText}
+              <div>
+                <div className="metric-title">
+                  {metric.categoryText === 'all_requests' ? t('all_requests') : metric.categoryText}
+                </div>
+                <div className="metric-value">
+                  {metric.total}&nbsp;{language === '0' ? '건' : ''}
+                </div>
+                <div className="metic-subtitle">{t('total_percent')} </div>
               </div>
-              <div className="metric-value">
-                {t('total_percent')} {metric.procent}%
-              </div>
-              <div className="metric-subtitle">
-                {t('total')} {metric.total} {t('request')}
-              </div>
+              <div className="metric-procent">{metric.procent}%</div>
             </div>
           ))}
         </div>
         <h2 className="section-title">{t('category_title_count')}</h2>
-        <div className="status-tables">
-          <StatusCard />
-        </div>
-        <h2 className="section-title">{t('reason_title_count')}</h2>
-        <div className="status-tables">
-          <ReasonCard />
-        </div>
+        <Tabs animated={true} defaultActiveKey="1" type="card" items={items} />
+
         <h2 className="section-title">{t('dashboards')}</h2>
         <div className="chart-tabs">
           <HomeFilters

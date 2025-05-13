@@ -189,6 +189,7 @@ table {
 thead {
   .ant-table-cell {
     background: #fafafa !important;
+    text-align: center !important;
   }
 
   .ant-table-cell::before {
@@ -200,7 +201,7 @@ thead {
     font-size: 0.777777rem !important;
     font-weight: 400 !important;
     line-height: 20px;
-    text-align: start;
+    text-align: center;
   }
 }
 tbody {
@@ -208,7 +209,7 @@ tbody {
     color: var(--blue-700) !important;
     font-size: 0.777777rem;
     font-family: var(--default-font);
-    text-align: start;
+    text-align: center;
   }
 }
 .ant-table-cell {
