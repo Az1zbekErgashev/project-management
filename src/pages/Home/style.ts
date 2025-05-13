@@ -241,13 +241,9 @@ export const StyledHomePage = styled.div`
           justify-content: space-between;
 
           .table-title {
-<<<<<<< HEAD
             font-size: 16px;
             font-weight: 600;
-=======
-            font-size: 20px;
-            font-weight: 700;
->>>>>>> c05e0f9 (changed some layout)
+
             margin: 0;
             color: rgb(51 65 85 / 1);
           }
