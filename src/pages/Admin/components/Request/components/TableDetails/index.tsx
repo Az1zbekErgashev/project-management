@@ -43,7 +43,7 @@ export function TableDetail() {
         ...response.data,
         requestStatusId: response?.data?.requestStatus?.id,
         date: response?.data?.date ? dayjs(response.data.date) : null,
-        processingStatus: response?.data?.processingStatus.id ?? null,
+        processingStatus: response?.data?.processingStatus?.id ?? null,
       });
       setFilePath(response?.data?.file?.path);
     },
