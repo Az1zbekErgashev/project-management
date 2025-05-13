@@ -1,3 +1,4 @@
+// style.ts (StyledInputSelection)
 import styled from 'styled-components';
 
 export const StyledInputSelection = styled.div`
@@ -18,13 +19,13 @@ export const StyledInputSelection = styled.div`
     align-items: center;
     gap: 50px;
     padding-top: 2px;
-    /* padding-left: 80px; */
   }
 
   .form {
     display: flex;
     gap: 50px;
   }
+
   .text-area {
     width: 100%;
     max-width: 850px;
@@ -45,6 +46,7 @@ export const StyledInputSelection = styled.div`
       text-align: center;
     }
   }
+
   .upload-form {
     width: 90px;
     height: 140px;
@@ -78,7 +80,6 @@ export const StyledInputSelection = styled.div`
   .delete-svg {
     position: absolute;
     right: -20px;
-
     cursor: pointer;
     box-shadow:
       0 4px 6px rgba(0, 0, 0, 0.1),
@@ -171,7 +172,7 @@ export const StyledInputSelection = styled.div`
 
   .file-upload-container {
     min-width: 160px;
-    position: relative; /* For positioning the delete button */
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -198,7 +199,7 @@ export const StyledInputSelection = styled.div`
       justify-content: center;
 
       &:hover {
-        color: #ff4d4f; /* Red on hover */
+        color: #ff4d4f;
       }
 
       .anticon {
@@ -264,5 +265,14 @@ export const StyledInputSelection = styled.div`
         }
       }
     }
+  }
+
+  /* Add styling for the comments section inside the Notes form group */
+  .comments-wrapper {
+    margin-top: 20px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    box-shadow: none;
   }
 `;

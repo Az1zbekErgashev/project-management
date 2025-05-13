@@ -1,3 +1,4 @@
+// InputSelection.tsx
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea } from 'ui';
@@ -9,6 +10,7 @@ import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Upload } from 'antd';
 import { routes } from 'config/config';
+import { CommentsSection } from 'components/Comments'; // Import CommentsSection
 
 interface Props {
   form: FormInstance;
@@ -25,7 +27,7 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const isDeletedRequesdts = window.location.pathname.includes('deleted-requests');
+  const isDeletedRequests = window.location.pathname.includes('deleted-requests');
   const [fileInfo, setFileInfo] = useState<any>(null);
   const [uploadedUrl, setUploadedUrl] = useState<any>(null);
   const [file, setFile] = useState<any>(null);
@@ -219,10 +221,15 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
         <div className="text-area">
           <div className="form-group">
             <h3>{t('notes')}</h3>
-            <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} />
+            {/* <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} /> */}
+            {!isDeletedRequests && window.location.pathname.includes('request-detail') && (
+              <div className="comments-wrapper">
+                <CommentsSection requestId={id!} />
+              </div>
+            )}
           </div>
           <div>
-            {!isDeletedRequesdts && (
+            {!isDeletedRequests && (
               <div className="action-btns">
                 {window.location.pathname.includes('request-detail') && !disable && (
                   <Button
