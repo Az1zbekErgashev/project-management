@@ -40,7 +40,7 @@ export function ReasonCard() {
                       onClick={() =>
                         navigate(
                           `/requests?pageIndex=1&pageSize=10${
-                            statusItem?.categoryId ? `&Category=${statusItem?.categoryId}` : ``
+                            table?.categoryId ? `&Category=${table?.categoryId}` : ``
                           }&Text=${statusItem.status}`
                         )
                       }

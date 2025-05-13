@@ -1,7 +1,7 @@
 // InputSelection.tsx
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DatePicker, Input, Notification, Select, SelectOption, TextArea } from 'ui';
+import { Button, DatePicker, Input, Notification, Select, SelectOption } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
@@ -10,7 +10,7 @@ import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Upload } from 'antd';
 import { routes } from 'config/config';
-import { CommentsSection } from 'components/Comments'; // Import CommentsSection
+import { CommentsSection } from 'components/Comments';
 
 interface Props {
   form: FormInstance;
@@ -22,8 +22,7 @@ interface Props {
   handleFetchClick: () => void;
 }
 
-export function InputSelection({ form, disable, setDisable, request, filePath, setFilePath, handleFetchClick }: Props) {
-  const [fileList, setFileList] = useState<File | null>(null);
+export function InputSelection({ form, disable, setDisable, request, handleFetchClick }: Props) {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
@@ -40,7 +39,6 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
       multipart: true,
     },
     onSuccess() {
-      setFileList(null);
       if (!window.location.pathname.includes('request-detail')) {
         Notification({ text: t('request_created_success'), type: 'success' });
       } else {
@@ -144,7 +142,6 @@ export function InputSelection({ form, disable, setDisable, request, filePath, s
               <h3>{t('submission_info')}</h3>
               <DatePicker disabled={disable} name="date" label={t('date_created')} />
             </div>
-            {/* Inquiry Details */}
             <div className="form-group">
               <h3>{t('inquiry_details')}</h3>
               <Input name="inquiryType" disabled={disable} label={t('inquiry_type')} />

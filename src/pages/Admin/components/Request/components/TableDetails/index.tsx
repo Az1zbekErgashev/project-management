@@ -43,6 +43,7 @@ export function TableDetail() {
         ...response.data,
         requestStatusId: response?.data?.requestStatus?.id,
         date: response?.data?.date ? dayjs(response.data.date) : null,
+        processingStatus: response?.data?.processingStatus.id ?? null,
       });
       setFilePath(response?.data?.file?.path);
     },
@@ -88,9 +89,7 @@ export function TableDetail() {
       key: '1',
       label: (
         <div className="custom-tab-label">
-          <HistoryOutlined />
-           
-          <span>{t('history')}</span>
+          <HistoryOutlined /> <span>{t('history')}</span>
         </div>
       ),
       children: <HistorySection requestId={id!} />,
