@@ -20,8 +20,9 @@ interface queryParamsType {
   RequestStatusId?: number;
   Date?: string[];
   ClientCompany?: string[];
-  RequestTitle?: string;
+  Category?: string;
   IsDeleted: 1;
+  Text?: string;
 }
 
 const createModalConfig = (
@@ -48,6 +49,8 @@ export function DeletedRequests() {
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+    Category: searchParams.get('Category') ?? undefined,
+    Text: searchParams.get('Text') ?? undefined,
     IsDeleted: 1,
   });
   const [actionModal, setActionModal] = useState<any>();
@@ -146,15 +149,17 @@ export function DeletedRequests() {
       key: 'projectDetails',
       width: 130,
       render: (text) => (
-        <div style={{
-          width: '130px',
-          whiteSpace: 'nowrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis'
-        }}>
+        <div
+          style={{
+            width: '130px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+          }}
+        >
           {text}
         </div>
-      )
+      ),
     },
     {
       title: t('client'),
@@ -203,9 +208,7 @@ export function DeletedRequests() {
       key: 'status',
       width: 120,
       render: (_, record) => {
-        const status = PROJECT_STATUS.find((item) =>
-          item?.text?.toLowerCase() === record?.status?.toLowerCase()
-        );
+        const status = PROJECT_STATUS.find((item) => item?.text?.toLowerCase() === record?.status?.toLowerCase());
         return status ? (
           <span
             key={status.id}
@@ -217,16 +220,16 @@ export function DeletedRequests() {
               padding: '4px 8px',
               backgroundColor: hexToRgba(status.color, 0.2),
               display: 'inline-block',
-              width: '120px',         
-              maxWidth: '120px',      
-              minWidth: '120px',    
+              width: '120px',
+              maxWidth: '120px',
+              minWidth: '120px',
             }}
           >
             {t(status.text)}
           </span>
         ) : null;
       },
-    },    
+    },
     {
       title: t('processing_status'),
       dataIndex: ['processingStatus', 'text'],
@@ -245,10 +248,12 @@ export function DeletedRequests() {
   ];
 
   function hexToRgba(hex: string, alpha: number = 1): string {
-    let r: number = 0, g: number = 0, b: number = 0;
-  
+    let r: number = 0,
+      g: number = 0,
+      b: number = 0;
+
     hex = hex.replace('#', '');
-  
+
     if (hex.length === 3) {
       r = parseInt(hex[0] + hex[0], 16);
       g = parseInt(hex[1] + hex[1], 16);
@@ -258,7 +263,7 @@ export function DeletedRequests() {
       g = parseInt(hex.substring(2, 4), 16);
       b = parseInt(hex.substring(4, 6), 16);
     }
-  
+
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
@@ -384,7 +389,10 @@ export function DeletedRequests() {
   };
 
   const resetFileds = () => {
-    setQueryParams((res) => ({ ...res, requestTitle: undefined, category: undefined, text: undefined }));
+    setQueryParams((res) => ({ ...res, Category: undefined, Text: undefined }));
+    searchParams.delete('Category');
+    searchParams.delete('Text');
+    setSearchParams(searchParams);
   };
 
   return (

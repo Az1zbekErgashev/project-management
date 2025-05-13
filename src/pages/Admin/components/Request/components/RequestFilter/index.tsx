@@ -46,6 +46,13 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null
     refetch();
   }, [window.location.pathname]);
 
+  useEffect(() => {
+    form.setFieldsValue({
+      Category: searchParams.get('Category'),
+      Text: searchParams.get('Text'),
+    });
+  }, [searchParams]);
+
   return (
     <StyledRequestFilter>
       <Form form={form} layout="vertical" onValuesChange={handleFilterChange}>
@@ -65,7 +72,7 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null
         <div className="priory">
           <Select modeType="FILTER" className="input-selection-select" name="Category" label={t('category')}>
             {categories?.data?.map((item: any, index: number) => (
-              <SelectOption key={index} value={item.id}>
+              <SelectOption key={index} value={item.id.toString()}>
                 {item.title}
               </SelectOption>
             ))}

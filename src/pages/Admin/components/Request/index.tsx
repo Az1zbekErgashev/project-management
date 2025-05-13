@@ -19,7 +19,7 @@ import { TFunction } from 'i18next';
 interface queryParamsType {
   PageSize: number;
   PageIndex: number;
-  Text?: string[];
+  Text?: any;
   Category?: string;
   RequestTitle?: string;
 }
@@ -40,6 +40,8 @@ export function Request() {
   const [queryparams, setQueryParams] = useState<queryParamsType>({
     PageIndex: parseInt(searchParams.get('pageIndex') ?? '1'),
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
+    Category: searchParams.get('Category') ?? undefined,
+    Text: searchParams.get('Text') ?? undefined,
   });
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);
@@ -113,6 +115,9 @@ export function Request() {
 
   const resetFileds = () => {
     setQueryParams((res) => ({ ...res, RequestTitle: undefined, Category: undefined, Text: undefined }));
+    searchParams.delete('Category');
+    searchParams.delete('Text');
+    setSearchParams(searchParams);
   };
 
   const handlePaginationChange = useCallback((page: number, pageSize: number) => {
