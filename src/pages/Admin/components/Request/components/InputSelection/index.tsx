@@ -113,6 +113,7 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
     request: {
       url: `/api/request/get-uploaded-file?id=${id}`,
       method: 'GET',
+      disableOnMount: id ? false : true,
     },
     onSuccess(response) {
       if (response?.data) {
