@@ -1,6 +1,7 @@
+// Comments.tsx
 import { useState, useRef, useEffect } from 'react';
 import { Avatar, Button, Input, Typography, Space, InputRef, Modal } from 'antd';
-import { DeleteOutlined } from '@ant-design/icons';
+import { DeleteOutlined, SendOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { StyledCommentsSection } from './style';
@@ -73,7 +74,6 @@ export function CommentsSection({ requestId }: any) {
       if (comment.id === parentId) {
         return comment;
       }
-
       for (const reply of comment.replies) {
         if (reply.id === parentId) {
           return reply;
@@ -115,12 +115,12 @@ export function CommentsSection({ requestId }: any) {
       onOk() {
         handleDelete(id);
       },
-      onCancel() {
-      },
+      onCancel() {},
     });
   };
 
   const handleCreateComment = () => {
+    if (!newComment?.trim()) return;
     createComment({ requestId: parseInt(requestId), text: newComment });
     setNewComment('');
   };
@@ -279,9 +279,7 @@ export function CommentsSection({ requestId }: any) {
                   onKeyDown={handleKeyDown}
                 />
                 <Button onClick={cancelReply}>{t('cancel')}</Button>
-                <Button type="primary" onClick={handleReply}>
-                  {t('reply')}
-                </Button>
+                <Button type="primary" onClick={handleReply} icon={<SendOutlined />} />
               </Space>
             </div>
           </div>
@@ -297,9 +295,8 @@ export function CommentsSection({ requestId }: any) {
                   className="reply-form-input"
                   onKeyDown={handleKeyDown}
                 />
-                <Button type="primary" onClick={handleCreateComment}>
-                  {t('submit')}
-                </Button>
+                <Button type="primary" onClick={handleCreateComment} icon={<SendOutlined />} 
+                />
               </Space>
             </div>
           </div>

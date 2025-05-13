@@ -115,6 +115,17 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         title: t('ppoject_details'),
         dataIndex: 'projectDetails',
         key: 'projectDetails',
+        width: 130,
+        render: (text) => (
+          <div style={{
+            width: '130px',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {text}
+          </div>
+        )
       },
       {
         title: t('client'),
@@ -190,8 +201,14 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
               style={{
                 color: status.color,
                 fontSize: '16px',
-                fontWeight: '800',
                 textAlign: 'center',
+                borderRadius: '8px',
+                padding: '4px 8px',
+                backgroundColor: hexToRgba(status.color, 0.2),
+                display: 'inline-block',
+                width: '120px',         
+                maxWidth: '120px',      
+                minWidth: '120px',    
               }}
             >
               {t(status.text)}
@@ -209,7 +226,6 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
             <span
               style={{
                 fontSize: '16px',
-                fontWeight: '500',
                 textAlign: 'center',
               }}
             >
@@ -237,6 +253,24 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
     ],
     [t, selectedIds, handleCheckboxChange, navigate, requests?.items, handleSelectAllChange]
   );
+
+  function hexToRgba(hex: string, alpha: number = 1): string {
+    let r: number = 0, g: number = 0, b: number = 0;
+  
+    hex = hex.replace('#', '');
+  
+    if (hex.length === 3) {
+      r = parseInt(hex[0] + hex[0], 16);
+      g = parseInt(hex[1] + hex[1], 16);
+      b = parseInt(hex[2] + hex[2], 16);
+    } else if (hex.length === 6) {
+      r = parseInt(hex.substring(0, 2), 16);
+      g = parseInt(hex.substring(2, 4), 16);
+      b = parseInt(hex.substring(4, 6), 16);
+    }
+  
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  }
 
   return (
     <StyledRequestList>

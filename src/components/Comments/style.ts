@@ -1,27 +1,32 @@
+// style.ts (StyledCommentsSection)
 import { styled } from 'styled-components';
 
 export const StyledCommentsSection = styled.div`
   .comments-container {
-    max-width: 600px;
-    padding: 16px;
+    max-width: 100%;
+    padding: 0;
   }
 
   .comment-block {
-    margin-bottom: 16px !important;
+    margin-bottom: 12px !important;
   }
 
   .comment-item {
     display: flex;
-    gap: 12px;
-    margin-bottom: 16px !important;
-    background-color: #f9f9f9;
-    padding: 16px;
-    border-radius: 8px;
+    gap: 8px;
+    margin-bottom: 12px !important;
+    background-color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #e8e8e8;
   }
 
   .comment-avatar {
     flex-shrink: 0;
     background-color: #e0e0e0;
+    border-radius: 50%;
+    width: 32px;
+    height: 32px;
   }
 
   .comment-content {
@@ -31,13 +36,15 @@ export const StyledCommentsSection = styled.div`
   .comment-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px !important;
+    align-items: center;
+    margin-bottom: 4px !important;
   }
 
   .comment-username {
     font-size: 14px;
+    font-weight: 500;
     margin-right: 8px !important;
+    color: #333;
   }
 
   .comment-time {
@@ -61,13 +68,15 @@ export const StyledCommentsSection = styled.div`
 
   .comment-text {
     font-size: 14px;
-    margin-bottom: 8px !important;
+    margin-bottom: 4px !important;
+    color: #333;
   }
 
   .comment-reply-btn {
     font-size: 12px;
     padding: 0;
     height: auto;
+    color: #1890ff; /* Blue color for the reply link */
   }
 
   .reply-to-text {
@@ -78,7 +87,7 @@ export const StyledCommentsSection = styled.div`
   }
 
   .replies-container {
-    margin-left: 44px !important;
+    margin-left: 40px !important;
   }
 
   .reply-item {
@@ -97,18 +106,14 @@ export const StyledCommentsSection = styled.div`
 
   .reply-form-container {
     width: 100%;
-    background-color: white;
-    border-top: 1px solid #e8e8e8;
-    padding: 16px;
-
-    .ant-space-item:first-child {
-      width: 100%;
-    }
+    background-color: #fff;
+    padding: 8px 0;
+    border-top: none;
   }
 
   .reply-form-content {
-    max-width: 600px;
-    margin: 0 auto !important;
+    max-width: 100%;
+    margin: 0 !important;
   }
 
   .reply-form-label {
@@ -120,10 +125,39 @@ export const StyledCommentsSection = styled.div`
   .reply-form-actions {
     display: flex;
     width: 100%;
+    gap: 8px;
   }
 
   .reply-form-input {
     flex: 1;
+    border-radius: 4px;
+    border: 1px solid #e8e8e8;
+    padding: 8px;
+    font-size: 14px;
+
+    &::placeholder {
+      color: #999;
+    }
+  }
+
+  .ant-btn {
+    &.ant-btn-primary {
+      background-color: #000;
+      border: none;
+      border-radius: 4px;
+      padding: 4px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .anticon {
+        color: #fff;
+      }
+
+      &:hover {
+        background-color: #333;
+      }
+    }
   }
 
   .show-more {

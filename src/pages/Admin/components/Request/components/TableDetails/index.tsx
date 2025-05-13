@@ -1,6 +1,7 @@
+// TableDetail.tsx
 import React, { useEffect, useState } from 'react';
 import { Form, TabsProps } from 'antd';
-import { HistoryOutlined, MessageOutlined } from '@ant-design/icons';
+import { HistoryOutlined } from '@ant-design/icons'; // Remove MessageOutlined
 import { useTranslation } from 'react-i18next';
 import { InputSelection } from '../InputSelection';
 import { StyledTableDetail } from './style';
@@ -8,7 +9,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { BackButton, Button, ConfirmModal, Tabs } from 'ui';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { TFunction } from 'i18next';
-import { CommentsSection } from 'components/Comments';
 import { HistorySection } from 'components';
 import dayjs from 'dayjs';
 import { smoothScroll } from 'utils/globalFunctions';
@@ -88,19 +88,8 @@ export function TableDetail() {
       key: '1',
       label: (
         <div className="custom-tab-label">
-          <MessageOutlined />
-          &nbsp;
-          <span>{t('comments')}</span>
-        </div>
-      ),
-      children: <CommentsSection requestId={id!} />,
-    },
-    {
-      key: '2',
-      label: (
-        <div className="custom-tab-label">
           <HistoryOutlined />
-          &nbsp;
+           
           <span>{t('history')}</span>
         </div>
       ),
