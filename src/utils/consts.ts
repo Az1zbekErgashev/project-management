@@ -15,11 +15,8 @@ export const ADMIN_NAVIGATE: adminNavigate[] = [
     children: [
       { key: 'all_requests', path: '/requests' },
       { key: 'deleted_requests', path: '/deleted-requests' },
-      // { key: 'pending_requests', path: '/pending-requests' },
     ],
   },
-  // { key: 'state_management', path: '/state-management', icon: 'state-management' },
-  // { key: 'issue_management', path: '/issue-management', icon: 'issue-management' },
   { key: 'logs', path: '/logs', icon: 'logs' },
   { key: 'translations', path: '/translations', icon: 'translations' },
   { key: 'statuses', path: '/statuses', icon: 'statuses' },
@@ -34,7 +31,6 @@ export const EMPLOYEE_NAVIGATE: adminNavigate[] = [
     children: [
       { key: 'all_requests', path: '/requests' },
       { key: 'deleted_requests', path: '/deleted-requests' },
-      // { key: 'pending_requests', path: '/pending-requests' },
     ],
   },
 ];

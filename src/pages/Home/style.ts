@@ -183,7 +183,6 @@ export const StyledHomePage = styled.div`
     .section-title {
       font-size: 30px;
       font-weight: 700;
-      margin: 30px 0 15px;
       padding: 20px;
     }
 
@@ -470,5 +469,29 @@ export const StyledHomePage = styled.div`
     height: 600px;
     overflow-y: scroll;
     padding: 10px 0;
+  }
+
+  .ant-tabs-tab {
+    background: none !important;
+    border: none !important;
+    border-bottom: 2px solid transparent !important;
+  }
+  .ant-tabs-tab-active {
+    background: transparent !important;
+    border-bottom: 2px solid #2196f3 !important;
+  }
+
+  .ant-tabs-tab-btn {
+    font-size: 20px !important;
+    color: #666;
+
+    &:hover {
+      color: var(--black);
+    }
+  }
+
+  .second-title {
+    margin-bottom: 0px !important;
+    padding-bottom: 0px !important;
   }
 `;

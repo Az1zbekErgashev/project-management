@@ -91,7 +91,7 @@ export function Dashboard(): JSX.Element {
       key: '2',
       label: t('reason'),
       children: (
-        <div className='reason-container'>
+        <div className="reason-container">
           <div className="status-tables reason-tables">
             <ReasonCard />
           </div>
@@ -122,7 +122,7 @@ export function Dashboard(): JSX.Element {
             </div>
           ))}
         </div>
-        <h2 className="section-title">{t('category_title_count')}</h2>
+        <h2 className="section-title second-title">{t('category_title_count')}</h2>
         <Tabs animated={true} defaultActiveKey="1" type="card" items={items} />
 
         <h2 className="section-title">{t('dashboards')}</h2>

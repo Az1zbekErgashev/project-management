@@ -70,7 +70,7 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
               ? ADMIN_NAVIGATE.map((item, index) =>
                   item.key === 'requests' ? (
                     <div key={index} className="nav-item dropdown">
-                      <p className="nav-link" onClick={() => setShowRequests(!showRequests)}>
+                      <p className="nav-link cursor-hand" onClick={() => setShowRequests(!showRequests)}>
                         <span className="nav-icon material-symbols-rounded">
                           <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
                         </span>
@@ -100,7 +100,7 @@ export function Sitebar({ isCollapsed, handleChangeCollapse }: props) {
               : EMPLOYEE_NAVIGATE.map((item, index) =>
                   item.key === 'requests' ? (
                     <div key={index} className="nav-item dropdown">
-                      <p className="nav-link" onClick={() => setShowRequests(!showRequests)}>
+                      <p className="nav-link cursor-hand" onClick={() => setShowRequests(!showRequests)}>
                         <span className="nav-icon material-symbols-rounded">
                           <SvgSelector className={`nav-icon nav-icon-${item.icon}`} id={item.icon} />
                         </span>

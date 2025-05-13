@@ -26,6 +26,9 @@ export const StyledSitebar = styled.div`
       font-weight: 700;
     }
   }
+  .cursor-hand {
+    cursor: grab;
+  }
   .sidebar-header .toggler {
     height: 35px;
     width: 35px;
