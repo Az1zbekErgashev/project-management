@@ -39,6 +39,8 @@ export function GraphChart({ pieChartData, statusColors }: any) {
     ];
   };
 
+  console.log(pieChartData?.data);
+
   return (
     <div className="chart-container">
       <div className="charts-section">

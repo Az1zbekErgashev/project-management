@@ -46,6 +46,9 @@ export function UserInformation({ open, setOpen, onClose, form, handleDelete, ge
       getUsers();
       onClose();
     },
+    onError() {
+      Notification({ text: t('this_user_already_exist'), type: 'error' });
+    },
   });
 
   const { appendData: updateuser } = useQueryApiClient({
