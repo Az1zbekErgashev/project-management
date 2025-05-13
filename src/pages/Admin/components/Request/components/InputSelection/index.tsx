@@ -93,7 +93,7 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
 
   const { data: processingData, isLoading: isProcessingLoading } = useQueryApiClient({
     request: {
-      url: '/api/processingstatus?PageIndex=1&PageSize=1000000000',
+      url: '/api/processingstatus',
       method: 'GET',
     },
   });
