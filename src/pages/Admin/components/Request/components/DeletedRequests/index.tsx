@@ -149,16 +149,44 @@ export function DeletedRequests() {
       key: 'projectDetails',
       width: 130,
       render: (text) => (
-        <div
-          style={{
-            width: '130px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
+        <Popover
+          content={
+            <div
+              style={{
+                padding: '12px 16px',
+                maxHeight: '300px',
+                overflowY: 'auto',
+                width: '200px',
+                wordBreak: 'break-word',
+                whiteSpace: 'pre-wrap',
+                borderRadius: '8px',
+              }}
+            >
+              {text?.trim() || <span style={{ color: '#999' }}>{t('no_notes')}</span>}
+            </div>
+          }
+          overlayStyle={{
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            boxShadow: '0 3px 6px rgba(0,0,0,0.16)',
+          }}
+          overlayInnerStyle={{
+            padding: 0,
           }}
         >
-          {text}
-        </div>
+          <div 
+            style={{
+              width: '130px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              display: 'inline-block',
+              verticalAlign: 'middle',
+            }}
+          >
+            {text}
+          </div>
+        </Popover>
       ),
     },
     {
