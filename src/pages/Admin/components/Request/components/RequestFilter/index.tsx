@@ -48,14 +48,24 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null
 
   useEffect(() => {
     form.setFieldsValue({
-      Category: searchParams.get('Category'),
-      Text: searchParams.get('Text'),
+      Category: searchParams.get('Category') ?? form.getFieldValue('Category'),
+      Text: searchParams.get('Text') ?? form.getFieldValue('Text'),
     });
   }, [searchParams]);
 
   return (
     <StyledRequestFilter>
       <Form form={form} layout="vertical" onValuesChange={handleFilterChange}>
+        <div className="priory">
+          <Select modeType="FILTER" className="input-selection-select" name="Category" label={t('category')}>
+            {categories?.data?.map((item: any, index: number) => (
+              <SelectOption key={index} value={item.id.toString()}>
+                {item.title}
+              </SelectOption>
+            ))}
+            <SelectOption value={null}>{t('all')}</SelectOption>
+          </Select>
+        </div>
         <Form.Item label={t('text')} name="Text">
           <AutoComplete
             value={value}
@@ -68,17 +78,6 @@ export function RequestFilter({ handleFilterChange, isDeleted = 0, status = null
             options={value ? filteredOptions.map((item: { text: string }) => ({ value: item.text })) : []}
           />
         </Form.Item>
-
-        <div className="priory">
-          <Select modeType="FILTER" className="input-selection-select" name="Category" label={t('category')}>
-            {categories?.data?.map((item: any, index: number) => (
-              <SelectOption key={index} value={item.id.toString()}>
-                {item.title}
-              </SelectOption>
-            ))}
-            <SelectOption value={null}>{t('all')}</SelectOption>
-          </Select>
-        </div>
         {(form.getFieldValue('Text') || form.getFieldValue('Category')) && (
           <div className="clear_btn">
             <Button

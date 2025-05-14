@@ -66,8 +66,7 @@ export function Translations() {
   const handleFilterChange = (changedValue: any) => {
     setQueryParams((res) => ({
       ...res,
-      Key: changedValue.Key,
-      IsDeleted: changedValue.IsDeleted,
+      ...changedValue,
     }));
   };
 

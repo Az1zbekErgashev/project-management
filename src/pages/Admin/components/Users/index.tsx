@@ -167,9 +167,7 @@ export function AdminUsers() {
   const handleFilterChange = (changedValue: any) => {
     setQueryParams((res) => ({
       ...res,
-      Role: changedValue.Role,
-      Text: changedValue.Text,
-      IsDeleted: changedValue.IsDeleted,
+      ...changedValue,
     }));
   };
 

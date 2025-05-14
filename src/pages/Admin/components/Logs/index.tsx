@@ -45,11 +45,7 @@ export function Logs() {
   const handleFilterChange = (changedValue: any) => {
     setQueryParams((res) => ({
       ...res,
-      Text: changedValue.text,
-      UserId: changedValue.userId,
-      Action: changedValue.action,
-      StartDate: changedValue.startDate ? dayjs(changedValue.startDate) : null,
-      EndDate: changedValue.endDate ? dayjs(changedValue.endDate) : null,
+      ...changedValue,
     }));
   };
 
