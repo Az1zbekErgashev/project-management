@@ -1,4 +1,3 @@
-// style.ts (StyledCommentsSection)
 import { styled } from 'styled-components';
 
 export const StyledCommentsSection = styled.div`
@@ -76,7 +75,7 @@ export const StyledCommentsSection = styled.div`
     font-size: 12px;
     padding: 0;
     height: auto;
-    color: #1890ff; /* Blue color for the reply link */
+    color: #1890ff; 
   }
 
   .reply-to-text {
@@ -132,8 +131,11 @@ export const StyledCommentsSection = styled.div`
     flex: 1;
     border-radius: 4px;
     border: 1px solid #e8e8e8;
+    flex-direction: space-between;
     padding: 8px;
     font-size: 14px;
+    min-width: 780px;
+    height: 60px;
 
     &::placeholder {
       color: #999;

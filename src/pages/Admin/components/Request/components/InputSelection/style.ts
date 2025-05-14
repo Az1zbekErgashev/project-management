@@ -75,6 +75,9 @@ export const StyledInputSelection = styled.div`
 
   .upload-container {
     position: relative;
+    /* display: flex;
+    justify-content: flex-end;
+    padding-right: 245px; */
   }
 
   .delete-svg {
@@ -175,9 +178,10 @@ export const StyledInputSelection = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
-    padding: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     background-color: #f9f9f9;
     border: 1px solid #e8e8e8;
     border-radius: 4px;
