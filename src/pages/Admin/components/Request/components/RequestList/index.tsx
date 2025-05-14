@@ -2,7 +2,7 @@ import React, { useMemo, useCallback } from 'react';
 import { StyledRequestList } from './style';
 import Table, { ColumnsType } from 'antd/es/table';
 import { useTranslation } from 'react-i18next';
-import { Button, Popover, Checkbox } from 'antd';
+import { Button, Popover, Checkbox, Tooltip } from 'antd';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
@@ -117,16 +117,44 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         key: 'projectDetails',
         width: 130,
         render: (text) => (
-          <div
-            style={{
-              width: '130px',
-              whiteSpace: 'nowrap',
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
+          <Popover
+            content={
+              <div
+                style={{
+                  padding: '12px 16px',
+                  maxHeight: '300px',
+                  overflowY: 'auto',
+                  width: '200px',
+                  wordBreak: 'break-word',
+                  whiteSpace: 'pre-wrap',
+                  borderRadius: '8px',
+                }}
+              >
+                {text?.trim() || <span style={{ color: '#999' }}>{t('no_notes')}</span>}
+              </div>
+            }
+            overlayStyle={{
+              backgroundColor: '#fff',
+              borderRadius: '8px',
+              boxShadow: '0 3px 6px rgba(0,0,0,0.16)',
+            }}
+            overlayInnerStyle={{
+              padding: 0,
             }}
           >
-            {text}
-          </div>
+            <div 
+              style={{
+                width: '130px',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                display: 'inline-block',
+                verticalAlign: 'middle',
+              }}
+            >
+              {text}
+            </div>
+          </Popover>
         ),
       },
       {
