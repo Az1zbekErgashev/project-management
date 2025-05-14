@@ -157,13 +157,32 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
             </div>
           </div>
           <div className="form-cont">
-            {/* Client Information */}
             <div className="form-group">
               <h3>{t('client_information')}</h3>
               <Input name="clientCompany" disabled={disable} label={t('client_company')} />
               <Input name="client" disabled={disable} label={t('client')} />
-              <Input name="contactNumber" disabled={disable} label={t('contact_number')} />
-              <Input name="email" disabled={disable} label={t('email')} />
+              <Input
+                name="contactNumber"
+                disabled={disable}
+                label={t('contact_number')}
+                rules={[
+                  {
+                    pattern: /^010-\d{4}-\d{4}$/,
+                    message: t('invalid_contact_number_format, (010-1234-5678)'),
+                  },
+                ]}
+              />
+              <Input
+                name="email"
+                disabled={disable}
+                label={t('email')}
+                rules={[
+                  {
+                    type: 'email',
+                    message: t('invalid_email_format'),
+                  },
+                ]}
+              />
             </div>
 
             <div className="form-group">

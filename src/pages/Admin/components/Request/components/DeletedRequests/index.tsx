@@ -12,7 +12,7 @@ import { smoothScroll, syncPaginationAfterDelete } from 'utils/globalFunctions';
 import Pagination from 'ui/Pagination/Pagination';
 import { ConfirmModal, Notification } from 'ui';
 import { TFunction } from 'i18next';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 interface queryParamsType {
   PageSize: number;
@@ -55,6 +55,8 @@ export function DeletedRequests() {
   });
   const [actionModal, setActionModal] = useState<any>();
   const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const navigate = useNavigate();
+  
 
   const {
     data: requests,
@@ -489,6 +491,15 @@ export function DeletedRequests() {
         pagination={false}
         showSorterTooltip={false}
         loading={isRequestsLoading}
+        rowKey="id"
+        onRow={(record) => ({
+        onClick: (event) => {
+          const target = event.target as HTMLElement;
+          if (target.closest('button') || target.closest('a')) return;
+          navigate(`/request-detail/${record.id}`);
+        },
+        style: { cursor: 'pointer' },
+        })}
       />
       <Pagination
         total={requests?.data?.totalItems}

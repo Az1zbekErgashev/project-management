@@ -230,7 +230,6 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
               key={status.id}
               style={{
                 color: status.color,
-                fontSize: '16px',
                 textAlign: 'center',
                 borderRadius: '8px',
                 padding: '4px 8px',
@@ -255,7 +254,6 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           return record?.processingStatus ? (
             <span
               style={{
-                fontSize: '16px',
                 textAlign: 'center',
               }}
             >

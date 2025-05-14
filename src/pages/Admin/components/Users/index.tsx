@@ -214,8 +214,24 @@ export function AdminUsers() {
         <h1 className="global-title">{t('manage_users')}</h1>
         <Button label={t('add_user')} type="primary" onClick={() => showDrawer('ADD', null)} />
       </div>
-      <UsersFilter resetFileds={resetFileds} handleFilterChange={handleFilterChange} />
-      <Table columns={column} dataSource={users?.data?.items ?? []} />
+      <UsersFilter 
+        resetFileds={resetFileds} 
+        handleFilterChange={handleFilterChange} 
+      />
+      <div style={{ cursor: 'pointer' }}>
+        <Table 
+          columns={column} 
+          dataSource={users?.data?.items ?? []}
+          rowKey="id"
+          onRow={(record: any) => ({
+            onClick: () => {
+              showDrawer('VIEW', record);
+            },
+          })}
+          loading={users?.isLoading}
+          scroll={{ x: 'max-content' }}
+        />
+      </div>
 
       <Pagination
         total={users?.data?.totalItems}
