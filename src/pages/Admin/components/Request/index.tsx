@@ -22,6 +22,7 @@ interface queryParamsType {
   Text?: any;
   Category?: string;
   RequestTitle?: string;
+  IsDeleted: 0;
 }
 
 const createModalConfig = (t: TFunction, onConfirm: () => void, onCancel: () => void) => ({
@@ -42,6 +43,7 @@ export function Request() {
     PageSize: parseInt(searchParams.get('pageSize') ?? '10'),
     Category: searchParams.get('Category') ?? undefined,
     Text: searchParams.get('Text') ?? undefined,
+    IsDeleted: 0
   });
   const [isFileLoading, setIsFileLoading] = useState(false);
   const [filetState, setFileState] = useState<{ name: string; file: File } | null>(null);

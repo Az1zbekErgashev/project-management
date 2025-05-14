@@ -295,7 +295,7 @@ export function CommentsSection({ requestId }: any) {
                   className="reply-form-input"
                   onKeyDown={handleKeyDown}
                 />
-                <Button type="primary" onClick={handleCreateComment} icon={<SendOutlined />} 
+                <Button style={{height: "60px"}} type="primary" onClick={handleCreateComment} icon={<SendOutlined />} 
                 />
               </Space>
             </div>

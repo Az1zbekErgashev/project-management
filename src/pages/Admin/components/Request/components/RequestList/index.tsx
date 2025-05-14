@@ -117,15 +117,17 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         key: 'projectDetails',
         width: 130,
         render: (text) => (
-          <div style={{
-            width: '130px',
-            whiteSpace: 'nowrap',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis'
-          }}>
+          <div
+            style={{
+              width: '130px',
+              whiteSpace: 'nowrap',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+            }}
+          >
             {text}
           </div>
-        )
+        ),
       },
       {
         title: t('client'),
@@ -206,9 +208,9 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
                 padding: '4px 8px',
                 backgroundColor: hexToRgba(status.color, 0.2),
                 display: 'inline-block',
-                width: '120px',         
-                maxWidth: '120px',      
-                minWidth: '120px',    
+                width: '120px',
+                maxWidth: '120px',
+                minWidth: '120px',
               }}
             >
               {t(status.text)}
@@ -234,31 +236,17 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
           ) : null;
         },
       },
-      {
-        title: t('action'),
-        dataIndex: 'action',
-        key: 'action',
-        render: (_, record) => (
-          <Button
-            style={{ fontSize: '12px', padding: '8px', borderRadius: '12px' }}
-            type="primary"
-            onClick={() => {
-              navigate(`/request-detail/${record.id}`);
-            }}
-          >
-            {t('view_details')}
-          </Button>
-        ),
-      },
     ],
     [t, selectedIds, handleCheckboxChange, navigate, requests?.items, handleSelectAllChange]
   );
 
   function hexToRgba(hex: string, alpha: number = 1): string {
-    let r: number = 0, g: number = 0, b: number = 0;
-  
+    let r: number = 0,
+      g: number = 0,
+      b: number = 0;
+
     hex = hex.replace('#', '');
-  
+
     if (hex.length === 3) {
       r = parseInt(hex[0] + hex[0], 16);
       g = parseInt(hex[1] + hex[1], 16);
@@ -268,7 +256,7 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
       g = parseInt(hex.substring(2, 4), 16);
       b = parseInt(hex.substring(4, 6), 16);
     }
-  
+
     return `rgba(${r}, ${g}, ${b}, ${alpha})`;
   }
 
@@ -283,6 +271,14 @@ export function RequestList({ isRequestsLoading, requests, setQueryParams, setSe
         pagination={false}
         showSorterTooltip={false}
         rowKey="id"
+        onRow={(record) => ({
+          onClick: (event) => {
+            const target = event.target as HTMLElement;
+            if (target.closest('button') || target.closest('a')) return;
+            navigate(`/request-detail/${record.id}`);
+          },
+          style: { cursor: 'pointer' },
+        })}
       />
     </StyledRequestList>
   );

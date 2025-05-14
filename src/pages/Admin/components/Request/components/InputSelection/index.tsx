@@ -93,7 +93,7 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
 
   const { data: processingData, isLoading: isProcessingLoading } = useQueryApiClient({
     request: {
-      url: '/api/processingstatus?PageIndex=1&PageSize=1000000000',
+      url: '/api/processingstatus',
       method: 'GET',
     },
   });
@@ -113,6 +113,7 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
     request: {
       url: `/api/request/get-uploaded-file?id=${id}`,
       method: 'GET',
+      disableOnMount: id ? false : true,
     },
     onSuccess(response) {
       if (response?.data) {
@@ -228,6 +229,39 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
           <div>
             {!isDeletedRequests && (
               <div className="action-btns">
+
+                {/* THIS IS UPLOAD CONTAINER */}
+                <div className="upload-container">
+              <div className="form-group upload-group">
+              <div className="file-upload-container"> 
+              {uploadedUrl && (
+                <button className="delete-button" onClick={handleDelete}>
+                  <CloseOutlined />
+                </button>
+              )}
+
+              <Upload onChange={handleChange} showUploadList={false} accept=".pdf,.doc,.docx,.txt">
+                <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
+              </Upload>
+
+              {fileInfo && (
+                <div className="file-info">
+                  <span className="file-name">{fileInfo.name}</span>
+                  <span className="file-size">({fileInfo.size})</span>
+                </div>
+              )}
+
+              {uploadedUrl && (
+                <div className="file-link">
+                  <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
+                    {fileInfo?.name || t('download_file')}
+                  </a>
+                </div>
+               )}
+              </div>
+               </div>
+                </div>
+
                 {window.location.pathname.includes('request-detail') && !disable && (
                   <Button
                     onClick={() => {
@@ -255,7 +289,7 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
           </div>
         </div>
       </div>
-      <div className="upload-container">
+      {/* <div className="upload-container">
         <div className="form-group upload-group">
           <div className="file-upload-container">
             {uploadedUrl && (
@@ -284,7 +318,7 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
             )}
           </div>
         </div>
-      </div>
+      </div> */}
     </StyledInputSelection>
   );
 }

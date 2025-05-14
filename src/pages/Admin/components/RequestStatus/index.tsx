@@ -98,7 +98,7 @@ export function RequestStatusPage() {
       title: t('color_title'),
       dataIndex: 'text',
       key: 'text',
-      render: (text: string, record: any) => <div style={{ color: record.color, fontWeight: '800' }}>{text}</div>,
+      render: (text: string, record: any) => <div style={{ color: record.color, fontWeight: '500' }}>{text}</div>,
     },
     {
       title: t('color'),

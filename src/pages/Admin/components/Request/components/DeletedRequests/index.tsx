@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyledRequestList } from '../RequestList/style';
-import { Button, Table, Checkbox } from 'antd';
+import { Button, Table, Checkbox, Popover } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { RequestModel } from '../RequestList/type';
 import { ColumnsType } from 'antd/es/table';
@@ -182,24 +182,44 @@ export function DeletedRequests() {
       key: 'notes',
       width: 120,
       render: (notes: string) => (
-        <Tooltip
-          title={notes || t('no_notes')}
-          placement="top"
-          mouseLeaveDelay={0.1}
-          destroyTooltipOnHide={{ keepParent: false }}
+        <Popover
+          content={
+            <div
+              style={{
+                padding: '12px 16px',
+                maxHeight: '300px',
+                overflowY: 'auto',
+                width: '250px',
+                wordBreak: 'break-word',
+                whiteSpace: 'pre-wrap',
+                borderRadius: '8px',
+              }}
+            >
+              {notes?.trim() || <span style={{ color: '#999' }}>{t('no_notes')}</span>}
+            </div>
+          }
+          trigger="click"
           overlayStyle={{
-            backgroundColor: '#000000',
-            color: '#ffffff',
-            borderRadius: '4px',
-            padding: '8px',
-            width: 'auto',
-            maxWidth: '200px',
+            backgroundColor: '#fff',
+            borderRadius: '8px',
+            boxShadow: '0 3px 6px rgba(0,0,0,0.16)',
+          }}
+          overlayInnerStyle={{
+            padding: 0,
           }}
         >
-          <Button type="primary" size="small" style={{ padding: '15px', borderRadius: '12px', fontSize: '12px' }}>
+          <Button
+            type="primary"
+            size="small"
+            style={{
+              padding: '15px',
+              borderRadius: '12px',
+              fontSize: '12px',
+            }}
+          >
             {t('view_notes')}
           </Button>
-        </Tooltip>
+        </Popover>
       ),
     },
     {
@@ -238,7 +258,10 @@ export function DeletedRequests() {
       render: (_, record) => {
         return record?.processingStatus ? (
           <span
-            style={{ color: record.processingStatus?.color, fontSize: '16px', fontWeight: '800', textAlign: 'center' }}
+            style={{
+              fontSize: '16px',
+              textAlign: 'center',
+            }}
           >
             {t(record?.processingStatus?.text)}
           </span>

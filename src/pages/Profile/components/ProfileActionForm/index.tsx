@@ -144,45 +144,30 @@ export function ProfileActionForm({ image, setImage }: props) {
           <Input
             name="name"
             disabled={disable}
-            rules={[{ required: false, message: t('field_is_required') }]}
+            rules={[{ required: true, message: t('field_is_required') }]}
             label={t('name')}
           />
-          <Input
-            rules={[
-              { required: false, message: t('field_is_required') },
-              {
-                type: 'email',
-                message: t('emailIsNotValid'),
-              },
-            ]}
-            label={t('email')}
-            placeholder="example@gmail.com"
-            name="email"
-            type="email"
-            disabled={disable}
-          />
+          <Input label={t('email')} placeholder="example@gmail.com" name="email" type="email" disabled={true} />
         </div>
         <div className="flex">
           <Input
             name="surname"
-            disabled={disable}
-            rules={[{ required: false, message: t('field_is_required') }]}
+            disabled={false}
+            rules={[{ required: true, message: t('field_is_required') }]}
             label={t('surname')}
           />
           <Input
             name="phoneNumber"
-            rules={[{ required: false, message: t('field_is_required') }]}
+            rules={[{ required: true, message: t('field_is_required') }]}
             label={t('phone_number')}
-            disabled={disable}
           />
         </div>
         <div className="flex">
           <Select
             loading={isCountryLoading}
             name="countryId"
-            rules={[{ required: false, message: t('field_is_required') }]}
+            rules={[{ required: true, message: t('field_is_required') }]}
             label={t('country')}
-            disabled={disable}
           >
             {country?.data?.map((item: { id: number; name: string }, index: number) => (
               <SelectOption value={item.id} key={index}>

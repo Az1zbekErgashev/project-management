@@ -34,7 +34,12 @@ export function StatusCard() {
               {PROJECT_STATUS.map((status, statusIndex) => {
                 const found = table?.counts?.find((item: any) => item.status === status.text);
                 const count = found?.count ?? 0;
-                const percent = total > 0 ? Math.round((count / total) * 100) : 0;
+
+                let percent = 0;
+                if (total > 0) {
+                  const raw = (count / total) * 100;
+                  percent = Math.round(raw * 10) / 10;
+                }
 
                 return (
                   <div className="status-row" key={statusIndex}>
