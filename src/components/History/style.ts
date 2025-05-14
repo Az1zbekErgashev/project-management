@@ -163,6 +163,10 @@ export const StyledHistorySection = styled.div`
       padding: 0.5rem 0 0 0;
       border-top: 1px solid rgba(0, 0, 0, 0.05);
 
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap ;
+
       p {
         margin: 0;
         font-size: 0.875rem;
@@ -218,6 +222,6 @@ export const StyledHistorySection = styled.div`
     width: 100%;
     display: flex;
     justify-content: center;
-    padding: 30px 0 0 0 ;
+    padding: 30px 0 0 0;
   }
 `;

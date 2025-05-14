@@ -1,14 +1,13 @@
 // InputSelection.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Button, DatePicker, Input, Notification, Select, SelectOption } from 'ui';
+import { Button, DatePicker, Input, Notification, Select, SelectOption, Upload } from 'ui';
 import { FormInstance } from 'antd/lib';
 import { StyledInputSelection } from './style';
 import useQueryApiClient from 'utils/useQueryApiClient';
 import { PROJECT_STATUS } from 'utils/consts';
 import { UploadOutlined, CloseOutlined } from '@ant-design/icons';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Upload } from 'antd';
 import { routes } from 'config/config';
 import { CommentsSection } from 'components/Comments';
 
@@ -29,7 +28,8 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
   const isDeletedRequests = window.location.pathname.includes('deleted-requests');
   const [fileInfo, setFileInfo] = useState<any>(null);
   const [uploadedUrl, setUploadedUrl] = useState<any>(null);
-  const [file, setFile] = useState<any>(null);
+  const isUploadedRef = useRef(false);
+
   const { appendData: createData, isLoading } = useQueryApiClient({
     request: {
       url: window.location.pathname.includes('request-detail')
@@ -53,13 +53,22 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
   });
 
   const handleChange = (info: any) => {
-    if (info.file.status === 'uploading') {
+    if (info.file.status === 'uploading' && !isUploadedRef.current) {
+      isUploadedRef.current = true;
       setFileInfo({
         name: info.file.name,
         size: (info.file.size / 1024).toFixed(2) + ' KB',
       });
-      setFile(info.file);
+
+      const formData = new FormData();
+      formData.append('id', request?.data?.id);
+      formData.append('file', info?.file?.originFileObj);
+      uploadFile(formData);
       setUploadedUrl(null);
+    }
+
+    if (info.file.status === 'done' || info.file.status === 'error') {
+      isUploadedRef.current = false;
     }
   };
 
@@ -125,15 +134,6 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
     },
   });
 
-  useEffect(() => {
-    if (file) {
-      const formData = new FormData();
-      formData.append('id', request?.data?.id);
-      formData.append('file', file.originFileObj);
-      uploadFile(formData);
-    }
-  }, [file]);
-
   return (
     <StyledInputSelection>
       <div className="form-div">
@@ -166,7 +166,6 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
               <Input name="email" disabled={disable} label={t('email')} />
             </div>
 
-            {/* Status */}
             <div className="form-group">
               <h3>{t('status')}</h3>
 
@@ -229,37 +228,35 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
           <div>
             {!isDeletedRequests && (
               <div className="action-btns">
-
-                {/* THIS IS UPLOAD CONTAINER */}
                 <div className="upload-container">
-              <div className="form-group upload-group">
-              <div className="file-upload-container"> 
-              {uploadedUrl && (
-                <button className="delete-button" onClick={handleDelete}>
-                  <CloseOutlined />
-                </button>
-              )}
+                  <div className="form-group upload-group">
+                    <div className="file-upload-container">
+                      {uploadedUrl && (
+                        <button className="delete-button" onClick={handleDelete}>
+                          <CloseOutlined />
+                        </button>
+                      )}
 
-              <Upload onChange={handleChange} showUploadList={false} accept=".pdf,.doc,.docx,.txt">
-                <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
-              </Upload>
+                      <Upload onChange={handleChange} showUploadList={false} accept=".pdf,.doc,.docx,.txt">
+                        <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
+                      </Upload>
 
-              {fileInfo && (
-                <div className="file-info">
-                  <span className="file-name">{fileInfo.name}</span>
-                  <span className="file-size">({fileInfo.size})</span>
-                </div>
-              )}
+                      {fileInfo && (
+                        <div className="file-info">
+                          <span className="file-name">{fileInfo.name}</span>
+                          <span className="file-size">({fileInfo.size})</span>
+                        </div>
+                      )}
 
-              {uploadedUrl && (
-                <div className="file-link">
-                  <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
-                    {fileInfo?.name || t('download_file')}
-                  </a>
-                </div>
-               )}
-              </div>
-               </div>
+                      {uploadedUrl && (
+                        <div className="file-link">
+                          <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
+                            {fileInfo?.name || t('download_file')}
+                          </a>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 {window.location.pathname.includes('request-detail') && !disable && (
@@ -289,36 +286,6 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
           </div>
         </div>
       </div>
-      {/* <div className="upload-container">
-        <div className="form-group upload-group">
-          <div className="file-upload-container">
-            {uploadedUrl && (
-              <button className="delete-button" onClick={handleDelete}>
-                <CloseOutlined />
-              </button>
-            )}
-
-            <Upload onChange={handleChange} showUploadList={false} accept=".pdf,.doc,.docx,.txt">
-              <Button icon={<UploadOutlined />} size="small" label={t('upload_file')} />
-            </Upload>
-
-            {fileInfo && (
-              <div className="file-info">
-                <span className="file-name">{fileInfo.name}</span>
-                <span className="file-size">({fileInfo.size})</span>
-              </div>
-            )}
-
-            {uploadedUrl && (
-              <div className="file-link">
-                <a href={uploadedUrl} target="_blank" rel="noopener noreferrer">
-                  {fileInfo?.name || t('download_file')}
-                </a>
-              </div>
-            )}
-          </div>
-        </div>
-      </div> */}
     </StyledInputSelection>
   );
 }

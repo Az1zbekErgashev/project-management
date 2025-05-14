@@ -4,6 +4,7 @@ import { StyledHistorySection } from './style';
 import { useTranslation } from 'react-i18next';
 import dayjs from 'dayjs';
 import { routes } from 'config/config';
+import React from 'react';
 
 interface HistorySectionProps {
   requestId: string;
@@ -47,7 +48,7 @@ export function HistorySection({ requestId }: HistorySectionProps) {
                 </div>
 
                 <div className="timeline-message">
-                  <p>{t(entry.log)}</p>
+                  {entry?.log?.map((item: any, index: number) => <p key={index}>{item}</p>)}
                 </div>
               </div>
             </div>

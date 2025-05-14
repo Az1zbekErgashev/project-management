@@ -10,6 +10,8 @@ interface StatusChartData {
 
 export function GraphChart({ pieChartData, statusColors }: any) {
   const CustomTooltip = ({ active, payload, label }: TooltipProps<ValueType, NameType>) => {
+    console.log(payload);
+
     if (active && payload && payload.length) {
       return (
         <div className="custom-tooltip">
@@ -38,8 +40,6 @@ export function GraphChart({ pieChartData, statusColors }: any) {
       { name: 'Dropped', value: categoryData.Dropped || 0, color: statusColors.Dropped },
     ];
   };
-
-  console.log(pieChartData?.data);
 
   return (
     <div className="chart-container">
