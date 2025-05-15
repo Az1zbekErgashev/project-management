@@ -237,7 +237,6 @@ export function InputSelection({ form, disable, setDisable, request, handleFetch
         <div className="text-area">
           <div className="form-group">
             <h3>{t('notes')}</h3>
-            {/* <TextArea name="notes" disabled={disable} label={t('notes')} rows={8} /> */}
             {!isDeletedRequests && window.location.pathname.includes('request-detail') && (
               <div className="comments-wrapper">
                 <CommentsSection requestId={id!} />

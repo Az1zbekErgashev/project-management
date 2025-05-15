@@ -16,7 +16,7 @@ export default function UsersFilter({ handleFilterChange, resetFileds }: props) 
   return (
     <StyledUsersFilter>
       <Form form={form} layout="vertical" onValuesChange={handleFilterChange}>
-        <Input label={t('email_name_surname')} name="Text" />
+        <Input label={t('email_name_surname_country')} name="Text" />
         <Select label={t('role')} name="Role">
           {ROLE.map((item, index) => (
             <SelectOption value={item.id.toString()} key={index}>

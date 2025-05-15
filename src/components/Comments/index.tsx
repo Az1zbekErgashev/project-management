@@ -1,4 +1,3 @@
-// Comments.tsx
 import { useState, useRef, useEffect } from 'react';
 import { Avatar, Button, Input, Typography, Space, InputRef, Modal } from 'antd';
 import { DeleteOutlined, SendOutlined } from '@ant-design/icons';
@@ -47,6 +46,10 @@ export function CommentsSection({ requestId }: any) {
   const [editingComment, setEditingComment] = useState<{ id: number; text: string } | null>(null);
   const { user } = useUser();
   const { t } = useTranslation();
+  // State to track the number of visible comments
+  const [visibleCount, setVisibleCount] = useState(3);
+  // State to track whether all comments are shown
+  const [showAll, setShowAll] = useState(false);
 
   const replyInputRef = useRef<InputRef>(null);
   const newCommentInputRef = useRef<InputRef>(null);
@@ -127,7 +130,6 @@ export function CommentsSection({ requestId }: any) {
 
   const handleReplyClick = (commentId: number, email: string) => {
     setReplyingTo({ id: commentId, email });
-    smoothScroll('bottom', 0);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -140,10 +142,26 @@ export function CommentsSection({ requestId }: any) {
     }
   };
 
+  const sortedComments = [...(comments || [])].sort((a, b) => dayjs(b.createdAt).diff(dayjs(a.createdAt)));
+
+  const toggleComments = () => {
+    if (showAll) {
+      setVisibleCount(3);
+      setShowAll(false);
+    } else {
+      setVisibleCount(sortedComments.length);
+      setShowAll(true);
+    }
+  };
+
+  const visibleComments = sortedComments.slice(0, visibleCount);
+
+  const remainingCommentsCount = Math.max(0, sortedComments.length - 3);
+
   return (
     <StyledCommentsSection>
       <div className="comments-container">
-        {comments?.map((comment: any) => (
+        {visibleComments.map((comment: any) => (
           <div key={comment.id} className="comment-block">
             <div className="comment-item">
               <Avatar src={`${routes.api.baseUrl}/${comment?.user?.image?.path}`} className="comment-avatar">
@@ -263,6 +281,13 @@ export function CommentsSection({ requestId }: any) {
             </div>
           </div>
         ))}
+        {sortedComments?.length > 3 && (
+          <div className="toggle-comments">
+            <Button type="link" onClick={toggleComments} className="toggle-comments-btn">
+              {showAll ? t('hide_comments') : `${t('show_all_comments')} (${remainingCommentsCount})`}
+            </Button>
+          </div>
+        )}
         {replyingTo ? (
           <div className="reply-form-container">
             <div className="reply-form-content">
@@ -295,7 +320,11 @@ export function CommentsSection({ requestId }: any) {
                   className="reply-form-input"
                   onKeyDown={handleKeyDown}
                 />
-                <Button style={{height: "60px"}} type="primary" onClick={handleCreateComment} icon={<SendOutlined />} 
+                <Button
+                  style={{ height: '60px' }}
+                  type="primary"
+                  onClick={handleCreateComment}
+                  icon={<SendOutlined />}
                 />
               </Space>
             </div>
